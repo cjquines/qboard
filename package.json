@@ -1,0 +1,22 @@
+{
+  "name": "qboard",
+  "version": "1.0.0",
+  "description": "Describe qboard here",
+  "private": true,
+  "scripts": {
+    "build": "nwb build-web-app",
+    "clean": "nwb clean-app",
+    "start": "nwb serve-web-app --reload",
+    "test": "nwb test",
+    "test:coverage": "nwb test --coverage",
+    "test:watch": "nwb test --server"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "nwb": "0.25.x"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": ""
+}
