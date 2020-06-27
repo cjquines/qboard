@@ -1,0 +1,16 @@
+body {
+  background-color: #eee;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, .canvas-container {
+  height: 100%;
+  width: 100%;
+}
+
+.canvas-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
