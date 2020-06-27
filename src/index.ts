@@ -1,13 +1,17 @@
 import { fabric } from "fabric";
 import "./main.scss";
 
-class Board {
+const defaultPageJSON = {
+  version: "3.6.3", objects: [], background: "white"
+};
+
+class Page {
   canvas: fabric.Canvas;
 
   constructor(
     canvasElement: HTMLCanvasElement,
-    readonly canvasWidth: number,
-    readonly canvasHeight: number
+    public canvasWidth: number,
+    public canvasHeight: number
   ) {
     this.canvas = new fabric.Canvas(canvasElement);
     this.canvas.backgroundColor = "white";
@@ -29,17 +33,49 @@ class Board {
     this.canvas.setZoom(Math.min(widthRatio, heightRatio));
     this.canvas.setWidth(this.canvasWidth * this.canvas.getZoom());
     this.canvas.setHeight(this.canvasHeight * this.canvas.getZoom());
+  };
+}
+
+class PageContainer {
+  pagesJson: any[] = [defaultPageJSON];
+  currentIndex: number = 0;
+  resizeCooldown: any;
+
+  constructor(public page: Page) {
+    this.resizeCooldown = setTimeout(this.fitPageToWindow, 0);
+    window.onresize = (): void => {
+      clearTimeout(this.resizeCooldown);
+      this.resizeCooldown = setTimeout(this.fitPageToWindow, 100);
+    };
   }
+
+  fitPageToWindow = (): void => {
+    this.page.resize(window.innerWidth, window.innerHeight);
+  };
+
+  savePage = (): void => {
+    this.pagesJson[this.currentIndex] = this.page.canvas.toJSON();
+  };
+
+  loadPage = (index: number): void => {
+    this.savePage();
+    this.page.canvas.loadFromJSON(this.pagesJson[index], null);
+    this.currentIndex = index;
+  };
+
+  newPage = (): void => {
+    this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
+    this.loadPage(this.currentIndex + 1);
+  };
 }
 
-const board = new Board(document.getElementById("canvas") as HTMLCanvasElement, 1600, 900);
+const page = new Page(
+  document.getElementById("page") as HTMLCanvasElement,
+  1600,
+  900
+);
+const container = new PageContainer(page);
 
-const fitToWindow = (): void => {
-  board.resize(window.innerWidth, window.innerHeight);
-}
-
-let resizeCooldown = setTimeout(fitToWindow, 0);
-window.onresize = (): void => {
-  clearTimeout(resizeCooldown);
-  resizeCooldown = setTimeout(fitToWindow, 100);
-}
+document.getElementById("pagination-add").addEventListener("click", container.newPage);
+document.getElementById("pagination-prev").addEventListener("click", () => {container.loadPage(0)});
+document.getElementById("pagination-next").addEventListener("click", () => {container.loadPage(1)});

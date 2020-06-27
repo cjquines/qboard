@@ -4,13 +4,19 @@ body {
   padding: 0;
 }
 
-html, body, .canvas-container {
+html, body, .page-container {
   height: 100%;
   width: 100%;
 }
 
-.canvas-container {
+.page-container {
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+.pagination {
+  left: 0;
+  position: absolute;
+  top: 0;
 }
