@@ -1,8 +1,8 @@
 module.exports = {
-  type: "web-app",
+  type: "react-app",
   webpack: {
     config(config) {
-      config.entry = "./src/index.ts";
+      config.entry = "./src/index.js";
       config.resolve.extensions = [".ts", ".tsx", ".js", ".jsx"];
       config.module.rules.push({
         test: /\.tsx?$/,

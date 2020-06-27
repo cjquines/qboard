@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "description": "the whiteboard app i wish existed",
   "scripts": {
-    "build": "nwb build-web-app",
+    "build": "nwb build-react-app",
     "clean": "nwb clean-app",
-    "start": "nwb serve-web-app --reload"
+    "start": "nwb serve-react-app"
   },
   "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "fabric": "^3.6.3"
   },
   "devDependencies": {

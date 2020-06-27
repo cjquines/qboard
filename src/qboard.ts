@@ -1,11 +1,10 @@
 import { fabric } from "fabric";
-import "./main.scss";
 
 const defaultPageJSON = {
   version: "3.6.3", objects: [], background: "white"
 };
 
-class Page {
+export class Page {
   canvas: fabric.Canvas;
 
   constructor(
@@ -36,7 +35,7 @@ class Page {
   };
 }
 
-class PageContainer {
+export class PageContainer {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
   resizeCooldown: any;
@@ -68,14 +67,3 @@ class PageContainer {
     this.loadPage(this.currentIndex + 1);
   };
 }
-
-const page = new Page(
-  document.getElementById("page") as HTMLCanvasElement,
-  1600,
-  900
-);
-const container = new PageContainer(page);
-
-document.getElementById("pagination-add").addEventListener("click", container.newPage);
-document.getElementById("pagination-prev").addEventListener("click", () => {container.loadPage(0)});
-document.getElementById("pagination-next").addEventListener("click", () => {container.loadPage(1)});
