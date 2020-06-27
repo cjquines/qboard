@@ -2,6 +2,7 @@ module.exports = {
   type: "web-app",
   webpack: {
     config(config) {
+      config.entry = "./src/index.ts";
       config.resolve.extensions = [".ts", ".tsx", ".js", ".jsx"];
       config.module.rules.push({
         test: /\.tsx?$/,
