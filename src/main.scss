@@ -4,18 +4,18 @@ body {
   padding: 0;
 }
 
-html, body, .page-container {
+html, body, .container {
   height: 100%;
   width: 100%;
 }
 
-.page-container {
+.container {
   align-items: center;
   display: flex;
   justify-content: center;
 }
 
-.pagination {
+.overlay {
   left: 0;
   position: absolute;
   top: 0;
