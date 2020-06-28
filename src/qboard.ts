@@ -50,6 +50,7 @@ export default class QBoard {
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
     this.baseCanvas.on("path:created", this.pathCreated);
+    this.baseCanvas.on("object:modified", this.objectModified);
   }
 
   switchTool = async (tool: Tool): Promise<void> => {
@@ -120,7 +121,7 @@ export default class QBoard {
     this.history.add([this.currentObject]);
   };
 
-  pathCreated = async (e): Promise<void> => {
+  pathCreated = async (e: any): Promise<void> => {
     if (this.tool === this.handlers[Tool.Pen]) {
       e.path.id = await this.baseCanvas.getNextId();
       this.history.add([e.path]);
@@ -134,4 +135,12 @@ export default class QBoard {
       this.history.remove(objects);
     }
   };
+
+  objectModified = async (e: any): Promise<void> => {
+    this.history.save({
+      ids: [e.target.id],
+      oldObjects: [e.transform.original],
+      newObjects: [e.target.toJSON()],
+    });
+  }
 }
