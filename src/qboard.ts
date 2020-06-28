@@ -8,11 +8,11 @@ const defaultPageJSON = {
 
 export const enum Tool {
   Move,
+  Pen,
+  Eraser,
   Line,
   Rectangle,
   Ellipse,
-  Pen,
-  Eraser,
 }
 
 class Page extends fabric.Canvas {
@@ -79,8 +79,6 @@ class Pages {
 interface ToolHandler {
   tool: Tool;
 
-  initialize: (canvas: Page) => Promise<void>;
-
   draw: (
     x: number,
     y: number,
@@ -98,10 +96,6 @@ interface ToolHandler {
 
 class MoveHandler implements ToolHandler {
   tool: Tool = Tool.Move;
-
-  initialize = async (canvas: Page): Promise<void> => {
-    canvas.activateSelection();
-  };
 
   draw = async (
     x: number,
@@ -124,10 +118,6 @@ class MoveHandler implements ToolHandler {
 
 class LineHandler implements ToolHandler {
   tool: Tool = Tool.Line;
-
-  initialize = async (canvas: Page): Promise<void> => {
-    canvas.deactivateSelection();
-  };
 
   draw = async (
     x: number,
@@ -157,10 +147,6 @@ class RectangleHandler implements ToolHandler {
   tool: Tool = Tool.Rectangle;
   x: number;
   y: number;
-
-  initialize = async (canvas: Page): Promise<void> => {
-    canvas.deactivateSelection();
-  };
 
   draw = async (
     x: number,
@@ -204,10 +190,6 @@ class EllipseHandler implements ToolHandler {
   x: number;
   y: number;
 
-  initialize = async (canvas: Page): Promise<void> => {
-    canvas.deactivateSelection();
-  };
-
   draw = async (
     x: number,
     y: number,
@@ -248,11 +230,6 @@ class EllipseHandler implements ToolHandler {
 class PenHandler implements ToolHandler {
   tool: Tool = Tool.Pen;
 
-  initialize = async (canvas: Page): Promise<void> => {
-    canvas.deactivateSelection();
-    canvas.isDrawingMode = true;
-  };
-
   draw = async (
     x: number,
     y: number,
@@ -274,11 +251,6 @@ class PenHandler implements ToolHandler {
 
 class EraserHandler implements ToolHandler {
   tool: Tool = Tool.Eraser;
-
-  initialize = async (canvas: Page): Promise<void> => {
-    canvas.deactivateSelection();
-    canvas.isDrawingMode = true;
-  };
 
   draw = async (
     x: number,
@@ -307,11 +279,11 @@ export default class QBoard {
 
   handlers: ToolHandler[] = [
     new MoveHandler(),
+    new PenHandler(),
+    new EraserHandler(),
     new LineHandler(),
     new RectangleHandler(),
     new EllipseHandler(),
-    new PenHandler(),
-    new EraserHandler(),
   ];
   drawerOptions: fabric.IObjectOptions = {
     fill: "transparent",
@@ -326,8 +298,8 @@ export default class QBoard {
   isDown: boolean = false;
 
   constructor(
-    canvasElement: HTMLCanvasElement,
-    baseCanvasElement: HTMLCanvasElement,
+    public canvasElement: HTMLCanvasElement,
+    public baseCanvasElement: HTMLCanvasElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -349,20 +321,33 @@ export default class QBoard {
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
-    this.canvas.on("path:created", this.pathCreated);
+    this.baseCanvas.on("path:created", this.pathCreated);
   }
 
   switchTool = async (tool: Tool): Promise<void> => {
     if (tool === Tool.Eraser) {
-      const deleted = await this.canvas.tryDeleting();
+      const deleted = await this.baseCanvas.tryDeleting();
       if (deleted) {
-        this.canvas.renderAll();
+        this.baseCanvas.renderAll();
         return;
       }
     }
 
     this.tool = this.handlers[tool];
-    await this.tool.initialize(this.canvas);
+
+    if (tool <= Tool.Eraser) {
+      this.baseCanvas.activateSelection();
+      this.canvasElement.parentElement.style.display = "none";
+    } else {
+      this.baseCanvas.deactivateSelection();
+      this.canvasElement.parentElement.style.display = "block";
+    }
+
+    if (tool === Tool.Pen || tool === Tool.Eraser) {
+      this.baseCanvas.isDrawingMode = true;
+    } else {
+      this.baseCanvas.isDrawingMode = false;
+    }
   };
 
   windowResize = async (): Promise<void> => {
@@ -374,15 +359,28 @@ export default class QBoard {
   };
 
   mouseDown = async (e: fabric.IEvent): Promise<void> => {
+    if (
+      this.tool === this.handlers[Tool.Move] ||
+      this.tool === this.handlers[Tool.Pen] ||
+      this.tool === this.handlers[Tool.Eraser]
+    )
+      return;
+
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
-    if (!this.currentObject) return;
     this.canvas.add(this.currentObject);
     this.canvas.renderAll();
   };
 
   mouseMove = async (e: fabric.IEvent): Promise<void> => {
+    if (
+      this.tool === this.handlers[Tool.Move] ||
+      this.tool === this.handlers[Tool.Pen] ||
+      this.tool === this.handlers[Tool.Eraser]
+    )
+      return;
+
     const { x, y } = this.canvas.getPointer(e.e);
     if (!this.isDown) return;
     await this.tool.resize(this.currentObject, x, y);
@@ -390,23 +388,29 @@ export default class QBoard {
   };
 
   mouseUp = async (e: fabric.IEvent): Promise<void> => {
+    if (
+      this.tool === this.handlers[Tool.Move] ||
+      this.tool === this.handlers[Tool.Pen] ||
+      this.tool === this.handlers[Tool.Eraser]
+    )
+      return;
+
     this.isDown = false;
-    await this.baseCanvas.add(this.currentObject);
+    await this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
     await this.canvas.remove(this.currentObject);
     this.baseCanvas.renderAll();
     this.canvas.renderAll();
-    console.log(this);
   };
 
   pathCreated = async (e): Promise<void> => {
     if (this.tool !== this.handlers[Tool.Eraser]) return;
+
     const { path } = e;
-    const objects = this.canvas
+    const objects = this.baseCanvas
       .getObjects()
       .filter((object) => object.intersectsWithObject(path));
-      // doesn't quite work because it intersects with bounding box
-    await this.canvas.remove(path);
-    await this.canvas.remove(...objects);
-    this.canvas.renderAll();
+    // doesn't quite work because it intersects with bounding box
+    await this.baseCanvas.remove(path, ...objects);
+    this.baseCanvas.renderAll();
   };
 }
