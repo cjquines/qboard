@@ -22,6 +22,7 @@ const Overlay = (props: OverlayProps) => {
         <button onClick={() => qboard.switchTool(Tool.Rectangle)}>rectangle</button>
         <button onClick={() => qboard.switchTool(Tool.Ellipse)}>ellipse</button>
         <button onClick={() => qboard.switchTool(Tool.Pen)}>pen</button>
+        <button onClick={() => qboard.switchTool(Tool.Eraser)}>eraser</button>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ export const enum Tool {
   Rectangle,
   Ellipse,
   Pen,
+  Eraser,
 }
 
 class Page extends fabric.Canvas {
@@ -42,6 +43,14 @@ class Page extends fabric.Canvas {
     this.forEachObject((object) => {
       object.selectable = true;
     });
+  };
+
+  tryDeleting = async (): Promise<boolean> => {
+    const objects = this.getActiveObjects();
+    if (!objects.length) return false;
+    this.discardActiveObject();
+    await this.remove(...objects);
+    return true;
   };
 }
 
@@ -263,6 +272,33 @@ class PenHandler implements ToolHandler {
   };
 }
 
+class EraserHandler implements ToolHandler {
+  tool: Tool = Tool.Eraser;
+
+  initialize = async (canvas: Page): Promise<void> => {
+    canvas.deactivateSelection();
+    canvas.isDrawingMode = true;
+  };
+
+  draw = async (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): Promise<null> => {
+    return null;
+  };
+
+  resize = async (
+    object: fabric.Object,
+    x2: number,
+    y2: number
+  ): Promise<null> => {
+    return null;
+  };
+}
+
 export default class QBoard {
   canvas: Page;
   pages: Pages;
@@ -274,6 +310,7 @@ export default class QBoard {
     new RectangleHandler(),
     new EllipseHandler(),
     new PenHandler(),
+    new EraserHandler(),
   ];
   drawerOptions: fabric.IObjectOptions = {
     fill: "transparent",
@@ -304,9 +341,18 @@ export default class QBoard {
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
+    this.canvas.on("path:created", this.pathCreated);
   }
 
   switchTool = async (tool: Tool): Promise<void> => {
+    if (tool === Tool.Eraser) {
+      const deleted = await this.canvas.tryDeleting();
+      if (deleted) {
+        this.canvas.renderAll();
+        return;
+      }
+    }
+
     this.tool = this.handlers[tool];
     await this.tool.initialize(this.canvas);
   };
@@ -336,5 +382,17 @@ export default class QBoard {
 
   mouseUp = async (e: fabric.IEvent): Promise<void> => {
     this.isDown = false;
+  };
+
+  pathCreated = async (e): Promise<void> => {
+    if (this.tool !== this.handlers[Tool.Eraser]) return;
+    const { path } = e;
+    const objects = this.canvas
+      .getObjects()
+      .filter((object) => object.intersectsWithObject(path));
+      // doesn't quite work because it intersects with bounding box
+    await this.canvas.remove(path);
+    await this.canvas.remove(...objects);
+    this.canvas.renderAll();
   };
 }

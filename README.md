@@ -12,8 +12,23 @@ basic features:
   - stroke
   - fill
 
+keybindings for now:
+- w erase / delete
+- e ellipse
+- r rectangle
+- t text
+- a previous page
+- s next/add page
+- d pen
+- f undo
+- g redo/paste
+- c line
+- v move
+- esc deselect
+
 nice features:
 - help panel
 - rooms for spectating
 - rooms for collaboration
 - saving things to the server for a limited period
+- load prev/next pages in memory
