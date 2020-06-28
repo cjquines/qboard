@@ -6,7 +6,7 @@ const defaultPageJSON = {
   background: "white",
 };
 
-const enum Tool {
+export const enum Tool {
   Move,
   Line,
   Pen,
@@ -30,11 +30,11 @@ class Page extends fabric.Canvas {
     this.forEachObject((object) => {
       object.selectable = false;
     });
+    this.renderAll();
   };
 
   activateSelection = async (): Promise<void> => {
     this.selection = true;
-    this.discardActiveObject();
     this.forEachObject((object) => {
       object.selectable = true;
     });
@@ -81,6 +81,32 @@ interface ToolHandler {
     x2: number,
     y2: number
   ) => Promise<fabric.Object | null>;
+}
+
+class MoveHandler implements ToolHandler {
+  tool: Tool = Tool.Move;
+
+  initialize = async (canvas: Page): Promise<void> => {
+    canvas.activateSelection();
+  };
+
+  draw = async (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): Promise<null> => {
+    return null;
+  };
+
+  resize = async (
+    object: fabric.Object,
+    x2: number,
+    y2: number
+  ): Promise<null> => {
+    return null;
+  };
 }
 
 class LineHandler implements ToolHandler {
@@ -157,19 +183,9 @@ export default class QBoard {
     this.canvas.on("mouse:up", this.mouseUp);
   }
 
-  fitPageToWindow = async (): Promise<void> => {
-    const widthRatio = window.innerWidth / this.canvasWidth;
-    const heightRatio = window.innerHeight / this.canvasHeight;
-    this.canvas.setZoom(Math.min(widthRatio, heightRatio));
-    this.canvas.setWidth(this.canvasWidth * this.canvas.getZoom());
-    this.canvas.setHeight(this.canvasHeight * this.canvas.getZoom());
-  };
-
-  deactivateSelection = async (): Promise<void> => {
-    this.canvas.discardActiveObject();
-    this.canvas.forEachObject((object) => {
-      object.selectable = false;
-    });
+  switchTool = async (tool: Tool): Promise<void> => {
+    this.tool = this.handlers[tool];
+    await this.tool.initialize(this.canvas);
   };
 
   windowResize = async (): Promise<void> => {
@@ -177,10 +193,10 @@ export default class QBoard {
   };
 
   mouseDown = async (e: fabric.IEvent): Promise<void> => {
-    console.log(this);
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
+    if (!this.currentObject) return;
     this.canvas.add(this.currentObject);
     this.canvas.renderAll();
   };

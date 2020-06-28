@@ -1,6 +1,6 @@
 import React from "react";
 
-import QBoard from "./qboard";
+import QBoard, { Tool } from "./qboard";
 
 interface OverlayProps {
   qboard: QBoard;
@@ -15,6 +15,10 @@ const Overlay = (props: OverlayProps) => {
         <button onClick={qboard.pages.newPage}>add</button>
         <button onClick={() => qboard.pages.loadPage(0)}>zero</button>
         <button onClick={() => qboard.pages.loadPage(1)}>one</button>
+      </div>
+      <div className="toolbar">
+        <button onClick={() => qboard.switchTool(Tool.Move)}>move</button>
+        <button onClick={() => qboard.switchTool(Tool.Line)}>line</button>
       </div>
     </div>
   );
