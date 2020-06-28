@@ -300,6 +300,7 @@ class EraserHandler implements ToolHandler {
 }
 
 export default class QBoard {
+  baseCanvas: Page;
   canvas: Page;
   pages: Pages;
   resizeCooldown: any;
@@ -326,14 +327,21 @@ export default class QBoard {
 
   constructor(
     canvasElement: HTMLCanvasElement,
+    baseCanvasElement: HTMLCanvasElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
-    this.canvas = new Page(canvasElement);
-    this.pages = new Pages(this.canvas);
+    this.baseCanvas = new Page(baseCanvasElement, {
+      backgroundColor: "white",
+      selection: false,
+      renderOnAddRemove: false,
+    });
+    this.canvas = new Page(canvasElement, {
+      selection: false,
+      renderOnAddRemove: false,
+    });
+    this.pages = new Pages(this.baseCanvas);
 
-    this.canvas.backgroundColor = "white";
-    this.canvas.selection = false;
     this.switchTool(Tool.Move);
     this.windowResize();
 
@@ -361,6 +369,7 @@ export default class QBoard {
     clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(() => {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+      this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);
   };
 
@@ -382,6 +391,11 @@ export default class QBoard {
 
   mouseUp = async (e: fabric.IEvent): Promise<void> => {
     this.isDown = false;
+    await this.baseCanvas.add(this.currentObject);
+    await this.canvas.remove(this.currentObject);
+    this.baseCanvas.renderAll();
+    this.canvas.renderAll();
+    console.log(this);
   };
 
   pathCreated = async (e): Promise<void> => {
