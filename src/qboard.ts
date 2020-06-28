@@ -7,16 +7,45 @@ const defaultPageJSON = {
 };
 
 const enum Tool {
-  Line,
   Move,
+  Line,
   Pen,
+}
+
+class Page extends fabric.Canvas {
+  fitToWindow = async (
+    canvasWidth: number,
+    canvasHeight: number
+  ): Promise<void> => {
+    const widthRatio = window.innerWidth / canvasWidth;
+    const heightRatio = window.innerHeight / canvasHeight;
+    this.setZoom(Math.min(widthRatio, heightRatio));
+    this.setWidth(canvasWidth * this.getZoom());
+    this.setHeight(canvasHeight * this.getZoom());
+  };
+
+  deactivateSelection = async (): Promise<void> => {
+    this.selection = false;
+    this.discardActiveObject();
+    this.forEachObject((object) => {
+      object.selectable = false;
+    });
+  };
+
+  activateSelection = async (): Promise<void> => {
+    this.selection = true;
+    this.discardActiveObject();
+    this.forEachObject((object) => {
+      object.selectable = true;
+    });
+  };
 }
 
 class Pages {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
 
-  constructor(public canvas: fabric.Canvas) {}
+  constructor(public canvas: Page) {}
 
   savePage = (): void => {
     this.pagesJson[this.currentIndex] = this.canvas.toJSON();
@@ -37,6 +66,8 @@ class Pages {
 interface ToolHandler {
   tool: Tool;
 
+  initialize: (canvas: Page) => Promise<void>;
+
   draw: (
     x: number,
     y: number,
@@ -54,6 +85,10 @@ interface ToolHandler {
 
 class LineHandler implements ToolHandler {
   tool: Tool = Tool.Line;
+
+  initialize = async (canvas: Page): Promise<void> => {
+    canvas.deactivateSelection();
+  };
 
   draw = async (
     x: number,
@@ -80,15 +115,15 @@ class LineHandler implements ToolHandler {
 }
 
 export default class QBoard {
-  canvas: fabric.Canvas;
+  canvas: Page;
   pages: Pages;
 
-  handlers: ToolHandler[] = [new LineHandler()];
+  handlers: ToolHandler[] = [new MoveHandler(), new LineHandler()];
   tool: ToolHandler = this.handlers[Tool.Line];
   drawerOptions: fabric.IObjectOptions = {
     stroke: "black",
     strokeWidth: 1,
-    selectable: true,
+    selectable: false,
     strokeUniform: true,
   };
 
@@ -100,11 +135,11 @@ export default class QBoard {
     public canvasWidth: number,
     public canvasHeight: number
   ) {
-    this.canvas = new fabric.Canvas(canvasElement);
+    this.canvas = new Page(canvasElement);
     this.canvas.backgroundColor = "white";
     this.canvas.selection = false;
     this.pages = new Pages(this.canvas);
-    this.fitPageToWindow();
+    this.windowResize();
 
     // temporary rectangle for now:
     const rect = new fabric.Rect({
@@ -116,7 +151,7 @@ export default class QBoard {
     });
     this.canvas.add(rect);
 
-    window.onresize = this.fitPageToWindow;
+    window.onresize = this.windowResize;
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
@@ -130,7 +165,19 @@ export default class QBoard {
     this.canvas.setHeight(this.canvasHeight * this.canvas.getZoom());
   };
 
+  deactivateSelection = async (): Promise<void> => {
+    this.canvas.discardActiveObject();
+    this.canvas.forEachObject((object) => {
+      object.selectable = false;
+    });
+  };
+
+  windowResize = async (): Promise<void> => {
+    this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+  };
+
   mouseDown = async (e: fabric.IEvent): Promise<void> => {
+    console.log(this);
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
