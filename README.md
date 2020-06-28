@@ -32,3 +32,4 @@ nice features:
 - rooms for collaboration
 - saving things to the server for a limited period
 - load prev/next pages in memory
+- proper per-pixel selection and deletion
