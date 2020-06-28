@@ -1,6 +1,7 @@
 import React from "react";
 
-import QBoard, { Tool } from "./qboard";
+import QBoard from "./qboard";
+import { Tool } from "./tools";
 
 interface OverlayProps {
   qboard: QBoard;
