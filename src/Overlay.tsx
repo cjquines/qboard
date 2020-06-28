@@ -24,6 +24,8 @@ const Overlay = (props: OverlayProps) => {
         <button onClick={() => qboard.switchTool(Tool.Ellipse)}>ellipse</button>
         <button onClick={() => qboard.switchTool(Tool.Pen)}>pen</button>
         <button onClick={() => qboard.switchTool(Tool.Eraser)}>eraser</button>
+        <button onClick={() => qboard.history.undo()}>undo</button>
+        <button onClick={() => qboard.history.redo()}>redo</button>
       </div>
     </div>
   );

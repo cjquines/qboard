@@ -7,6 +7,8 @@ const defaultPageJSON = {
 };
 
 export class Page extends fabric.Canvas {
+  latestId: number = 0;
+
   fitToWindow = async (
     canvasWidth: number,
     canvasHeight: number
@@ -36,12 +38,45 @@ export class Page extends fabric.Canvas {
     });
   };
 
-  tryDeleting = async (): Promise<boolean> => {
-    const objects = this.getActiveObjects();
-    if (!objects.length) return false;
-    this.discardActiveObject();
-    await this.remove(...objects);
-    return true;
+  getNextId = async (): Promise<number> => {
+    this.latestId += 1;
+    return this.latestId;
+  };
+
+  getObjectByIds = async (ids: number[]): Promise<fabric.Object[]> => {
+    // multiple element case; kind of inefficient
+    if (ids.length > 1) {
+      return this.getObjects().filter((object: any) => ids.includes(object.id));
+    }
+    // single element case
+    const id = ids[0];
+    let object: any;
+    for (object of this.getObjects()) {
+      if (object.id === id) {
+        return [object];
+      }
+    }
+    return [];
+  };
+
+  apply = async (
+    ids: number[],
+    newObjects: fabric.Object[] | null
+  ): Promise<void> => {
+    const oldObjects = await this.getObjectByIds(ids);
+
+    if (oldObjects.length && newObjects) {
+      oldObjects[0].set(newObjects[0]).setCoords();
+    } else if (oldObjects.length) {
+      await this.remove(...oldObjects);
+    } else if (newObjects) {
+      newObjects.forEach((object: any, i) => {
+        object.id = ids[i];
+      });
+      await this.add(...newObjects);
+    }
+
+    this.renderAll();
   };
 }
 

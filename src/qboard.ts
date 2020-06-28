@@ -2,12 +2,13 @@ import { fabric } from "fabric";
 
 import { Tool, ToolHandler, Handlers } from "./tools";
 import { Page, Pages } from "./pages";
+import { HistoryHandler } from "./history";
 
 export default class QBoard {
   baseCanvas: Page;
   canvas: Page;
   pages: Pages;
-  resizeCooldown: any;
+  history: HistoryHandler;
 
   handlers: ToolHandler[] = Handlers;
   drawerOptions: fabric.IObjectOptions = {
@@ -18,8 +19,9 @@ export default class QBoard {
     strokeUniform: true,
   };
 
+  resizeCooldown: any;
   tool: ToolHandler;
-  currentObject: fabric.Object;
+  currentObject: any;
   isDown: boolean = false;
 
   constructor(
@@ -38,6 +40,7 @@ export default class QBoard {
       renderOnAddRemove: false,
     });
     this.pages = new Pages(this.baseCanvas);
+    this.history = new HistoryHandler(this.baseCanvas);
 
     this.switchTool(Tool.Move);
     this.windowResize();
@@ -51,8 +54,11 @@ export default class QBoard {
 
   switchTool = async (tool: Tool): Promise<void> => {
     if (tool === Tool.Eraser) {
-      const deleted = await this.baseCanvas.tryDeleting();
-      if (deleted) {
+      const objects = this.baseCanvas.getActiveObjects();
+      if (objects.length) {
+        this.baseCanvas.discardActiveObject();
+        await this.baseCanvas.remove(...objects);
+        this.history.remove(objects);
         this.baseCanvas.renderAll();
         return;
       }
@@ -89,6 +95,7 @@ export default class QBoard {
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
+    this.currentObject.id = await this.baseCanvas.getNextId();
     await this.canvas.add(this.currentObject);
     this.canvas.renderAll();
   };
@@ -110,17 +117,21 @@ export default class QBoard {
     this.baseCanvas.renderAll();
     await this.canvas.remove(this.currentObject);
     this.canvas.renderAll();
+    this.history.add([this.currentObject]);
   };
 
   pathCreated = async (e): Promise<void> => {
-    if (this.tool !== this.handlers[Tool.Eraser]) return;
-
-    const { path } = e;
-    const objects = this.baseCanvas
-      .getObjects()
-      .filter((object) => object.intersectsWithObject(path));
-    // doesn't quite work because it intersects with bounding box
-    await this.baseCanvas.remove(path, ...objects);
-    this.baseCanvas.renderAll();
+    if (this.tool === this.handlers[Tool.Pen]) {
+      e.path.id = await this.baseCanvas.getNextId();
+      this.history.add([e.path]);
+    } else if (this.tool === this.handlers[Tool.Eraser]) {
+      const path = fabric.util.object.clone(e.path);
+      await this.baseCanvas.remove(e.path);
+      const objects = this.baseCanvas.getObjects().filter((object) =>
+        object.intersectsWithObject(path)
+      );
+      await this.baseCanvas.remove(...objects);
+      this.history.remove(objects);
+    }
   };
 }
