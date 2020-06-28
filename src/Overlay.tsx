@@ -19,6 +19,9 @@ const Overlay = (props: OverlayProps) => {
       <div className="toolbar">
         <button onClick={() => qboard.switchTool(Tool.Move)}>move</button>
         <button onClick={() => qboard.switchTool(Tool.Line)}>line</button>
+        <button onClick={() => qboard.switchTool(Tool.Rectangle)}>rectangle</button>
+        <button onClick={() => qboard.switchTool(Tool.Ellipse)}>ellipse</button>
+        <button onClick={() => qboard.switchTool(Tool.Pen)}>pen</button>
       </div>
     </div>
   );

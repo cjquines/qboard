@@ -9,6 +9,8 @@ const defaultPageJSON = {
 export const enum Tool {
   Move,
   Line,
+  Rectangle,
+  Ellipse,
   Pen,
 }
 
@@ -25,6 +27,7 @@ class Page extends fabric.Canvas {
   };
 
   deactivateSelection = async (): Promise<void> => {
+    this.isDrawingMode = false;
     this.selection = false;
     this.discardActiveObject();
     this.forEachObject((object) => {
@@ -34,6 +37,7 @@ class Page extends fabric.Canvas {
   };
 
   activateSelection = async (): Promise<void> => {
+    this.isDrawingMode = false;
     this.selection = true;
     this.forEachObject((object) => {
       object.selectable = true;
@@ -140,20 +144,146 @@ class LineHandler implements ToolHandler {
   };
 }
 
+class RectangleHandler implements ToolHandler {
+  tool: Tool = Tool.Rectangle;
+  x: number;
+  y: number;
+
+  initialize = async (canvas: Page): Promise<void> => {
+    canvas.deactivateSelection();
+  };
+
+  draw = async (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): Promise<fabric.Rect> => {
+    this.x = x;
+    this.y = y;
+
+    return new Promise<fabric.Rect>((resolve) => {
+      resolve(
+        new fabric.Rect({ left: x, top: y, width: x2, height: y2, ...options })
+      );
+    });
+  };
+
+  resize = async (
+    object: fabric.Rect,
+    x2: number,
+    y2: number
+  ): Promise<fabric.Rect> => {
+    object
+      .set({
+        originX: this.x > x2 ? "right" : "left",
+        originY: this.y > y2 ? "bottom" : "top",
+        width: Math.abs(this.x - x2),
+        height: Math.abs(this.y - y2),
+      })
+      .setCoords();
+
+    return new Promise<fabric.Rect>((resolve) => {
+      resolve(object);
+    });
+  };
+}
+
+class EllipseHandler implements ToolHandler {
+  tool: Tool = Tool.Ellipse;
+  x: number;
+  y: number;
+
+  initialize = async (canvas: Page): Promise<void> => {
+    canvas.deactivateSelection();
+  };
+
+  draw = async (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): Promise<fabric.Ellipse> => {
+    this.x = x;
+    this.y = y;
+
+    return new Promise<fabric.Ellipse>((resolve) => {
+      resolve(
+        new fabric.Ellipse({ left: x, top: y, rx: x2, ry: y2, ...options })
+      );
+    });
+  };
+
+  resize = async (
+    object: fabric.Ellipse,
+    x2: number,
+    y2: number
+  ): Promise<fabric.Ellipse> => {
+    object
+      .set({
+        originX: this.x > x2 ? "right" : "left",
+        originY: this.y > y2 ? "bottom" : "top",
+        rx: Math.abs(x2 - object.left) / 2,
+        ry: Math.abs(y2 - object.top) / 2,
+      })
+      .setCoords();
+
+    return new Promise<fabric.Ellipse>((resolve) => {
+      resolve(object);
+    });
+  };
+}
+
+class PenHandler implements ToolHandler {
+  tool: Tool = Tool.Pen;
+
+  initialize = async (canvas: Page): Promise<void> => {
+    canvas.deactivateSelection();
+    canvas.isDrawingMode = true;
+  };
+
+  draw = async (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): Promise<null> => {
+    return null;
+  };
+
+  resize = async (
+    object: fabric.Object,
+    x2: number,
+    y2: number
+  ): Promise<null> => {
+    return null;
+  };
+}
+
 export default class QBoard {
   canvas: Page;
   pages: Pages;
   resizeCooldown: any;
 
-  handlers: ToolHandler[] = [new MoveHandler(), new LineHandler()];
-  tool: ToolHandler = this.handlers[Tool.Line];
+  handlers: ToolHandler[] = [
+    new MoveHandler(),
+    new LineHandler(),
+    new RectangleHandler(),
+    new EllipseHandler(),
+    new PenHandler(),
+  ];
   drawerOptions: fabric.IObjectOptions = {
+    fill: "transparent",
     stroke: "black",
     strokeWidth: 1,
     selectable: false,
     strokeUniform: true,
   };
 
+  tool: ToolHandler;
   currentObject: fabric.Object;
   isDown: boolean = false;
 
@@ -163,20 +293,12 @@ export default class QBoard {
     public canvasHeight: number
   ) {
     this.canvas = new Page(canvasElement);
+    this.pages = new Pages(this.canvas);
+
     this.canvas.backgroundColor = "white";
     this.canvas.selection = false;
-    this.pages = new Pages(this.canvas);
+    this.switchTool(Tool.Move);
     this.windowResize();
-
-    // temporary rectangle for now:
-    const rect = new fabric.Rect({
-      left: 100,
-      top: 100,
-      fill: "red",
-      width: 100,
-      height: 100,
-    });
-    this.canvas.add(rect);
 
     window.onresize = this.windowResize;
     this.canvas.on("mouse:down", this.mouseDown);
