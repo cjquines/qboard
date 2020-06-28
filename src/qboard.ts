@@ -143,6 +143,7 @@ class LineHandler implements ToolHandler {
 export default class QBoard {
   canvas: Page;
   pages: Pages;
+  resizeCooldown: any;
 
   handlers: ToolHandler[] = [new MoveHandler(), new LineHandler()];
   tool: ToolHandler = this.handlers[Tool.Line];
@@ -189,7 +190,10 @@ export default class QBoard {
   };
 
   windowResize = async (): Promise<void> => {
-    this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+    clearTimeout(this.resizeCooldown);
+    this.resizeCooldown = setTimeout(() => {
+      this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+    }, 100);
   };
 
   mouseDown = async (e: fabric.IEvent): Promise<void> => {
