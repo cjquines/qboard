@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@types/fabric": "^3.6.7",
+    "@types/react": "^16.9.41",
     "awesome-typescript-loader": "^5.2.1",
     "nwb": "0.25.x",
     "nwb-sass": "^0.10.2",
