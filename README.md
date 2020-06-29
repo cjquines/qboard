@@ -35,5 +35,5 @@ nice features:
 - proper per-pixel selection and deletion
 
 todo:
-- reinitialize tools when new page
-- make undo and redo work cross-page :(
+- copy and paste
+- clear page, delete page…?

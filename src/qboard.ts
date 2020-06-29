@@ -4,6 +4,11 @@ import { Tool, ToolHandler, Handlers } from "./tools";
 import { Page, Pages } from "./pages";
 import { HistoryHandler } from "./history";
 
+export interface QBoardState {
+  currentPage: number;
+  totalPages: number;
+}
+
 export default class QBoard {
   baseCanvas: Page;
   canvas: Page;
@@ -14,7 +19,7 @@ export default class QBoard {
   drawerOptions: fabric.IObjectOptions = {
     fill: "transparent",
     stroke: "black",
-    strokeWidth: 1,
+    strokeWidth: 5,
     selectable: false,
     strokeUniform: true,
   };
@@ -35,10 +40,12 @@ export default class QBoard {
       selection: false,
       renderOnAddRemove: false,
     });
+    this.baseCanvas.freeDrawingBrush.width = 5;
     this.canvas = new Page(canvasElement, {
       selection: false,
       renderOnAddRemove: false,
     });
+
     this.pages = new Pages(this.baseCanvas);
     this.history = new HistoryHandler(this.baseCanvas, this.pages);
 
@@ -82,16 +89,11 @@ export default class QBoard {
     }
   };
 
-  previousPage = async (): Promise<void> => {
-    if (this.pages.currentIndex === 0) return;
-    this.pages.loadPage(this.pages.currentIndex - 1);
-  };
-
-  nextOrNewPage = async (): Promise<void> => {
-    if (this.pages.currentIndex === this.pages.pagesJson.length - 1) {
-      return this.pages.newPage();
-    }
-    this.pages.loadPage(this.pages.currentIndex + 1);
+  getState = (): QBoardState => {
+    return {
+      currentPage: this.pages.currentIndex + 1,
+      totalPages: this.pages.pagesJson.length,
+    };
   };
 
   windowResize = async (): Promise<void> => {
@@ -143,6 +145,7 @@ export default class QBoard {
       const objects = this.baseCanvas
         .getObjects()
         .filter((object) => object.intersectsWithObject(path));
+      if (!objects.length) return;
       await this.baseCanvas.remove(...objects);
       this.history.remove(objects);
     }

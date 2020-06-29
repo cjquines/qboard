@@ -101,4 +101,16 @@ export class Pages {
     this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
     await this.loadPage(this.currentIndex + 1);
   };
+
+  previousPage = async (): Promise<void> => {
+    if (this.currentIndex === 0) return;
+    await this.loadPage(this.currentIndex - 1);
+  };
+
+  nextOrNewPage = async (): Promise<void> => {
+    if (this.currentIndex === this.pagesJson.length - 1) {
+      return this.newPage();
+    }
+    await this.loadPage(this.currentIndex + 1);
+  };
 }
