@@ -1,11 +1,12 @@
 import { fabric } from "fabric";
 
-import { Page } from "./pages";
+import { Page, Pages } from "./pages";
 
 interface HistoryItem {
   ids: number[];
   oldObjects: fabric.Object[] | null;
   newObjects: fabric.Object[] | null;
+  page: number;
 }
 
 export class HistoryHandler {
@@ -13,7 +14,7 @@ export class HistoryHandler {
   redoStack: HistoryItem[] = [];
   locked: boolean = false;
 
-  constructor(public canvas: Page) {}
+  constructor(public canvas: Page, public pages: Pages) {}
 
   add = async (objects: any[]): Promise<void> => {
     if (this.locked) return;
@@ -21,6 +22,7 @@ export class HistoryHandler {
       ids: objects.map((object) => object.id),
       oldObjects: null,
       newObjects: objects,
+      page: this.pages.currentIndex,
     });
   };
 
@@ -30,6 +32,7 @@ export class HistoryHandler {
       ids: objects.map((object) => object.id),
       oldObjects: objects,
       newObjects: null,
+      page: this.pages.currentIndex,
     });
   };
 
@@ -41,9 +44,11 @@ export class HistoryHandler {
 
   undo = async (): Promise<void> => {
     if (!this.history.length) return;
+    console.log(this);
     const last = this.history.pop();
     this.redoStack.push(last);
     this.locked = true;
+    await this.pages.loadPage(last.page);
     await this.canvas.apply(last.ids, last.oldObjects);
     this.locked = false;
   };
@@ -53,6 +58,7 @@ export class HistoryHandler {
     const last = this.redoStack.pop();
     this.history.push(last);
     this.locked = true;
+    await this.pages.loadPage(last.page);
     await this.canvas.apply(last.ids, last.newObjects);
     this.locked = false;
   };

@@ -86,18 +86,19 @@ export class Pages {
 
   constructor(public canvas: Page) {}
 
-  savePage = (): void => {
-    this.pagesJson[this.currentIndex] = this.canvas.toJSON();
+  savePage = async (): Promise<void> => {
+    this.pagesJson[this.currentIndex] = await this.canvas.toJSON(["id"]);
   };
 
-  loadPage = (index: number): void => {
-    this.savePage();
-    this.canvas.loadFromJSON(this.pagesJson[index], null);
+  loadPage = async (index: number): Promise<void> => {
+    if (index === this.currentIndex) return;
+    await this.savePage();
+    await this.canvas.loadFromJSON(this.pagesJson[index], null);
     this.currentIndex = index;
   };
 
-  newPage = (): void => {
+  newPage = async (): Promise<void> => {
     this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
-    this.loadPage(this.currentIndex + 1);
+    await this.loadPage(this.currentIndex + 1);
   };
 }

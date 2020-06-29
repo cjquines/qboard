@@ -13,9 +13,9 @@ const Overlay = (props: OverlayProps) => {
   return (
     <div className="overlay">
       <div className="pagination">
-        <button onClick={qboard.pages.newPage}>add</button>
-        <button onClick={() => qboard.pages.loadPage(0)}>zero</button>
-        <button onClick={() => qboard.pages.loadPage(1)}>one</button>
+        <span>{qboard.pages.pagesJson.length}</span>
+        <button onClick={() => qboard.previousPage()}>prev</button>
+        <button onClick={() => qboard.nextOrNewPage()}>next</button>
       </div>
       <div className="toolbar">
         <button onClick={() => qboard.switchTool(Tool.Move)}>move</button>

@@ -40,7 +40,7 @@ export default class QBoard {
       renderOnAddRemove: false,
     });
     this.pages = new Pages(this.baseCanvas);
-    this.history = new HistoryHandler(this.baseCanvas);
+    this.history = new HistoryHandler(this.baseCanvas, this.pages);
 
     this.switchTool(Tool.Move);
     this.windowResize();
@@ -80,6 +80,18 @@ export default class QBoard {
     } else {
       this.baseCanvas.isDrawingMode = false;
     }
+  };
+
+  previousPage = async (): Promise<void> => {
+    if (this.pages.currentIndex === 0) return;
+    this.pages.loadPage(this.pages.currentIndex - 1);
+  };
+
+  nextOrNewPage = async (): Promise<void> => {
+    if (this.pages.currentIndex === this.pages.pagesJson.length - 1) {
+      return this.pages.newPage();
+    }
+    this.pages.loadPage(this.pages.currentIndex + 1);
   };
 
   windowResize = async (): Promise<void> => {
@@ -128,9 +140,9 @@ export default class QBoard {
     } else if (this.tool === this.handlers[Tool.Eraser]) {
       const path = fabric.util.object.clone(e.path);
       await this.baseCanvas.remove(e.path);
-      const objects = this.baseCanvas.getObjects().filter((object) =>
-        object.intersectsWithObject(path)
-      );
+      const objects = this.baseCanvas
+        .getObjects()
+        .filter((object) => object.intersectsWithObject(path));
       await this.baseCanvas.remove(...objects);
       this.history.remove(objects);
     }
@@ -141,6 +153,7 @@ export default class QBoard {
       ids: [e.target.id],
       oldObjects: [e.transform.original],
       newObjects: [e.target.toJSON()],
+      page: this.pages.currentIndex,
     });
-  }
+  };
 }

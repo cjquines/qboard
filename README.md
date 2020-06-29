@@ -33,3 +33,7 @@ nice features:
 - saving things to the server for a limited period
 - load prev/next pages in memory
 - proper per-pixel selection and deletion
+
+todo:
+- reinitialize tools when new page
+- make undo and redo work cross-page :(
