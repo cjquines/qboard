@@ -3,6 +3,8 @@ import { fabric } from "fabric";
 import { Tool, ToolHandler, Handlers } from "./tools";
 import { Page, Pages } from "./pages";
 import { HistoryHandler } from "./history";
+import { ClipboardHandler } from "./clipboard";
+import { StyleHandler } from "./styles";
 
 export interface QBoardState {
   currentPage: number;
@@ -14,12 +16,14 @@ export default class QBoard {
   canvas: Page;
   pages: Pages;
   history: HistoryHandler;
+  clipboard: ClipboardHandler;
+  style: StyleHandler;
 
   handlers: ToolHandler[] = Handlers;
   drawerOptions: fabric.IObjectOptions = {
     fill: "transparent",
-    stroke: "black",
-    strokeWidth: 5,
+    stroke: "#000000",
+    strokeWidth: 4,
     selectable: false,
     strokeUniform: true,
   };
@@ -40,7 +44,7 @@ export default class QBoard {
       selection: false,
       renderOnAddRemove: false,
     });
-    this.baseCanvas.freeDrawingBrush.width = 5;
+    this.baseCanvas.freeDrawingBrush.width = 4;
     this.canvas = new Page(canvasElement, {
       selection: false,
       renderOnAddRemove: false,
@@ -48,6 +52,13 @@ export default class QBoard {
 
     this.pages = new Pages(this.baseCanvas);
     this.history = new HistoryHandler(this.baseCanvas, this.pages);
+    this.clipboard = new ClipboardHandler(
+      this.baseCanvas,
+      this.history,
+      this.canvasWidth,
+      this.canvasHeight
+    );
+    this.style = new StyleHandler(this.drawerOptions, this.baseCanvas.freeDrawingBrush);
 
     this.switchTool(Tool.Move);
     this.windowResize();
@@ -58,18 +69,12 @@ export default class QBoard {
     this.canvas.on("mouse:up", this.mouseUp);
     this.baseCanvas.on("path:created", this.pathCreated);
     this.baseCanvas.on("object:modified", this.objectModified);
+    this.baseCanvas.on("mouse:move", this.baseCanvas.updateCursor);
   }
 
   switchTool = async (tool: Tool): Promise<void> => {
     if (tool === Tool.Eraser) {
-      const objects = this.baseCanvas.getActiveObjects();
-      if (objects.length) {
-        this.baseCanvas.discardActiveObject();
-        await this.baseCanvas.remove(...objects);
-        this.history.remove(objects);
-        this.baseCanvas.renderAll();
-        return;
-      }
+      if (await this.clipboard.cut()) return;
     }
 
     this.tool = this.handlers[tool];
