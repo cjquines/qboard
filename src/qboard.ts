@@ -34,6 +34,7 @@ export default class QBoard {
   tool: ToolHandler;
   currentObject: any;
   isDown: boolean = false;
+  callback: (state: QBoardState) => any;
 
   constructor(
     public canvasElement: HTMLCanvasElement,
@@ -52,7 +53,7 @@ export default class QBoard {
       renderOnAddRemove: false,
     });
 
-    this.pages = new Pages(this.baseCanvas);
+    this.pages = new Pages(this.baseCanvas, this.updateState);
     this.history = new HistoryHandler(this.baseCanvas, this.pages);
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
@@ -84,6 +85,13 @@ export default class QBoard {
     this.baseCanvas.on("mouse:move", this.baseCanvas.updateCursor);
   }
 
+  updateState = (): void => {
+    this.callback({
+      currentPage: this.pages.currentIndex + 1,
+      totalPages: this.pages.pagesJson.length,
+    });
+  };
+
   switchTool = async (tool: Tool): Promise<void> => {
     if (tool === Tool.Eraser) {
       if (await this.clipboard.cut()) return;
@@ -104,13 +112,6 @@ export default class QBoard {
     } else {
       this.baseCanvas.isDrawingMode = false;
     }
-  };
-
-  getState = (): QBoardState => {
-    return {
-      currentPage: this.pages.currentIndex + 1,
-      totalPages: this.pages.pagesJson.length,
-    };
   };
 
   windowResize = async (): Promise<void> => {

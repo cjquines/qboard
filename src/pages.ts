@@ -92,7 +92,7 @@ export class Pages {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
 
-  constructor(public canvas: Page) {}
+  constructor(public canvas: Page, public updateState: () => void) {}
 
   savePage = async (): Promise<void> => {
     this.pagesJson[this.currentIndex] = await this.canvas.toJSON(["id"]);
@@ -103,6 +103,7 @@ export class Pages {
     await this.savePage();
     await this.canvas.loadFromJSON(this.pagesJson[index], null);
     this.currentIndex = index;
+    this.updateState();
   };
 
   newPage = async (): Promise<void> => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import QBoard, { QBoardState } from "./qboard";
 import { Tool } from "./tools";
@@ -10,8 +10,15 @@ interface OverlayProps {
 
 const Overlay = (props: OverlayProps) => {
   const qboard = props.qboard;
+  const [state, setState] = useState<QBoardState>({
+    currentPage: 0,
+    totalPages: 0,
+  });
 
-  const [state, setState] = useState<QBoardState>(qboard.getState());
+  useEffect(() => {
+    qboard.callback = setState;
+    qboard.updateState();
+  }, []);
 
   return (
     <div className="overlay">
@@ -19,24 +26,6 @@ const Overlay = (props: OverlayProps) => {
         <span>
           {state.currentPage} / {state.totalPages}
         </span>
-        <button
-          onClick={() => {
-            qboard.pages.previousPage().then(() => {
-              setState(qboard.getState());
-            });
-          }}
-        >
-          prev
-        </button>
-        <button
-          onClick={() => {
-            qboard.pages.nextOrNewPage().then(() => {
-              setState(qboard.getState());
-            });
-          }}
-        >
-          next
-        </button>
       </div>
       <div className="toolbar">
         <button onClick={() => qboard.switchTool(Tool.Move)}>move</button>

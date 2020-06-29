@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import keyboardJS from "keyboardjs";
 
 export const enum Dash {
   Solid,
@@ -20,33 +21,52 @@ export const enum Fill {
   HalfSolid,
 }
 
+const dashMap = [
+  [0, 0],
+  [20, 15],
+  [5, 10],
+];
+
+const fillMap = [
+  {
+    fill: "transparent",
+    opacity: 1,
+  },
+  {
+    fill: "stroke",
+    opacity: 1,
+  },
+  {
+    fill: "stroke",
+    opacity: 0.3,
+  },
+];
+
 export class StyleHandler {
   constructor(
     public drawerOptions: fabric.IObjectOptions,
-    public freeDrawingBrush: fabric.FreeDrawingBrush
+    public freeDrawingBrush: any
   ) {}
 
   set = (dash: Dash | null, stroke: Stroke | null, fill: Fill | null): void => {
-    if (dash === Dash.Solid) {
-      this.drawerOptions.strokeDashArray = undefined;
-    } else if (dash === Dash.Dashed) {
-      this.drawerOptions.strokeDashArray = [20, 10];
-    } else if (dash === Dash.Dotted) {
-      this.drawerOptions.strokeDashArray = [5, 10];
+    if (dash !== null) {
+      this.drawerOptions.strokeDashArray = dashMap[dash];
+      this.freeDrawingBrush.strokeDashArray = dashMap[dash];
     }
-    if (stroke) {
+
+    if (stroke !== null) {
       this.drawerOptions.stroke = stroke;
       this.freeDrawingBrush.color = stroke;
     }
-    if (fill === Fill.Transparent) {
-      this.drawerOptions.fill = "transparent";
-      this.drawerOptions.opacity = 1;
-    } else if (fill === Fill.Solid) {
-      this.drawerOptions.fill = this.drawerOptions.stroke;
-      this.drawerOptions.opacity = 1;
-    } else if (fill === Fill.HalfSolid) {
-      this.drawerOptions.fill = this.drawerOptions.stroke;
-      this.drawerOptions.opacity = 0.3;
+
+    if (fill !== null) {
+      const { fill: fill_, opacity } = fillMap[fill];
+      if (fill_ === "transparent") {
+        this.drawerOptions.fill = "transparent";
+      } else if (fill_ === "stroke") {
+        this.drawerOptions.fill = this.drawerOptions.stroke;
+      }
+      this.drawerOptions.opacity = opacity;
     }
   };
 }
