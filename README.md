@@ -13,18 +13,39 @@ basic features:
   - fill
 
 keybindings for now:
-- w erase / delete
+- w copy
 - e ellipse
 - r rectangle
 - t text
 - a previous page
-- s next/add page
+- s next / add page
 - d pen
-- f undo
-- g redo/paste
+- f undo / F redo
+- g paste
+- x erase / cut
 - c line
 - v move
 - esc deselect
+- shift -> constrain
+
+chording:
+stroke style
+- (blank) same
+- w dotted
+- a dashed
+- s solid
+border
+- (blank) same
+- e blue
+- r green
+- f black
+- c yellow
+- v orange
+fill
+- (blank) transparent
+- d solid
+- g 50% opaque
+with space for blank
 
 nice features:
 - help panel
@@ -32,8 +53,9 @@ nice features:
 - rooms for collaboration
 - saving things to the server for a limited period
 - load prev/next pages in memory
-- proper per-pixel selection and deletion
 
 todo:
-- copy and paste
-- clear page, delete page…?
+- make opaque fill have solid border (don't use opacity, use rgba for fill)
+- make move not use the bounding box
+- make the eraser not use the bounding box
+- clear page, delete page

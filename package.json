@@ -8,9 +8,10 @@
     "start": "nwb serve-react-app"
   },
   "dependencies": {
+    "fabric": "^3.6.3",
+    "keyboardjs": "^2.6.3",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "fabric": "^3.6.3"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@types/fabric": "^3.6.7",

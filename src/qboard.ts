@@ -5,6 +5,7 @@ import { Page, Pages } from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
 import { StyleHandler } from "./styles";
+import { KeyboardHandler } from "./keyboard";
 
 export interface QBoardState {
   currentPage: number;
@@ -18,6 +19,7 @@ export default class QBoard {
   history: HistoryHandler;
   clipboard: ClipboardHandler;
   style: StyleHandler;
+  keyboard: KeyboardHandler;
 
   handlers: ToolHandler[] = Handlers;
   drawerOptions: fabric.IObjectOptions = {
@@ -58,7 +60,17 @@ export default class QBoard {
       this.canvasWidth,
       this.canvasHeight
     );
-    this.style = new StyleHandler(this.drawerOptions, this.baseCanvas.freeDrawingBrush);
+    this.style = new StyleHandler(
+      this.drawerOptions,
+      this.baseCanvas.freeDrawingBrush
+    );
+    this.keyboard = new KeyboardHandler(
+      this.switchTool,
+      this.pages,
+      this.history,
+      this.clipboard,
+      this.style.set
+    );
 
     this.switchTool(Tool.Move);
     this.windowResize();
