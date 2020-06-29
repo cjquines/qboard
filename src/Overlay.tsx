@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import QBoard, { QBoardState } from "./qboard";
 import { Tool } from "./tools";
+import { Dash, Stroke, Fill } from "./styles";
 
 interface OverlayProps {
   qboard: QBoard;
@@ -48,6 +49,8 @@ const Overlay = (props: OverlayProps) => {
         <button onClick={() => qboard.switchTool(Tool.Eraser)}>eraser</button>
         <button onClick={() => qboard.history.undo()}>undo</button>
         <button onClick={() => qboard.history.redo()}>redo</button>
+        <button onClick={() => qboard.clipboard.copy()}>copy</button>
+        <button onClick={() => qboard.clipboard.paste()}>paste</button>
       </div>
     </div>
   );
