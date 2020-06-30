@@ -27,21 +27,6 @@ const dashMap = [
   [5, 10],
 ];
 
-const fillMap = [
-  {
-    fill: "transparent",
-    opacity: 1,
-  },
-  {
-    fill: "stroke",
-    opacity: 1,
-  },
-  {
-    fill: "stroke",
-    opacity: 0.3,
-  },
-];
-
 export class StyleHandler {
   constructor(
     public drawerOptions: fabric.IObjectOptions,
@@ -60,13 +45,13 @@ export class StyleHandler {
     }
 
     if (fill !== null) {
-      const { fill: fill_, opacity } = fillMap[fill];
-      if (fill_ === "transparent") {
+      if (fill === Fill.Transparent) {
         this.drawerOptions.fill = "transparent";
-      } else if (fill_ === "stroke") {
+      } else if (fill === Fill.Solid) {
         this.drawerOptions.fill = this.drawerOptions.stroke;
+      } else if (fill === Fill.HalfSolid) {
+        this.drawerOptions.fill = this.drawerOptions.stroke + "11";
       }
-      this.drawerOptions.opacity = opacity;
     }
   };
 }

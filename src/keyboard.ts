@@ -107,6 +107,7 @@ export class KeyboardHandler {
       stroke = strokeMap[key] || stroke;
       fill = fillMap[key] || fill;
     });
+    console.log(dash, stroke, fill);
     this.setStyle(dash, stroke, fill);
   };
 }
