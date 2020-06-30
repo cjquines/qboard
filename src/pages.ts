@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import pdfMake from "pdfmake/build/pdfmake";
 
 const defaultPageJSON = {
   version: "3.6.3",
@@ -122,4 +123,24 @@ export class Pages {
     }
     await this.loadPage(this.currentIndex + 1);
   };
+
+  export = async (canvasWidth: number, canvasHeight: number): Promise<void> => {
+    await this.savePage();
+    const ratio = 2;
+    const content = this.pagesJson.map((page) => {
+      this.canvas.loadFromJSON(page, null);
+      return { svg: this.canvas.toSVG(), width: canvasWidth / ratio };
+    })
+
+    const docDefinition = {
+      pageSize: {
+        width: canvasWidth / ratio,
+        height: canvasHeight / ratio,
+      },
+      pageMargins: [0, 0],
+      content
+    };
+
+    pdfMake.createPdf(docDefinition).open();
+  }
 }
