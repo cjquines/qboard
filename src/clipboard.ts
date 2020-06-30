@@ -4,7 +4,7 @@ import { Page } from "./pages";
 import { HistoryHandler } from "./history";
 
 export class ClipboardHandler {
-  clipboard: any[] = [];
+  clipboard: fabric.Object;
 
   constructor(
     public canvas: Page,
@@ -13,10 +13,10 @@ export class ClipboardHandler {
     public canvasHeight: number
   ) {}
 
-  copy = async (): Promise<fabric.Object[] | null> => {
-    const objects = this.canvas.getActiveObjects();
-    if (!objects.length) return null;
-    this.clipboard = objects.map((object) => fabric.util.object.clone(object));
+  copy = async (): Promise<any> => {
+    const objects = this.canvas.getActiveObject();
+    if (!objects) return null;
+    objects.clone((clone) => {this.clipboard = clone});
     return objects;
   };
 
@@ -24,39 +24,48 @@ export class ClipboardHandler {
     const objects = await this.copy();
     if (!objects) return false;
     this.canvas.discardActiveObject();
-    this.canvas.remove(...objects);
+    if (objects.type === "activeSelection") {
+      objects.forEachObject((object) => {
+        this.canvas.remove(object);
+      });
+      this.history.remove(objects._objects);
+    } else {
+      this.canvas.remove(objects);
+      this.history.remove([objects]);
+    }
     this.canvas.renderAll();
-    this.history.remove(objects);
     return true;
   };
 
   paste = async (): Promise<void> => {
-    if (!this.clipboard.length) return;
+    if (!this.clipboard) return;
     const { latestCursorX: x, latestCursorY: y } = this.canvas;
-    let objects: fabric.Object[] = [];
 
-    // stupid relative coordinates
-    if (this.clipboard.length === 1) {
-      const clone = fabric.util.object.clone(this.clipboard[0]);
-      clone.id = this.canvas.getNextId();
-      clone.left = x - clone.width / 2;
-      clone.top = y - clone.height / 2;
-      objects = [clone];
-    } else {
-      objects = this.clipboard.map((object) => {
-        const clone = fabric.util.object.clone(object);
-        clone.id = this.canvas.getNextId();
-        clone.left = clone.left + x;
-        clone.top = clone.top + y;
-        return clone;
+    this.clipboard.clone((clone) => {
+      this.canvas.discardActiveObject();
+      clone.set({
+        id: this.canvas.getNextId(),
+        left: x,
+        top: y,
+        originX: "center",
+        originY: "center",
+        strokeUniform: true,
       });
-    }
-
-    await this.canvas.add(...objects);
-    this.canvas.setActiveObject(
-      new fabric.ActiveSelection(objects, { canvas: this.canvas })
-    );
-    this.canvas.renderAll();
-    this.history.add(objects);
+      if (clone.type === "activeSelection") {
+        clone.canvas = this.canvas;
+        clone.forEachObject((object) => {
+          object.id = this.canvas.getNextId();
+          object.strokeUniform = true;
+          this.canvas.add(object);
+        })
+        clone.setCoords();
+        this.history.add(clone._objects);
+      } else {
+        this.canvas.add(clone);
+        this.history.add([clone]);
+      }
+      this.canvas.setActiveObject(clone);
+      this.canvas.requestRenderAll();
+    })
   };
 }

@@ -44,7 +44,7 @@ export class HistoryHandler {
 
   undo = async (): Promise<void> => {
     if (!this.history.length) return;
-    console.log(this);
+    this.canvas.discardActiveObject();
     const last = this.history.pop();
     this.redoStack.push(last);
     this.locked = true;
