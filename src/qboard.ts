@@ -52,8 +52,13 @@ export default class QBoard {
       selection: false,
       renderOnAddRemove: false,
     });
+    this.pages = new Pages(
+      this.baseCanvas,
+      this.canvasWidth,
+      this.canvasHeight,
+      this.updateState
+    );
 
-    this.pages = new Pages(this.baseCanvas, this.updateState);
     this.history = new HistoryHandler(this.baseCanvas, this.pages);
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
@@ -131,7 +136,7 @@ export default class QBoard {
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
     this.currentObject.id = await this.baseCanvas.getNextId();
     await this.canvas.add(this.currentObject);
-    this.canvas.renderAll();
+    this.canvas.requestRenderAll();
   };
 
   mouseMove = async (e: fabric.IEvent): Promise<void> => {
@@ -148,9 +153,9 @@ export default class QBoard {
 
     this.isDown = false;
     await this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
-    this.baseCanvas.renderAll();
+    this.baseCanvas.requestRenderAll();
     await this.canvas.remove(this.currentObject);
-    this.canvas.renderAll();
+    this.canvas.requestRenderAll();
     this.history.add([this.currentObject]);
   };
 

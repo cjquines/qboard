@@ -30,7 +30,7 @@ export class Page extends fabric.Canvas {
     this.forEachObject((object) => {
       object.selectable = false;
     });
-    this.renderAll();
+    this.requestRenderAll();
   };
 
   activateSelection = async (): Promise<void> => {
@@ -79,7 +79,7 @@ export class Page extends fabric.Canvas {
       await this.add(...newObjects);
     }
 
-    this.renderAll();
+    this.requestRenderAll();
   };
 
   updateCursor = async (e: fabric.IEvent): Promise<void> => {
@@ -93,7 +93,12 @@ export class Pages {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
 
-  constructor(public canvas: Page, public updateState: () => void) {}
+  constructor(
+    public canvas: Page,
+    public canvasWidth: number,
+    public canvasHeight: number,
+    public updateState: () => void
+  ) {}
 
   savePage = async (): Promise<void> => {
     this.pagesJson[this.currentIndex] = await this.canvas.toJSON(["id"]);
@@ -124,18 +129,18 @@ export class Pages {
     await this.loadPage(this.currentIndex + 1);
   };
 
-  export = async (canvasWidth: number, canvasHeight: number): Promise<void> => {
+  export = async (): Promise<void> => {
     await this.savePage();
     const ratio = 2;
     const content = this.pagesJson.map((page) => {
       this.canvas.loadFromJSON(page, null);
-      return { svg: this.canvas.toSVG(), width: canvasWidth / ratio };
+      return { svg: this.canvas.toSVG(), width: this.canvasWidth / ratio };
     })
 
     const docDefinition = {
       pageSize: {
-        width: canvasWidth / ratio,
-        height: canvasHeight / ratio,
+        width: this.canvasWidth / ratio,
+        height: this.canvasHeight / ratio,
       },
       pageMargins: [0, 0],
       content

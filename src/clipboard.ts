@@ -33,7 +33,7 @@ export class ClipboardHandler {
       this.canvas.remove(objects);
       this.history.remove([objects]);
     }
-    this.canvas.renderAll();
+    this.canvas.requestRenderAll();
     return true;
   };
 

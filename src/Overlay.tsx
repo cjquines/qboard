@@ -27,7 +27,7 @@ const Overlay = (props: OverlayProps) => {
           {state.currentPage} / {state.totalPages}
         </span>
         <button onClick={() => {
-          qboard.pages.export(qboard.canvasWidth, qboard.canvasHeight)
+          qboard.pages.export()
         }}>print?</button>
       </div>
       <div className="toolbar">
