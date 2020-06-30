@@ -35,6 +35,7 @@ export default class QBoard {
   tool: ToolHandler;
   currentObject: any;
   isDown: boolean = false;
+  strict: boolean = false;
   callback: (state: QBoardState) => any;
 
   constructor(
@@ -72,6 +73,9 @@ export default class QBoard {
     );
     this.keyboard = new KeyboardHandler(
       this.switchTool,
+      (strict: boolean) => {
+        this.strict = strict;
+      },
       this.pages,
       this.history,
       this.clipboard,
@@ -144,8 +148,8 @@ export default class QBoard {
 
     const { x, y } = this.canvas.getPointer(e.e);
     if (!this.isDown) return;
-    await this.tool.resize(this.currentObject, x, y);
-    this.canvas.renderAll();
+    await this.tool.resize(this.currentObject, x, y, this.strict);
+    this.canvas.requestRenderAll();
   };
 
   mouseUp = async (e: fabric.IEvent): Promise<void> => {

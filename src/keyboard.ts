@@ -36,11 +36,13 @@ const fillMap = {
 };
 
 export class KeyboardHandler {
+  canvas: fabric.Canvas;
   combo: string[] = [];
   actionMap: any;
 
   constructor(
     public switchTool: (tool: Tool) => Promise<void>,
+    public setStrict: (strict: boolean) => void,
     public pages: Pages,
     public history: HistoryHandler,
     public clipboard: ClipboardHandler,
@@ -90,6 +92,12 @@ export class KeyboardHandler {
 
     keyboardJS.bind("ctrl + s", (e) => {
       this.pages.export();
+    });
+
+    keyboardJS.bind("shift", (e) => {
+      this.setStrict(true);
+    }, (e) => {
+      this.setStrict(false);
     });
   }
 
