@@ -99,15 +99,21 @@ export class KeyboardHandler {
   };
 
   readStyle = async (keys: string[]): Promise<void> => {
+    console.log(keys);
     let dash = null,
       stroke = null,
-      fill = Fill.Transparent;
+      fill = Fill.Transparent,
+      badKey = false;
     keys.forEach((key) => {
-      dash = dashMap[key] || dash;
-      stroke = strokeMap[key] || stroke;
-      fill = fillMap[key] || fill;
+      const dChange = dashMap.hasOwnProperty(key),
+        sChange = strokeMap.hasOwnProperty(key),
+        fChange = fillMap.hasOwnProperty(key);
+      if (!(dChange || sChange || fChange) && key !== "space") badKey = true;
+      if (dChange) dash = dashMap[key];
+      if (sChange) stroke = strokeMap[key];
+      if (fChange) fill = fillMap[key];
     });
-    console.log(dash, stroke, fill);
+    if (badKey) return;
     this.setStyle(dash, stroke, fill);
   };
 }
