@@ -1,5 +1,18 @@
+@media all and (min-width:760px) {body {font-size: 20px}}
+@media all and (max-width:760px) {body {font-size: 19px}}
+@media all and (max-width:720px) {body {font-size: 18px}}
+@media all and (max-width:680px) {body {font-size: 17px}}
+@media all and (max-width:640px) {body {font-size: 16px}}
+@media all and (max-width:600px) {body {font-size: 15px}}
+@media all and (max-width:560px) {body {font-size: 14px}}
+@media all and (max-width:520px) {body {font-size: 13px}}
+@media all and (max-width:400px) {body {font-size: 12px}}
+@media all and (max-width:360px) {body {font-size: 11px}}
+@media all and (max-width:330px) {body {font-size: 10px}}
+@media all and (max-width:300px) {body {font-size: 9px}}
+
 body {
-  background-color: #eee;
+  background-color: #262626;
   margin: 0;
   padding: 0;
 }
@@ -19,8 +32,13 @@ html, body, .container {
   position: absolute !important;
 }
 
+#BaseQBoard {
+  box-shadow: #121212 0 0 1em 0.5em;
+}
+
 .overlay {
   left: 0;
   position: absolute;
   top: 0;
+  user-select: none;
 }
