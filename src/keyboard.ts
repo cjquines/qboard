@@ -50,18 +50,18 @@ export class KeyboardHandler {
       fill: Fill | null
     ) => void
   ) {
+    this.canvas = this.pages.canvas;
+
     this.actionMap = {
       w: clipboard.copy,
       a: pages.previousPage,
       s: pages.nextOrNewPage,
       f: history.undo,
-      F: history.redo,
       g: clipboard.paste,
-      esc: this.pages.canvas.discardActiveObject,
     };
 
     const keys = "wertasdfgxcv".split("");
-    keys.push("space", "shift", "esc");
+    keys.push("space");
     for (const key of keys) {
       keyboardJS.bind(
         key,
@@ -69,25 +69,38 @@ export class KeyboardHandler {
         (e) => this.read()
       );
     }
+
+    keyboardJS.bind("shift + f", (e) => {
+      this.history.redo();
+    });
+
+    keyboardJS.bind("space > space", (e) => {
+      this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent);
+    });
+
+    keyboardJS.bind("esc", (e) => {
+      this.canvas.discardActiveObject();
+      this.canvas.requestRenderAll();
+    });
+
+    keyboardJS.bind("ctrl + a", (e) => {
+      this.canvas.setActiveObject(new fabric.ActiveSelection(this.canvas.getObjects(), {canvas: this.canvas}));
+      this.canvas.requestRenderAll();
+    });
+
+    keyboardJS.bind("ctrl + s", (e) => {
+      this.pages.export();
+    });
   }
 
   read = async (): Promise<void> => {
     if (!this.combo.length) return;
     if (this.combo.length === 1) {
-      this.readSingle(this.combo.pop());
-    } else if (this.combo.includes("shift")) {
-      let key = this.combo.pop();
-      if (key === "shift") {
-        key = this.combo.pop();
-        this.combo.push("shift");
-      }
-      this.readSingle(key.toUpperCase());
+      this.readSingle(this.combo[0]);
     } else if (this.combo.length <= 3) {
       this.readStyle(this.combo);
-      this.combo = [];
-    } else {
-      this.combo = [];
     }
+    this.combo = [];
   };
 
   readSingle = async (key: string): Promise<void> => {
