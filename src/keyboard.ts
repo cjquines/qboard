@@ -74,16 +74,20 @@ export class KeyboardHandler {
   read = async (): Promise<void> => {
     if (!this.combo.length) return;
     if (this.combo.length === 1) {
-      this.readSingle(this.combo[0]);
+      this.readSingle(this.combo.pop());
     } else if (this.combo.includes("shift")) {
-      let key = this.combo[0];
-      if (key === "shift") key = this.combo[1];
+      let key = this.combo.pop();
+      if (key === "shift") {
+        key = this.combo.pop();
+        this.combo.push("shift");
+      }
       this.readSingle(key.toUpperCase());
     } else if (this.combo.length <= 3) {
       this.readStyle(this.combo);
+      this.combo = [];
+    } else {
+      this.combo = [];
     }
-    this.combo = [];
-    return;
   };
 
   readSingle = async (key: string): Promise<void> => {
