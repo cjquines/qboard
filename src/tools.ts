@@ -25,18 +25,43 @@ export interface ToolHandler {
     x2: number,
     y2: number
   ) => Promise<fabric.Object>;
+
+  setBrush?: (brush: any, options: fabric.IObjectOptions) => Promise<void>;
 }
 
 export class MoveHandler implements ToolHandler {
   tool: Tool = Tool.Move;
+
+  setBrush = async (
+    brush: any,
+    options: fabric.IObjectOptions
+  ): Promise<void> => {};
 }
 
 export class PenHandler implements ToolHandler {
   tool: Tool = Tool.Pen;
+
+  setBrush = async (
+    brush: any,
+    options: fabric.IObjectOptions
+  ): Promise<void> => {
+    brush.color = options.stroke;
+    brush.strokeDashArray = options.strokeDashArray;
+    brush.width = options.strokeWidth;
+  };
 }
 
 export class EraserHandler implements ToolHandler {
   tool: Tool = Tool.Eraser;
+
+  setBrush = async (
+    brush: any,
+    options: fabric.IObjectOptions
+  ): Promise<void> => {
+    brush.color = "#ff005455";
+    brush.strokeDashArray = [0, 0];
+    brush.width = 5 * options.strokeWidth;
+  };
 }
 
 export class LineHandler implements ToolHandler {

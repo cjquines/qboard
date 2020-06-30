@@ -27,6 +27,7 @@ export default class QBoard {
     stroke: "#000000",
     strokeWidth: 4,
     selectable: false,
+    strokeDashArray: [0, 0],
     strokeUniform: true,
   };
 
@@ -47,7 +48,6 @@ export default class QBoard {
       selection: false,
       renderOnAddRemove: false,
     });
-    this.baseCanvas.freeDrawingBrush.width = 4;
     this.canvas = new Page(canvasElement, {
       selection: false,
       renderOnAddRemove: false,
@@ -102,6 +102,7 @@ export default class QBoard {
     if (tool <= Tool.Eraser) {
       this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
+      this.tool.setBrush(this.baseCanvas.freeDrawingBrush, this.drawerOptions);
     } else {
       this.baseCanvas.deactivateSelection();
       this.canvasElement.parentElement.style.display = "block";
