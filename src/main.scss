@@ -86,6 +86,10 @@ button {
     opacity: 0.9;
     transition: opacity 0.2s;
   }
+
+  &.visibility-0 {
+    display: none;
+  }
 }
 
 .pagination {
@@ -111,6 +115,21 @@ button {
     width: 0.6em;
     text-align: right;
   }
+
+  &.visibility-1 {
+    border-radius: 0 0.25em 0.25em 0;
+    box-sizing: border-box;
+    height: 1.8em;
+    padding-left: 0;
+
+    button {
+      display: none;
+    }
+
+    .total-pages {
+      margin-right: 0.25em;
+    }
+  }
 }
 
 .toolbar {
@@ -119,4 +138,19 @@ button {
   display: flex;
   flex-direction: column;
   padding: 0.25em;
+
+  &.visibility-1 {
+    border-radius: 0.25em 0 0 0.25em;
+    box-sizing: border-box;
+    height: 1.8em;
+    padding: 0.1em;
+
+    button:not(.active) {
+      display: none;
+    }
+
+    button.active {
+      background-color: transparent;
+    }
+  }
 }

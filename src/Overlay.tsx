@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
+import keyboardJS from "keyboardjs";
 
 import QBoard, { QBoardState } from "./qboard";
 import { Tool } from "./tools";
 import { Dash, Stroke, Fill } from "./styles";
+
+const enum Visibility {
+  None,
+  Condensed,
+  Full,
+}
 
 const Pagination = (props: {
   previousPage: () => Promise<void>;
@@ -10,6 +17,7 @@ const Pagination = (props: {
   loadPage: (number) => Promise<void>;
   currentPage: number;
   totalPages: number;
+  visibility: Visibility;
 }) => {
   const [value, setValue] = useState(0);
   const [width, setWidth] = useState("0.6em");
@@ -32,9 +40,9 @@ const Pagination = (props: {
   const onChange = (e) => setValue(e.target.value);
 
   return (
-    <div className="pagination">
+    <div className={`pagination visibility-${props.visibility}`}>
       <button
-        className={value === 1 && "disabled"}
+        className={value === 1 ? "disabled" : undefined}
         onClick={props.previousPage}
       >
         <i className="fas fa-caret-left" />
@@ -50,7 +58,7 @@ const Pagination = (props: {
       <span className="total-pages"> / {props.totalPages}</span>
       <button onClick={props.nextOrNewPage}>
         {value === props.totalPages ? (
-          <i className="fas fa-plus" style={{transform: "scale(0.7)"}} />
+          <i className="fas fa-plus" style={{ transform: "scale(0.7)" }} />
         ) : (
           <i className="fas fa-caret-right" />
         )}
@@ -62,6 +70,7 @@ const Pagination = (props: {
 const Toolbar = (props: {
   switchTool: (tool: Tool) => Promise<void>;
   currentTool: Tool;
+  visibility: Visibility;
 }) => {
   const tools = [
     {
@@ -92,7 +101,7 @@ const Toolbar = (props: {
   ];
 
   return (
-    <div className="toolbar">
+    <div className={`toolbar visibility-${props.visibility}`}>
       {tools.map(({ tool, icon, style }) => {
         return (
           <button
@@ -110,6 +119,8 @@ const Toolbar = (props: {
 
 const Overlay = (props: { qboard: QBoard }) => {
   const qboard = props.qboard;
+
+  const [visibility, setVisibility] = useState(Visibility.Full);
   const [state, setState] = useState<QBoardState>({
     currentPage: 0,
     totalPages: 0,
@@ -119,17 +130,27 @@ const Overlay = (props: { qboard: QBoard }) => {
   useEffect(() => {
     qboard.callback = setState;
     qboard.updateState();
+
+    keyboardJS.bind("q", (e) => {
+      console.log("fire");
+      setVisibility((visibility) => (visibility + 2) % 3);
+    });
   }, []);
 
   return (
-    <div className="overlay">
-      <Toolbar switchTool={qboard.switchTool} currentTool={state.currentTool} />
+    <div className={`overlay visibility-${visibility}`}>
+      <Toolbar
+        switchTool={qboard.switchTool}
+        currentTool={state.currentTool}
+        visibility={visibility}
+      />
       <Pagination
         previousPage={qboard.pages.previousPage}
         nextOrNewPage={qboard.pages.nextOrNewPage}
         loadPage={qboard.pages.loadPage}
         currentPage={state.currentPage}
         totalPages={state.totalPages}
+        visibility={visibility}
       />
     </div>
   );
