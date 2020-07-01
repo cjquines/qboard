@@ -30,7 +30,8 @@ const dashMap = [
 export class StyleHandler {
   constructor(
     public drawerOptions: fabric.IObjectOptions,
-    public freeDrawingBrush: any
+    public freeDrawingBrush: any,
+    public updateState: () => void,
   ) {}
 
   set = (dash: Dash | null, stroke: Stroke | null, fill: Fill | null): void => {
@@ -53,5 +54,7 @@ export class StyleHandler {
         this.drawerOptions.fill = this.drawerOptions.stroke + "11";
       }
     }
+
+    this.updateState();
   };
 }

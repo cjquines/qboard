@@ -4,13 +4,16 @@ import { Tool, ToolHandler, Handlers } from "./tools";
 import { Page, Pages } from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
-import { StyleHandler } from "./styles";
+import { Dash, Stroke, Fill, StyleHandler } from "./styles";
 import { KeyboardHandler } from "./keyboard";
 
 export interface QBoardState {
   currentPage: number;
   totalPages: number;
   currentTool: Tool;
+  dashStyle: Dash;
+  strokeStyle: string;
+  fillStyle: Fill;
 }
 
 export default class QBoard {
@@ -71,7 +74,8 @@ export default class QBoard {
     );
     this.style = new StyleHandler(
       this.drawerOptions,
-      this.baseCanvas.freeDrawingBrush
+      this.baseCanvas.freeDrawingBrush,
+      this.updateState
     );
     this.keyboard = new KeyboardHandler(
       this.switchTool,
@@ -97,11 +101,19 @@ export default class QBoard {
   }
 
   updateState = (): void => {
-    this.callback && this.callback({
-      currentPage: this.pages.currentIndex + 1,
-      totalPages: this.pages.pagesJson.length,
-      currentTool: this.currentTool,
-    });
+    this.callback &&
+      this.callback({
+        currentPage: this.pages.currentIndex + 1,
+        totalPages: this.pages.pagesJson.length,
+        currentTool: this.currentTool,
+        dashStyle: ((x) => (x === 0 ? 0 : x === 20 ? 1 : 2))(
+          this.drawerOptions.strokeDashArray[0]
+        ),
+        strokeStyle: this.drawerOptions.stroke,
+        fillStyle: ((x) => (x === "t" ? 0 : x !== "1" ? 1 : 2))(
+          this.drawerOptions.fill.toString().slice(-1)
+        ),
+      });
   };
 
   switchTool = async (tool: Tool): Promise<void> => {
