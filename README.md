@@ -13,7 +13,8 @@ basic features:
   - fill
 
 keybindings:
-- q toggle overlay visibility
+- tab toggle overlay visibility
+- q (quick switcher: not implemented)
 - w copy
 - e ellipse
 - r rectangle
@@ -53,6 +54,8 @@ fill
 - with space for blank
 
 todo:
+- implement text
+- add undo, redo, style visibilities properly
 - clear page, delete page
 - change style of selected with chord?
 - come up with better chords for the fill style ugh

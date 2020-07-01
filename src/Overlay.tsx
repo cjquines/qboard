@@ -32,8 +32,7 @@ const Overlay = (props: { qboard: QBoard }) => {
     qboard.callback = setState;
     qboard.updateState();
 
-    keyboardJS.bind("q", (e) => {
-      console.log("fire");
+    keyboardJS.bind("tab", (e) => {
       setVisibility((visibility) => (visibility + 2) % 3);
     });
   }, []);

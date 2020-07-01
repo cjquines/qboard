@@ -41,6 +41,7 @@ export class KeyboardHandler {
   canvas: fabric.Canvas;
   combo: string[] = [];
   actionMap: any;
+  ctrlMap: any;
 
   constructor(
     public switchTool: (tool: Tool) => Promise<void>,
@@ -62,9 +63,12 @@ export class KeyboardHandler {
       s: pages.nextOrNewPage,
       f: history.undo,
       g: clipboard.paste,
+      z: () => {
+        this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent);
+      },
     };
 
-    const keys = "wertasdfgxcv".split("");
+    const keys = "wertasdfgxcvz".split("");
     for (const key of keys) {
       keyboardJS.bind(
         key,
@@ -79,13 +83,33 @@ export class KeyboardHandler {
       );
     }
 
+    this.ctrlMap = {
+      y: history.redo,
+      a: () => {
+        this.canvas.setActiveObject(
+          new fabric.ActiveSelection(this.canvas.getObjects(), {
+            canvas: this.canvas,
+          })
+        );
+        this.canvas.requestRenderAll();
+      },
+      s: pages.export,
+      d: () => {
+        this.clipboard.copy();
+        this.clipboard.paste();
+      },
+      z: history.undo,
+      x: clipboard.cut,
+      c: clipboard.copy,
+      v: clipboard.paste,
+    };
+
+    for (const key in this.ctrlMap) {
+      keyboardJS.bind(`ctrl + ${key}`, (e) => this.ctrlMap[key]());
+    }
 
     keyboardJS.bind("shift + f", (e) => {
       this.history.redo();
-    });
-
-    keyboardJS.bind("z", (e) => {
-      this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent);
     });
 
     keyboardJS.bind("esc", (e) => {
@@ -93,20 +117,15 @@ export class KeyboardHandler {
       this.canvas.requestRenderAll();
     });
 
-    keyboardJS.bind("ctrl + a", (e) => {
-      this.canvas.setActiveObject(new fabric.ActiveSelection(this.canvas.getObjects(), {canvas: this.canvas}));
-      this.canvas.requestRenderAll();
-    });
-
-    keyboardJS.bind("ctrl + s", (e) => {
-      this.pages.export();
-    });
-
-    keyboardJS.bind("shift", (e) => {
-      this.setStrict(true);
-    }, (e) => {
-      this.setStrict(false);
-    });
+    keyboardJS.bind(
+      "shift",
+      (e) => {
+        this.setStrict(true);
+      },
+      (e) => {
+        this.setStrict(false);
+      }
+    );
   }
 
   read = async (): Promise<void> => {
