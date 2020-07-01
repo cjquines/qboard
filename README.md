@@ -12,19 +12,22 @@ basic features:
   - stroke
   - fill
 
-keybindings for now:
+keybindings:
+- q toggle overlay visibility
 - w copy
 - e ellipse
 - r rectangle
-- t text
+- t (text: not implemented)
 - a previous page
 - s next / add page
 - d pen
 - f undo / F redo
 - g paste
-- x erase / cut
+- z (unassigned?)
+- x cut / eraser
 - c line
 - v move
+- b (unassigned?)
 - esc deselect
 - shift -> constrain
 
@@ -46,16 +49,20 @@ fill
 - d solid
 - g 50% opaque
 with space for blank
-
-nice features:
-- help panel
-- rooms for spectating
-- rooms for collaboration
-- saving things to the server for a limited period
-- load prev/next pages in memory
+- space space > default style
 
 todo:
-- make opaque fill have solid border (don't use opacity, use rgba for fill)
-- make move not use the bounding box
-- make the eraser not use the bounding box
 - clear page, delete page
+- change style of selected with chord?
+- add undo, redo, copy, paste to toolbar
+- add styles to toolbar
+- something that pops up near your cursor when you press q
+
+nice features:
+- help modal, intro modal
+- rooms for spectating
+- rooms for collaboration
+- load prev/next pages in memory?
+- make the eraser not use the bounding box?
+- make move not use the bounding box?
+- saving things to the server for a limited period?
