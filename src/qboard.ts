@@ -10,6 +10,7 @@ import { KeyboardHandler } from "./keyboard";
 export interface QBoardState {
   currentPage: number;
   totalPages: number;
+  currentTool: Tool;
 }
 
 export default class QBoard {
@@ -32,6 +33,7 @@ export default class QBoard {
   };
 
   resizeCooldown: any;
+  currentTool: Tool;
   tool: ToolHandler;
   currentObject: any;
   isDown: boolean = false;
@@ -95,9 +97,10 @@ export default class QBoard {
   }
 
   updateState = (): void => {
-    this.callback({
+    this.callback && this.callback({
       currentPage: this.pages.currentIndex + 1,
       totalPages: this.pages.pagesJson.length,
+      currentTool: this.currentTool,
     });
   };
 
@@ -106,6 +109,7 @@ export default class QBoard {
       if (await this.clipboard.cut()) return;
     }
 
+    this.currentTool = tool;
     this.tool = this.handlers[tool];
 
     if (tool <= Tool.Eraser) {
@@ -122,6 +126,8 @@ export default class QBoard {
     } else {
       this.baseCanvas.isDrawingMode = false;
     }
+
+    this.updateState();
   };
 
   windowResize = async (): Promise<void> => {

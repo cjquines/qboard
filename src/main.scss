@@ -56,8 +56,14 @@ button {
   vertical-align: baseline;
   width: 1.5em;
 
-  &:hover {
+  &.active, &:hover {
     background-color: #aaaaaa99;
+  }
+
+  &.disabled, &:disabled:hover {
+    background-color: transparent;
+    color: #26262699;
+    cursor: unset;
   }
 
   &:focus {

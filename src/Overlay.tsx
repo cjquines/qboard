@@ -33,7 +33,10 @@ const Pagination = (props: {
 
   return (
     <div className="pagination">
-      <button onClick={props.previousPage}>
+      <button
+        className={value === 1 && "disabled"}
+        onClick={props.previousPage}
+      >
         <i className="fas fa-caret-left" />
       </button>
       <form onSubmit={onSubmit}>
@@ -46,7 +49,11 @@ const Pagination = (props: {
       </form>
       <span className="total-pages"> / {props.totalPages}</span>
       <button onClick={props.nextOrNewPage}>
-        <i className="fas fa-caret-right" />
+        {value === props.totalPages ? (
+          <i className="fas fa-plus" style={{transform: "scale(0.7)"}} />
+        ) : (
+          <i className="fas fa-caret-right" />
+        )}
       </button>
     </div>
   );
@@ -88,7 +95,11 @@ const Toolbar = (props: {
     <div className="toolbar">
       {tools.map(({ tool, icon, style }) => {
         return (
-          <button key={tool} onClick={(e) => props.switchTool(tool)}>
+          <button
+            className={tool === props.currentTool && "active"}
+            key={tool}
+            onClick={(e) => props.switchTool(tool)}
+          >
             <i className={`fas ${icon}`} style={style} />
           </button>
         );
@@ -102,6 +113,7 @@ const Overlay = (props: { qboard: QBoard }) => {
   const [state, setState] = useState<QBoardState>({
     currentPage: 0,
     totalPages: 0,
+    currentTool: Tool.Move,
   });
 
   useEffect(() => {
@@ -111,7 +123,7 @@ const Overlay = (props: { qboard: QBoard }) => {
 
   return (
     <div className="overlay">
-      <Toolbar switchTool={qboard.switchTool} currentTool={Tool.Move} />
+      <Toolbar switchTool={qboard.switchTool} currentTool={state.currentTool} />
       <Pagination
         previousPage={qboard.pages.previousPage}
         nextOrNewPage={qboard.pages.nextOrNewPage}
