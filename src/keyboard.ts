@@ -63,14 +63,20 @@ export class KeyboardHandler {
     };
 
     const keys = "wertasdfgxcv".split("");
-    keys.push("space");
     for (const key of keys) {
       keyboardJS.bind(
         key,
         (e) => this.combo.push(key),
         (e) => this.read()
       );
+
+      keyboardJS.bind(
+        `space + ${key}`,
+        (e) => this.combo.push(key, "space"),
+        (e) => this.read()
+      );
     }
+
 
     keyboardJS.bind("shift + f", (e) => {
       this.history.redo();
@@ -103,12 +109,13 @@ export class KeyboardHandler {
 
   read = async (): Promise<void> => {
     if (!this.combo.length) return;
-    if (this.combo.length === 1) {
-      this.readSingle(this.combo[0]);
-    } else if (this.combo.length <= 3) {
-      this.readStyle(this.combo);
-    }
+    const combo = Array.from(new Set(this.combo));
     this.combo = [];
+    if (combo.length === 1) {
+      this.readSingle(combo[0]);
+    } else if (combo.length <= 3) {
+      this.readStyle(combo);
+    }
   };
 
   readSingle = async (key: string): Promise<void> => {
@@ -120,7 +127,6 @@ export class KeyboardHandler {
   };
 
   readStyle = async (keys: string[]): Promise<void> => {
-    console.log(keys);
     let dash = null,
       stroke = null,
       fill = Fill.Transparent,
