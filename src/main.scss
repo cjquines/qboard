@@ -15,6 +15,7 @@
 
 body {
   background-color: #262626;
+  color: #262626;
   font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Verdana", sans-serif;
   margin: 0;
   padding: 0;
@@ -39,13 +40,6 @@ html, body, .container {
   box-shadow: #121212 0 0 1em 0.5em;
 }
 
-.overlay {
-  left: 0;
-  position: absolute;
-  top: 0;
-  user-select: none;
-}
-
 button {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -56,7 +50,7 @@ button {
   cursor: pointer;
   font: inherit;
   height: 1.5em;
-  padding: 0.1em 0.5em 0.6em;
+  padding: 0.15em 0.27em 0.4em;
   text-align: center;
   text-decoration: none;
   vertical-align: baseline;
@@ -68,6 +62,23 @@ button {
 
   &:focus {
     outline: none;
+  }
+}
+
+.overlay {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  left: 0;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.2s;
+  user-select: none;
+
+  &:hover {
+    opacity: 0.9;
+    transition: opacity 0.2s;
   }
 }
 
@@ -94,4 +105,12 @@ button {
     width: 0.6em;
     text-align: right;
   }
+}
+
+.toolbar {
+  background: #edeff0;
+  border-radius: 0.25em;
+  display: flex;
+  flex-direction: column;
+  padding: 0.25em;
 }

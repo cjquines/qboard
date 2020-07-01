@@ -52,6 +52,51 @@ const Pagination = (props: {
   );
 };
 
+const Toolbar = (props: {
+  switchTool: (tool: Tool) => Promise<void>;
+  currentTool: Tool;
+}) => {
+  const tools = [
+    {
+      tool: Tool.Move,
+      icon: "fa-mouse-pointer",
+    },
+    {
+      tool: Tool.Pen,
+      icon: "fa-pen",
+    },
+    {
+      tool: Tool.Eraser,
+      icon: "fa-eraser",
+    },
+    {
+      tool: Tool.Line,
+      icon: "fa-minus",
+      style: { transform: "rotate(-45deg)" },
+    },
+    {
+      tool: Tool.Ellipse,
+      icon: "fa-circle",
+    },
+    {
+      tool: Tool.Rectangle,
+      icon: "fa-square",
+    },
+  ];
+
+  return (
+    <div className="toolbar">
+      {tools.map(({ tool, icon, style }) => {
+        return (
+          <button key={tool} onClick={(e) => props.switchTool(tool)}>
+            <i className={`fas ${icon}`} style={style} />
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
 const Overlay = (props: { qboard: QBoard }) => {
   const qboard = props.qboard;
   const [state, setState] = useState<QBoardState>({
@@ -66,6 +111,7 @@ const Overlay = (props: { qboard: QBoard }) => {
 
   return (
     <div className="overlay">
+      <Toolbar switchTool={qboard.switchTool} currentTool={Tool.Move} />
       <Pagination
         previousPage={qboard.pages.previousPage}
         nextOrNewPage={qboard.pages.nextOrNewPage}
