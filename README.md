@@ -23,7 +23,7 @@ keybindings:
 - d pen
 - f undo / F redo
 - g paste
-- z (unassigned?)
+- z default style
 - x cut / eraser
 - c line
 - v move
@@ -37,6 +37,7 @@ stroke style
 - w dotted
 - a dashed
 - s solid
+
 border
 - (blank) same
 - e blue
@@ -44,18 +45,17 @@ border
 - f black
 - c yellow
 - v orange
+
 fill
 - (blank) transparent
 - d solid
 - g 50% opaque
-with space for blank
-- space space > default style
+- with space for blank
 
 todo:
 - clear page, delete page
 - change style of selected with chord?
-- add undo, redo, copy, paste to toolbar
-- add styles to toolbar
+- come up with better chords for the fill style ugh
 - something that pops up near your cursor when you press q
 
 nice features:

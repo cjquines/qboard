@@ -32,7 +32,9 @@ const strokeMap = {
 
 const fillMap = {
   d: Fill.Solid,
+  f: Fill.Solid,
   g: Fill.HalfSolid,
+  space: null,
 };
 
 export class KeyboardHandler {
@@ -82,7 +84,7 @@ export class KeyboardHandler {
       this.history.redo();
     });
 
-    keyboardJS.bind("space > space", (e) => {
+    keyboardJS.bind("z", (e) => {
       this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent);
     });
 
@@ -135,7 +137,7 @@ export class KeyboardHandler {
       const dChange = dashMap.hasOwnProperty(key),
         sChange = strokeMap.hasOwnProperty(key),
         fChange = fillMap.hasOwnProperty(key);
-      if (!(dChange || sChange || fChange) && key !== "space") badKey = true;
+      if (!(dChange || sChange || fChange)) badKey = true;
       if (dChange) dash = dashMap[key];
       if (sChange) stroke = strokeMap[key];
       if (fChange) fill = fillMap[key];
