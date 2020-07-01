@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
 @media all and (min-width:760px) {body {font-size: 20px}}
 @media all and (max-width:760px) {body {font-size: 19px}}
 @media all and (max-width:720px) {body {font-size: 18px}}
@@ -13,6 +15,7 @@
 
 body {
   background-color: #262626;
+  font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Verdana", sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -41,4 +44,54 @@ html, body, .container {
   position: absolute;
   top: 0;
   user-select: none;
+}
+
+button {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border-radius: 0.25em;
+  border: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  font: inherit;
+  height: 1.5em;
+  padding: 0.1em 0.5em 0.6em;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: baseline;
+  width: 1.5em;
+
+  &:hover {
+    background-color: #aaaaaa99;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.pagination {
+  background: #edeff0;
+  border-radius: 0.25em;
+  padding: 0.25em;
+
+  form {
+    display: inline;
+  }
+
+  input {
+    background: #f0f0f0;
+    border: none;
+    border-bottom: 2px solid #f0f0f0;
+    border-radius: 0;
+    box-sizing: border-box;
+    font: inherit;
+    height: 1em;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+    width: 0.6em;
+    text-align: right;
+  }
 }
