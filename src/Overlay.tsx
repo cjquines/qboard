@@ -105,7 +105,7 @@ const Toolbar = (props: {
       {tools.map(({ tool, icon, style }) => {
         return (
           <button
-            className={tool === props.currentTool && "active"}
+            className={tool === props.currentTool ? "active" : undefined}
             key={tool}
             onClick={(e) => props.switchTool(tool)}
           >
