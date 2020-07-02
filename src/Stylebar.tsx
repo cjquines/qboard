@@ -34,14 +34,14 @@ const dotted = (
 );
 
 const halfSolid = (
-  <div style={{ width: "1em", height: "0.75em", position: "relative" }}>
+  <div style={{ height: "0.7em", marginRight: "1em", position: "relative" }}>
     <i
       className="fas fa-circle"
-      style={{ left: 0, opacity: 0.3, position: "absolute", top: 0 }}
+      style={{ left: "50%", opacity: 0.3, position: "absolute", top: 0 }}
     />
     <i
       className="far fa-circle"
-      style={{ left: 0, position: "absolute", top: 0 }}
+      style={{ left: "50%", position: "absolute", top: 0 }}
     />
   </div>
 );
