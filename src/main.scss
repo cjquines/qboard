@@ -245,13 +245,37 @@ button {
   p {
     margin: 0 0 0.5em 0;
   }
+
+  a {
+    color: #446982;
+    text-decoration: none;
+
+    &:hover {
+      color: #0097f6;
+    }
+  }
+
+  button {
+    background: #ddd;
+    margin: 0 0.25em;
+    width: initial;
+
+    &:hover {
+      background: #bbb;
+    }
+  }
+
+  img {
+    width: 100%;
+  }
 }
 
 .modal-overlay {
   background: #edeff0;
-  bottom: calc(max(50%, 14em) - 12em);
+  bottom: calc(max(50%, 14.5em) - 12.5em);
   left: calc(max(50%, 22em) - 20em);
+  overflow-y: auto;
   position: fixed;
   right: calc(max(50%, 22em) - 20em);
-  top: calc(max(50%, 14em) - 12em);
+  top: calc(max(50%, 14.5em) - 12.5em);
 }

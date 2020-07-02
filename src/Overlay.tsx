@@ -23,6 +23,7 @@ const Overlay = (props: { qboard: QBoard }) => {
 
   const [visibility, setVisibility] = useState(Visibility.Full);
   const [modalOpen, setModalOpen] = useState(true);
+  const [showStyleBinds, setShowStyleBinds] = useState(false);
 
   const [state, setState] = useState<QBoardState>({
     currentPage: 0,
@@ -87,13 +88,38 @@ const Overlay = (props: { qboard: QBoard }) => {
       >
         <p>
           <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
-          <span style={{ color: "#0008", marginLeft: "0.2em" }}>
+          <span style={{ color: "#666", marginLeft: "0.2em" }}>
             So you’re writing a whiteboard app with vim keybindings?
           </span>
         </p>
         <p>
-          Press <b>h</b> to show or hide this screen.
+          Press <b>h</b> to show or hide this screen. Show:{" "}
+          <button onClick={(e) => setShowStyleBinds(false)}>
+            tool bindings
+          </button>{" "}
+          <button onClick={(e) => setShowStyleBinds(true)}>
+            style bindings
+          </button>
         </p>
+        <img
+          src="bindings.png"
+          style={showStyleBinds ? { display: "none" } : undefined}
+        />
+        <img
+          src="stylebindings.png"
+          style={showStyleBinds ? undefined : { display: "none" }}
+        />
+        {showStyleBinds ? (
+          <p>
+            Press two or more style keys to apply them. Use <b>space</b> as a
+            placeholder.
+          </p>
+        ) : (
+          <p style={{ color: "#666" }}>
+            By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
+            <a href="https://github.com/cjquines/qboard">Github</a>.
+          </p>
+        )}
       </Modal>
     </div>
   );
