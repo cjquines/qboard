@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import pdfMake from "pdfmake/build/pdfmake";
+import pdfMake from "pdfmake/build/pdfmake.min";
 
 const defaultPageJSON = {
   version: "3.6.3",

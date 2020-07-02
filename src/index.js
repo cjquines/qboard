@@ -6,7 +6,12 @@ import QBoard from "./qboard";
 
 import "./main.scss";
 
-const qboard = new QBoard(document.querySelector("#QBoard"), document.querySelector("#BaseQBoard"), 1600, 900);
+const qboard = new QBoard(
+  document.querySelector("#QBoard"),
+  document.querySelector("#BaseQBoard"),
+  1600,
+  900
+);
 
 ReactDOM.render(
   <Overlay qboard={qboard} />,
