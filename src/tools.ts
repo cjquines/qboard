@@ -1,5 +1,6 @@
 import { fabric } from "fabric";
 
+// projects the point x2, y2 to the vector with origin ox, oy and direction vx, vy. returns the square distance and the coordinates of the projection.
 const project = (
   ox: number,
   oy: number,
@@ -19,7 +20,14 @@ const project = (
   ];
 };
 
-const rectify = (dirs: number[][], x: number, y: number, x2: number, y2: number): number[] => {
+// given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
+const rectify = (
+  dirs: number[][],
+  x: number,
+  y: number,
+  x2: number,
+  y2: number
+): number[] => {
   return dirs
     .map((d) => project(x, y, d[0], d[1], x2, y2))
     .reduce((acc, cur) => (acc[0] < cur[0] ? acc : cur));
