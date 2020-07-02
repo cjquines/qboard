@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import keyboardJS from "keyboardjs";
+import Modal from "react-modal";
+Modal.setAppElement("#Overlay");
 
 import QBoard, { QBoardState } from "./qboard";
 import { Tool } from "./tools";
@@ -20,6 +22,8 @@ const Overlay = (props: { qboard: QBoard }) => {
   const qboard = props.qboard;
 
   const [visibility, setVisibility] = useState(Visibility.Full);
+  const [modalOpen, setModalOpen] = useState(true);
+
   const [state, setState] = useState<QBoardState>({
     currentPage: 0,
     totalPages: 0,
@@ -37,6 +41,10 @@ const Overlay = (props: { qboard: QBoard }) => {
 
     keyboardJS.bind("tab", (e) => {
       setVisibility((visibility) => (visibility + 2) % 3);
+    });
+
+    keyboardJS.bind("h", (e) => {
+      setModalOpen((modalOpen) => !modalOpen);
     });
   }, []);
 
@@ -72,6 +80,21 @@ const Overlay = (props: { qboard: QBoard }) => {
         setStyle={qboard.style.set}
         visibility={visibility}
       />
+      <Modal
+        className="modal"
+        overlayClassName="modal-overlay"
+        isOpen={modalOpen}
+      >
+        <p>
+          <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
+          <span style={{ color: "#0008", marginLeft: "0.2em" }}>
+            So you’re writing a whiteboard app with vim keybindings?
+          </span>
+        </p>
+        <p>
+          Press <b>h</b> to show or hide this screen.
+        </p>
+      </Modal>
     </div>
   );
 };

@@ -233,3 +233,25 @@ button {
     display: none;
   }
 }
+
+.modal {
+  bottom: 1em;
+  left: 1em;
+  outline: none;
+  position: absolute;
+  right: 1em;
+  top: 1em;
+
+  p {
+    margin: 0 0 0.5em 0;
+  }
+}
+
+.modal-overlay {
+  background: #edeff0;
+  bottom: calc(max(50%, 14em) - 12em);
+  left: calc(max(50%, 22em) - 20em);
+  position: fixed;
+  right: calc(max(50%, 22em) - 20em);
+  top: calc(max(50%, 14em) - 12em);
+}
