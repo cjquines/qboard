@@ -6,6 +6,7 @@ import { Tool } from "./tools";
 import { Dash, Stroke, Fill } from "./styles";
 
 import Pagination from "./Pagination";
+import UndoRedo from "./UndoRedo";
 import Toolbar from "./Toolbar";
 import Stylebar from "./Stylebar";
 
@@ -26,6 +27,8 @@ const Overlay = (props: { qboard: QBoard }) => {
     dashStyle: Dash.Solid,
     strokeStyle: Stroke.Black,
     fillStyle: Fill.Transparent,
+    canUndo: false,
+    canRedo: false,
   });
 
   useEffect(() => {
@@ -45,6 +48,13 @@ const Overlay = (props: { qboard: QBoard }) => {
         loadPage={qboard.pages.loadPage}
         currentPage={state.currentPage}
         totalPages={state.totalPages}
+        visibility={visibility}
+      />
+      <UndoRedo
+        undo={qboard.history.undo}
+        redo={qboard.history.redo}
+        canUndo={state.canUndo}
+        canRedo={state.canRedo}
         visibility={visibility}
       />
       <Toolbar

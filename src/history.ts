@@ -14,7 +14,11 @@ export class HistoryHandler {
   redoStack: HistoryItem[] = [];
   locked: boolean = false;
 
-  constructor(public canvas: Page, public pages: Pages) {}
+  constructor(
+    public canvas: Page,
+    public pages: Pages,
+    public updateState: () => void
+  ) {}
 
   add = async (objects: any[]): Promise<void> => {
     if (this.locked) return;
@@ -24,6 +28,7 @@ export class HistoryHandler {
       newObjects: objects,
       page: this.pages.currentIndex,
     });
+    this.updateState();
   };
 
   remove = async (objects: any[]): Promise<void> => {
@@ -34,6 +39,7 @@ export class HistoryHandler {
       newObjects: null,
       page: this.pages.currentIndex,
     });
+    this.updateState();
   };
 
   save = async (item: HistoryItem): Promise<void> => {
@@ -51,6 +57,7 @@ export class HistoryHandler {
     await this.pages.loadPage(last.page);
     await this.canvas.apply(last.ids, last.oldObjects);
     this.locked = false;
+    this.updateState();
   };
 
   redo = async (): Promise<void> => {
@@ -61,5 +68,6 @@ export class HistoryHandler {
     await this.pages.loadPage(last.page);
     await this.canvas.apply(last.ids, last.newObjects);
     this.locked = false;
+    this.updateState();
   };
 }

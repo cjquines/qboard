@@ -14,6 +14,8 @@ export interface QBoardState {
   dashStyle: Dash;
   strokeStyle: string;
   fillStyle: Fill;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
 export default class QBoard {
@@ -65,7 +67,11 @@ export default class QBoard {
       this.updateState
     );
 
-    this.history = new HistoryHandler(this.baseCanvas, this.pages);
+    this.history = new HistoryHandler(
+      this.baseCanvas,
+      this.pages,
+      this.updateState
+    );
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
       this.history,
@@ -113,6 +119,8 @@ export default class QBoard {
         fillStyle: ((x) => (x === "t" ? 0 : x !== "1" ? 1 : 2))(
           this.drawerOptions.fill.toString().slice(-1)
         ),
+        canUndo: Boolean(this.history.history.length),
+        canRedo: Boolean(this.history.redoStack.length),
       });
   };
 
