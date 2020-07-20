@@ -1,36 +1,29 @@
 import React from "react";
 
 import { Dash, Stroke, Fill, Style } from "./styles";
+import { Action } from "./action";
+
 import { Visibility } from "./Overlay";
 import Icon from "./Icon";
+import OverlayButton from "./OverlayButton";
 
-const DashStyle = (props: { dashStyle: Dash; callback: (Dash) => void }) => {
-  const dashOptions = [
-    {
-      option: Dash.Solid,
-      icon: Icon.solid,
-    },
-    {
-      option: Dash.Dashed,
-      icon: Icon.dashed,
-    },
-    {
-      option: Dash.Dotted,
-      icon: Icon.dotted,
-    },
-  ];
+const DashStyle = (props: {
+  dashStyle: Dash;
+  callback: (Action) => Promise<void>;
+}) => {
+  const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
 
   return (
     <div className="style">
-      <button className="inactive">{dashOptions[props.dashStyle].icon}</button>
+      <button className="inactive">{Icon[dashes[props.dashStyle]]}</button>
       <div className="substyle">
-        {dashOptions.map(({ option, icon }) => {
-          return (
-            <button key={option} onClick={(e) => props.callback(option)}>
-              {icon}
-            </button>
-          );
-        })}
+        {dashes.map((action) => (
+          <OverlayButton
+            action={action}
+            callback={props.callback}
+            key={action}
+          />
+        ))}
       </div>
     </div>
   );
@@ -38,115 +31,79 @@ const DashStyle = (props: { dashStyle: Dash; callback: (Dash) => void }) => {
 
 const StrokeStyle = (props: {
   strokeStyle: string;
-  callback: (Stroke) => void;
+  callback: (Action) => Promise<void>;
 }) => {
   const strokes = [
-    Stroke.Black,
-    Stroke.Blue,
-    Stroke.Green,
-    Stroke.Yellow,
-    Stroke.Orange,
+    Action.Black,
+    Action.Blue,
+    Action.Green,
+    Action.Yellow,
+    Action.Orange,
   ];
-  const icon = (color: string) => (
-    <i className="fas fa-circle" style={{ color }} />
-  );
 
   return (
     <div className="style">
-      <button className="inactive">{icon(props.strokeStyle)}</button>
+      <button className="inactive">
+        <i className="fas fa-circle" style={{ color: props.strokeStyle }} />
+      </button>
       <div className="substyle">
-        {strokes.map((color) => (
-          <button key={color} onClick={(e) => props.callback(color)}>
-            {icon(color)}
-          </button>
+        {strokes.map((action) => (
+          <OverlayButton
+            action={action}
+            callback={props.callback}
+            key={action}
+          />
         ))}
       </div>
     </div>
   );
 };
 
-const FillStyle = (props: { fillStyle: Fill; callback: (Fill) => void }) => {
-  const fillOptions = [
-    {
-      option: Fill.Transparent,
-      icon: Icon.transparent,
-    },
-    {
-      option: Fill.Solid,
-      icon: Icon.filled,
-    },
-    {
-      option: Fill.HalfSolid,
-      icon: Icon.halfFilled,
-    },
-  ];
+const FillStyle = (props: {
+  fillStyle: Fill;
+  callback: (Action) => Promise<void>;
+}) => {
+  const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
 
   return (
     <div className="style">
-      <button className="inactive">{fillOptions[props.fillStyle].icon}</button>
+      <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
       <div className="substyle">
-        {fillOptions.map(({ option, icon }) => {
-          return (
-            <button key={option} onClick={(e) => props.callback(option)}>
-              {icon}
-            </button>
-          );
-        })}
+        {fills.map((action) => (
+          <OverlayButton
+            action={action}
+            callback={props.callback}
+            key={action}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
 const Stylebar = (props: {
-  save: () => Promise<void>;
-  copy: () => Promise<void>;
-  paste: () => Promise<void>;
   currentStyle: Style;
-  setStyle: (
-    dash: Dash | null,
-    stroke: Stroke | null,
-    fill: Fill | null
-  ) => void;
+  doAction: (Action) => Promise<void>;
   visibility: Visibility;
 }) => {
-  const actions = [
-    {
-      act: props.save,
-      name: "save",
-      icon: "fa-save",
-    },
-    {
-      act: props.copy,
-      name: "copy",
-      icon: "fa-copy",
-    },
-    {
-      act: props.paste,
-      name: "paste",
-      icon: "fa-paste",
-    },
-  ];
+  const actions = [Action.Save, Action.Copy, Action.Paste];
 
   return (
     <div className={`stylebar visibility-${props.visibility}`}>
-      {actions.map(({ act, name, icon }) => {
-        return (
-          <button key={name} onClick={(e) => act()}>
-            <i className={`fas ${icon}`} />
-          </button>
-        );
-      })}
+      {actions.map((action) => (
+        <OverlayButton action={action} callback={props.doAction} key={action} />
+      ))}
       <DashStyle
         dashStyle={props.currentStyle.dash}
-        callback={(dash) => props.setStyle(dash, null, null)}
+        callback={props.doAction}
       />
       <StrokeStyle
         strokeStyle={props.currentStyle.stroke}
-        callback={(stroke) => props.setStyle(null, stroke, null)}
+        callback={props.doAction}
       />
       <FillStyle
         fillStyle={props.currentStyle.fill}
-        callback={(fill) => props.setStyle(null, null, fill)}
+        callback={props.doAction}
       />
     </div>
   );

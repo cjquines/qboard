@@ -74,11 +74,8 @@ const Overlay = (props: { qboard: QBoard }) => {
         visibility={visibility}
       />
       <Stylebar
-        save={qboard.pages.export}
-        copy={qboard.clipboard.copy}
-        paste={qboard.clipboard.paste}
         currentStyle={state.currentStyle}
-        setStyle={qboard.style.set}
+        doAction={qboard.action.doAction}
         visibility={visibility}
       />
       <Modal
