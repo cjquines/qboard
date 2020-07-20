@@ -1,54 +1,36 @@
 import React from "react";
 
 import { Tool } from "./tools";
+import { Action } from "./action";
+
 import { Visibility } from "./Overlay";
+import OverlayButton from "./OverlayButton";
 
 const Toolbar = (props: {
-  switchTool: (tool: Tool) => Promise<void>;
   currentTool: Tool;
+  doAction: (Action) => Promise<void>;
   visibility: Visibility;
 }) => {
   const tools = [
-    {
-      tool: Tool.Move,
-      icon: "fa-mouse-pointer",
-    },
-    {
-      tool: Tool.Pen,
-      icon: "fa-pen",
-    },
-    {
-      tool: Tool.Eraser,
-      icon: "fa-eraser",
-    },
-    {
-      tool: Tool.Line,
-      icon: "fa-minus",
-      style: { transform: "rotate(-45deg)" },
-    },
-    {
-      tool: Tool.Ellipse,
-      icon: "fa-circle",
-    },
-    {
-      tool: Tool.Rectangle,
-      icon: "fa-square",
-    },
+    Action.Move,
+    Action.Pen,
+    Action.Eraser,
+    Action.Laser,
+    Action.Line,
+    Action.Ellipse,
+    Action.Rectangle,
   ];
 
   return (
     <div className={`toolbar visibility-${props.visibility}`}>
-      {tools.map(({ tool, icon, style }) => {
-        return (
-          <button
-            className={tool === props.currentTool ? "active" : undefined}
-            key={tool}
-            onClick={(e) => props.switchTool(tool)}
-          >
-            <i className={`fas ${icon}`} style={style} />
-          </button>
-        );
-      })}
+      {tools.map((tool, index) => (
+        <OverlayButton
+          action={tool}
+          callback={props.doAction}
+          className={index === props.currentTool ? "active" : undefined}
+          key={tool}
+        />
+      ))}
     </div>
   );
 };

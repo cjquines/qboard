@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 
+import { Action } from "./action";
+
 import { Visibility } from "./Overlay";
+import OverlayButton from "./OverlayButton";
 
 const Pagination = (props: {
-  previousPage: () => Promise<void>;
-  nextOrNewPage: () => Promise<void>;
   loadPage: (number) => Promise<void>;
   currentPage: number;
   totalPages: number;
+  doAction: (Action) => Promise<void>;
   visibility: Visibility;
 }) => {
   const [value, setValue] = useState(0);
@@ -39,12 +41,11 @@ const Pagination = (props: {
 
   return (
     <div className={`pagination visibility-${props.visibility}`}>
-      <button
+      <OverlayButton
         className={props.currentPage === 1 ? "disabled" : undefined}
-        onClick={props.previousPage}
-      >
-        <i className="fas fa-caret-left" />
-      </button>
+        action={Action.PreviousPage}
+        callback={props.doAction}
+      />
       <form onSubmit={onSubmit}>
         <input
           onChange={onChange}
@@ -55,13 +56,17 @@ const Pagination = (props: {
         />
       </form>
       <span className="total-pages"> / {props.totalPages}</span>
-      <button onClick={props.nextOrNewPage}>
-        {props.currentPage === props.totalPages ? (
-          <i className="fas fa-plus" style={{ transform: "scale(0.7)" }} />
-        ) : (
-          <i className="fas fa-caret-right" />
-        )}
-      </button>
+      {props.currentPage === props.totalPages ? (
+        <OverlayButton
+          action={Action.AddPage}
+          callback={props.doAction}
+        />
+      ) : (
+        <OverlayButton
+          action={Action.NextPage}
+          callback={props.doAction}
+        />
+      )}
     </div>
   );
 };

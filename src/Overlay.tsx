@@ -54,23 +54,21 @@ const Overlay = (props: { qboard: QBoard }) => {
   return (
     <div className={`overlay visibility-${visibility}`}>
       <Pagination
-        previousPage={qboard.pages.previousPage}
-        nextOrNewPage={qboard.pages.nextOrNewPage}
         loadPage={qboard.pages.loadPage}
         currentPage={state.currentPage}
         totalPages={state.totalPages}
+        doAction={qboard.action.doAction}
         visibility={visibility}
       />
       <UndoRedo
-        undo={qboard.history.undo}
-        redo={qboard.history.redo}
         canUndo={state.canUndo}
         canRedo={state.canRedo}
+        doAction={qboard.action.doAction}
         visibility={visibility}
       />
       <Toolbar
-        switchTool={qboard.switchTool}
         currentTool={state.currentTool}
+        doAction={qboard.action.doAction}
         visibility={visibility}
       />
       <Stylebar

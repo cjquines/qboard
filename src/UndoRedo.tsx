@@ -1,28 +1,28 @@
 import React from "react";
 
+import { Action } from "./action";
+
 import { Visibility } from "./Overlay";
+import OverlayButton from "./OverlayButton";
 
 const UndoRedo = (props: {
-  undo: () => Promise<void>;
-  redo: () => Promise<void>;
   canUndo: boolean;
   canRedo: boolean;
+  doAction: (Action) => Promise<void>;
   visibility: Visibility;
 }) => {
   return (
     <div className={`undoredo visibility-${props.visibility}`}>
-      <button
+      <OverlayButton
+        action={Action.Undo}
+        callback={props.doAction}
         className={props.canUndo ? undefined : "disabled"}
-        onClick={props.undo}
-      >
-        <i className="fas fa-undo" />
-      </button>
-      <button
+      />
+      <OverlayButton
+        action={Action.Redo}
+        callback={props.doAction}
         className={props.canRedo ? undefined : "disabled"}
-        onClick={props.redo}
-      >
-        <i className="fas fa-redo" />
-      </button>
+      />
     </div>
   );
 };

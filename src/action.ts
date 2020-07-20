@@ -69,6 +69,7 @@ export class ActionHandler {
     this.actionMap = {
       previousPage: pages.previousPage,
       nextPage: pages.nextOrNewPage,
+      addPage: pages.nextOrNewPage,
 
       undo: history.undo,
       redo: history.redo,
