@@ -6,6 +6,7 @@ import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
 import { Dash, Stroke, Fill, Style, StyleHandler } from "./styles";
 import { KeyboardHandler } from "./keyboard";
+import { ActionHandler } from "./action";
 
 export interface QBoardState {
   currentPage: number;
@@ -24,6 +25,7 @@ export default class QBoard {
   clipboard: ClipboardHandler;
   style: StyleHandler;
   keyboard: KeyboardHandler;
+  action: ActionHandler;
 
   handlers: ToolHandler[] = Handlers;
   currentStyle: Style = {
@@ -87,16 +89,19 @@ export default class QBoard {
       this.baseCanvas.freeDrawingBrush,
       this.updateState
     );
-    this.keyboard = new KeyboardHandler(
+    this.action = new ActionHandler(
       this.switchTool,
-      (strict: boolean) => {
-        this.strict = strict;
-      },
       this.currentStyle,
       this.pages,
       this.history,
       this.clipboard,
       this.style.set
+    )
+    this.keyboard = new KeyboardHandler(
+      this.action.doAction,
+      (strict: boolean) => {
+        this.strict = strict;
+      },
     );
 
     this.switchTool(Tool.Move);
