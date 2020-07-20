@@ -131,7 +131,7 @@ export default class QBoard {
     this.currentTool = tool;
     this.tool = this.handlers[tool];
 
-    if (tool <= Tool.Eraser) {
+    if (tool === Tool.Move || this.tool.isBrush) {
       this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
       this.tool.setBrush(this.baseCanvas.freeDrawingBrush, this.drawerOptions);
@@ -140,7 +140,7 @@ export default class QBoard {
       this.canvasElement.parentElement.style.display = "block";
     }
 
-    if (tool === Tool.Pen || tool === Tool.Eraser) {
+    if (this.tool.isBrush) {
       this.baseCanvas.isDrawingMode = true;
     } else {
       this.baseCanvas.isDrawingMode = false;

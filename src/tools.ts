@@ -44,6 +44,7 @@ export const enum Tool {
 
 export interface ToolHandler {
   tool: Tool;
+  isBrush: boolean;
 
   draw?: (
     x: number,
@@ -65,6 +66,7 @@ export interface ToolHandler {
 
 export class MoveHandler implements ToolHandler {
   tool: Tool = Tool.Move;
+  isBrush: boolean = false;
 
   setBrush = async (
     brush: any,
@@ -74,6 +76,7 @@ export class MoveHandler implements ToolHandler {
 
 export class PenHandler implements ToolHandler {
   tool: Tool = Tool.Pen;
+  isBrush: boolean = true;
 
   setBrush = async (
     brush: any,
@@ -87,6 +90,7 @@ export class PenHandler implements ToolHandler {
 
 export class EraserHandler implements ToolHandler {
   tool: Tool = Tool.Eraser;
+  isBrush: boolean = true;
 
   setBrush = async (
     brush: any,
@@ -100,6 +104,7 @@ export class EraserHandler implements ToolHandler {
 
 export class LineHandler implements ToolHandler {
   tool: Tool = Tool.Line;
+  isBrush: boolean = false;
   x: number;
   y: number;
 
@@ -145,6 +150,7 @@ export class LineHandler implements ToolHandler {
 
 export class RectangleHandler implements ToolHandler {
   tool: Tool = Tool.Rectangle;
+  isBrush: boolean = false;
   x: number;
   y: number;
 
@@ -198,6 +204,7 @@ export class RectangleHandler implements ToolHandler {
 
 export class EllipseHandler implements ToolHandler {
   tool: Tool = Tool.Ellipse;
+  isBrush: boolean = false;
   x: number;
   y: number;
 
