@@ -8,6 +8,7 @@ import { HistoryHandler } from "./history";
 import { Dash, Stroke, Fill, Style } from "./styles";
 
 const defaultKeys = {
+  "q": "laser",
   "w": "copy",
   "e": "blue",
   "r": "green",
@@ -95,6 +96,7 @@ export class KeyboardHandler {
 
       pen: () => this.switchTool(Tool.Pen),
       eraser: () => this.switchTool(Tool.Eraser),
+      laser: () => this.switchTool(Tool.Laser),
       ellipse: () => this.switchTool(Tool.Ellipse),
       rectangle: () => this.switchTool(Tool.Rectangle),
       move: () => this.switchTool(Tool.Move),

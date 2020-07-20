@@ -37,6 +37,7 @@ export const enum Tool {
   Move,
   Pen,
   Eraser,
+  Laser,
   Line,
   Rectangle,
   Ellipse,
@@ -99,6 +100,20 @@ export class EraserHandler implements ToolHandler {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
+  };
+}
+
+export class LaserHandler implements ToolHandler {
+  tool: Tool = Tool.Laser;
+  isBrush: boolean = true;
+
+  setBrush = async (
+    brush: any,
+    options: fabric.IObjectOptions
+  ): Promise<void> => {
+    brush.color = "#f23523";
+    brush.strokeDashArray = [0, 0];
+    brush.width = options.strokeWidth;
   };
 }
 
@@ -260,6 +275,7 @@ export const Handlers = [
   new MoveHandler(),
   new PenHandler(),
   new EraserHandler(),
+  new LaserHandler(),
   new LineHandler(),
   new RectangleHandler(),
   new EllipseHandler(),

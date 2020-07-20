@@ -189,10 +189,10 @@ export default class QBoard {
   };
 
   pathCreated = async (e: any): Promise<void> => {
-    if (this.tool === this.handlers[Tool.Pen]) {
+    if (this.currentTool === Tool.Pen) {
       e.path.id = await this.baseCanvas.getNextId();
       this.history.add([e.path]);
-    } else if (this.tool === this.handlers[Tool.Eraser]) {
+    } else if (this.currentTool === Tool.Eraser) {
       const path = fabric.util.object.clone(e.path);
       await this.baseCanvas.remove(e.path);
       const objects = this.baseCanvas
@@ -201,6 +201,11 @@ export default class QBoard {
       if (!objects.length) return;
       await this.baseCanvas.remove(...objects);
       this.history.remove(objects);
+    } else if (this.currentTool === Tool.Laser) {
+      setTimeout(async () => {
+        await this.baseCanvas.remove(e.path);
+        this.baseCanvas.requestRenderAll();
+      }, 1000);
     }
   };
 
