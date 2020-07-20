@@ -53,6 +53,7 @@ export class KeyboardHandler {
   constructor(
     public switchTool: (tool: Tool) => Promise<void>,
     public setStrict: (strict: boolean) => void,
+    public drawerOptions: any,
     public pages: Pages,
     public history: HistoryHandler,
     public clipboard: ClipboardHandler,
@@ -137,7 +138,11 @@ export class KeyboardHandler {
   }
 
   setStroke = async (stroke: Stroke): Promise<void> => {
-    this.setStyle(null, stroke, null);
+    if (stroke === this.drawerOptions.stroke) {
+      this.setStyle(null, Stroke.Black, null);
+    } else {
+      this.setStyle(null, stroke, null);
+    }
   }
 
   setFill = async (fill: Fill): Promise<void> => {

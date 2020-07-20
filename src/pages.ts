@@ -67,7 +67,6 @@ export class Page extends fabric.Canvas {
     newObjects: fabric.Object[] | null
   ): Promise<void> => {
     const oldObjects = await this.getObjectByIds(ids);
-    console.log(oldObjects, newObjects);
 
     if (oldObjects.length && newObjects) {
       oldObjects[0].set(newObjects[0]).setCoords();

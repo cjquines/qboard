@@ -88,6 +88,7 @@ export default class QBoard {
       (strict: boolean) => {
         this.strict = strict;
       },
+      this.drawerOptions,
       this.pages,
       this.history,
       this.clipboard,
