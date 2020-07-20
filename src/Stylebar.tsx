@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Dash, Stroke, Fill } from "./styles";
+import { Dash, Stroke, Fill, Style } from "./styles";
 import { Visibility } from "./Overlay";
 
 const dashed = (
@@ -143,9 +143,7 @@ const Stylebar = (props: {
   save: () => Promise<void>;
   copy: () => Promise<void>;
   paste: () => Promise<void>;
-  dashStyle: Dash;
-  strokeStyle: string;
-  fillStyle: Fill;
+  currentStyle: Style;
   setStyle: (
     dash: Dash | null,
     stroke: Stroke | null,
@@ -181,15 +179,15 @@ const Stylebar = (props: {
         );
       })}
       <DashStyle
-        dashStyle={props.dashStyle}
+        dashStyle={props.currentStyle.dash}
         callback={(dash) => props.setStyle(dash, null, null)}
       />
       <StrokeStyle
-        strokeStyle={props.strokeStyle}
+        strokeStyle={props.currentStyle.stroke}
         callback={(stroke) => props.setStyle(null, stroke, null)}
       />
       <FillStyle
-        fillStyle={props.fillStyle}
+        fillStyle={props.currentStyle.fill}
         callback={(fill) => props.setStyle(null, null, fill)}
       />
     </div>

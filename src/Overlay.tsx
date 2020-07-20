@@ -77,9 +77,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         save={qboard.pages.export}
         copy={qboard.clipboard.copy}
         paste={qboard.clipboard.paste}
-        dashStyle={state.currentStyle.dash}
-        strokeStyle={state.currentStyle.stroke}
-        fillStyle={state.currentStyle.fill}
+        currentStyle={state.currentStyle}
         setStyle={qboard.style.set}
         visibility={visibility}
       />
