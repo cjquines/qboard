@@ -147,6 +147,6 @@ export class Pages {
       content
     };
 
-    pdfMake.createPdf(docDefinition).open();
+    pdfMake.createPdf(docDefinition).download();
   }
 }
