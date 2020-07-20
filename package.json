@@ -1,7 +1,7 @@
 {
   "name": "qboard",
   "version": "0.1.0",
-  "description": "the whiteboard app i wish existed",
+  "description": "The whiteboard app with vim-inspired bindings.",
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
@@ -25,5 +25,5 @@
   },
   "author": "cjquines",
   "license": "MIT",
-  "repository": ""
+  "repository": "https://github.com/cjquines/qboard"
 }

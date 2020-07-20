@@ -89,7 +89,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         <p>
           <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
           <span style={{ color: "#666", marginLeft: "0.2em" }}>
-            So you’re writing a whiteboard app with vim keybindings?
+            The whiteboard app with vim-inspired bindings.
           </span>
         </p>
         <p>
