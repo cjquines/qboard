@@ -4,16 +4,14 @@ import { Tool, ToolHandler, Handlers } from "./tools";
 import { Page, Pages } from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
-import { Dash, Stroke, Fill, StyleHandler } from "./styles";
+import { Dash, Stroke, Fill, Style, StyleHandler } from "./styles";
 import { KeyboardHandler } from "./keyboard";
 
 export interface QBoardState {
   currentPage: number;
   totalPages: number;
   currentTool: Tool;
-  dashStyle: Dash;
-  strokeStyle: string;
-  fillStyle: Fill;
+  currentStyle: Style;
   canUndo: boolean;
   canRedo: boolean;
 }
@@ -28,6 +26,11 @@ export default class QBoard {
   keyboard: KeyboardHandler;
 
   handlers: ToolHandler[] = Handlers;
+  currentStyle: Style = {
+    dash: Dash.Solid,
+    stroke: Stroke.Black,
+    fill: Fill.Transparent,
+  };
   drawerOptions: fabric.IObjectOptions = {
     fill: "transparent",
     stroke: "#000000",
@@ -79,6 +82,7 @@ export default class QBoard {
       this.canvasHeight
     );
     this.style = new StyleHandler(
+      this.currentStyle,
       this.drawerOptions,
       this.baseCanvas.freeDrawingBrush,
       this.updateState
@@ -88,7 +92,7 @@ export default class QBoard {
       (strict: boolean) => {
         this.strict = strict;
       },
-      this.drawerOptions,
+      this.currentStyle,
       this.pages,
       this.history,
       this.clipboard,
@@ -113,13 +117,7 @@ export default class QBoard {
         currentPage: this.pages.currentIndex + 1,
         totalPages: this.pages.pagesJson.length,
         currentTool: this.currentTool,
-        dashStyle: ((x) => (x === 0 ? 0 : x === 20 ? 1 : 2))(
-          this.drawerOptions.strokeDashArray[0]
-        ),
-        strokeStyle: this.drawerOptions.stroke,
-        fillStyle: ((x) => (x === "t" ? 0 : x !== "1" ? 1 : 2))(
-          this.drawerOptions.fill.toString().slice(-1)
-        ),
+        currentStyle: this.currentStyle,
         canUndo: Boolean(this.history.history.length),
         canRedo: Boolean(this.history.redoStack.length),
       });

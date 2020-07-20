@@ -29,9 +29,11 @@ const Overlay = (props: { qboard: QBoard }) => {
     currentPage: 0,
     totalPages: 0,
     currentTool: Tool.Move,
-    dashStyle: Dash.Solid,
-    strokeStyle: Stroke.Black,
-    fillStyle: Fill.Transparent,
+    currentStyle: {
+      dash: Dash.Solid,
+      stroke: Stroke.Black,
+      fill: Fill.Transparent,
+    },
     canUndo: false,
     canRedo: false,
   });
@@ -75,9 +77,9 @@ const Overlay = (props: { qboard: QBoard }) => {
         save={qboard.pages.export}
         copy={qboard.clipboard.copy}
         paste={qboard.clipboard.paste}
-        dashStyle={state.dashStyle}
-        strokeStyle={state.strokeStyle}
-        fillStyle={state.fillStyle}
+        dashStyle={state.currentStyle.dash}
+        strokeStyle={state.currentStyle.stroke}
+        fillStyle={state.currentStyle.fill}
         setStyle={qboard.style.set}
         visibility={visibility}
       />

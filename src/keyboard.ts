@@ -5,7 +5,7 @@ import { Tool } from "./tools";
 import { Pages } from "./pages";
 import { ClipboardHandler } from "./clipboard";
 import { HistoryHandler } from "./history";
-import { Dash, Stroke, Fill } from "./styles";
+import { Dash, Stroke, Fill, Style } from "./styles";
 
 const defaultKeys = {
   "w": "copy",
@@ -53,7 +53,7 @@ export class KeyboardHandler {
   constructor(
     public switchTool: (tool: Tool) => Promise<void>,
     public setStrict: (strict: boolean) => void,
-    public drawerOptions: any,
+    public currentStyle: Style,
     public pages: Pages,
     public history: HistoryHandler,
     public clipboard: ClipboardHandler,
@@ -134,11 +134,15 @@ export class KeyboardHandler {
   }
 
   setDash = async (dash: Dash): Promise<void> => {
-    this.setStyle(dash, null, null);
+    if (dash === this.currentStyle.dash) {
+      this.setStyle(Dash.Solid, null, null);
+    } else {
+      this.setStyle(dash, null, null);
+    }
   }
 
   setStroke = async (stroke: Stroke): Promise<void> => {
-    if (stroke === this.drawerOptions.stroke) {
+    if (stroke === this.currentStyle.stroke) {
       this.setStyle(null, Stroke.Black, null);
     } else {
       this.setStyle(null, stroke, null);
@@ -146,6 +150,10 @@ export class KeyboardHandler {
   }
 
   setFill = async (fill: Fill): Promise<void> => {
-    this.setStyle(null, null, fill);
+    if (fill === this.currentStyle.fill) {
+      this.setStyle(null, null, Fill.Transparent);
+    } else {
+      this.setStyle(null, null, fill);
+    }
   }
 }

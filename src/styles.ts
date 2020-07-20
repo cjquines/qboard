@@ -21,6 +21,12 @@ export const enum Fill {
   HalfSolid,
 }
 
+export interface Style {
+  dash: Dash;
+  stroke: Stroke;
+  fill: Fill;
+}
+
 const dashMap = [
   [0, 0],
   [20, 15],
@@ -29,29 +35,43 @@ const dashMap = [
 
 export class StyleHandler {
   constructor(
+    public currentStyle: Style,
     public drawerOptions: fabric.IObjectOptions,
     public freeDrawingBrush: any,
-    public updateState: () => void,
+    public updateState: () => void
   ) {}
 
   set = (dash: Dash | null, stroke: Stroke | null, fill: Fill | null): void => {
     if (dash !== null) {
+      this.currentStyle.dash = dash;
       this.drawerOptions.strokeDashArray = dashMap[dash];
       this.freeDrawingBrush.strokeDashArray = dashMap[dash];
     }
 
     if (stroke !== null) {
+      this.currentStyle.stroke = stroke;
       this.drawerOptions.stroke = stroke;
       this.freeDrawingBrush.color = stroke;
     }
 
     if (fill !== null) {
-      if (fill === Fill.Transparent) {
-        this.drawerOptions.fill = "transparent";
-      } else if (fill === Fill.Solid) {
-        this.drawerOptions.fill = this.drawerOptions.stroke;
-      } else if (fill === Fill.HalfSolid) {
-        this.drawerOptions.fill = this.drawerOptions.stroke + "11";
+      this.currentStyle.fill = fill;
+    }
+
+    if (stroke !== null || fill != null) {
+      switch (this.currentStyle.fill) {
+        case Fill.Transparent: {
+          this.drawerOptions.fill = "transparent";
+          break;
+        }
+        case Fill.Solid: {
+          this.drawerOptions.fill = this.currentStyle.stroke;
+          break;
+        }
+        case Fill.HalfSolid: {
+          this.drawerOptions.fill = this.currentStyle.stroke + "11";
+          break;
+        }
       }
     }
 
