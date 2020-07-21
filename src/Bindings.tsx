@@ -100,8 +100,7 @@ const Bindings = (props: { keyMap: any; modifier: string }) => {
         letter={bindingModalKeys}
         action={bindingModalAction}
         close={() => setBindingModalKeys("")}
-        callback={(action) => null}
-      />
+        callback={(action) => null} />
     </>
   );
 };
