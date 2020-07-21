@@ -43,16 +43,13 @@ export const defaultKeys = {
 };
 
 export class KeyboardHandler {
-  canvas: fabric.Canvas;
-  actionMap: any;
-  keyMap: any;
+  keyMap: any = {};
 
   constructor(
     public doAction: (action: Action) => Promise<void>,
     public setStrict: (strict: boolean) => void,
     public updateState: () => void
   ) {
-    this.reset();
     keyboardJS.bind(
       "shift",
       (e) => {
@@ -62,28 +59,46 @@ export class KeyboardHandler {
         this.setStrict(false);
       }
     );
+
+    if (!localStorage.getItem("keyMap")) {
+      this.reset();
+    } else {
+      this.keyMap = JSON.parse(localStorage.getItem("keyMap"));
+      this.bindAll();
+    }
+  }
+
+  save = (): void => {
+    localStorage.setItem("keyMap", JSON.stringify(this.keyMap));
+  }
+
+  bindAll = (): void => {
+    for (const key in this.keyMap) {
+      this.bind(key, this.keyMap[key]);
+    }
+    this.updateState();
   }
 
   unbind = (key: string): void => {
     delete this.keyMap[key];
     keyboardJS.unbind(key);
     this.updateState();
+    this.save();
   };
 
   bind = (key: string, action: Action): void => {
     this.keyMap[key] = action;
     keyboardJS.bind(key, (e) => this.doAction(this.keyMap[key]));
     this.updateState();
+    this.save();
   };
 
   reset = (): void => {
     for (const key in this.keyMap) {
       keyboardJS.unbind(key);
     }
-    this.keyMap = {};
-    for (const key in defaultKeys) {
-      this.bind(key, defaultKeys[key]);
-    }
-    this.updateState();
+    this.keyMap = {...defaultKeys};
+    this.bindAll();
+    this.save();
   };
 }
