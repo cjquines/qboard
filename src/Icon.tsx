@@ -17,7 +17,7 @@ const Icon = {
   move: fasIcon("mouse-pointer"),
   pen: fasIcon("pen"),
   eraser: fasIcon("eraser"),
-  laser: fasIcon("hand-pointer"),
+  laser: fasIcon("asterisk"),
   line: fasIcon("minus", { transform: "rotate(-45deg)" }),
   ellipse: fasIcon("circle"),
   rectangle: fasIcon("square"),

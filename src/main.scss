@@ -235,23 +235,23 @@ button {
 }
 
 .modal {
-  bottom: 1em;
+  bottom: 0.5em;
   left: 1em;
   outline: none;
   position: absolute;
   right: 1em;
-  top: 1em;
+  top: 0.5em;
 
   p {
     margin: 0 0 0.5em 0;
   }
 
   a {
-    color: #446982;
+    color: #4a91c2;
     text-decoration: none;
 
     &:hover {
-      color: #0097f6;
+      color: #00c3ff;
     }
   }
 
@@ -260,7 +260,7 @@ button {
     margin: 0 0.25em;
     width: initial;
 
-    &:hover {
+    &:hover, &.active {
       background: #bbb;
     }
   }
@@ -271,13 +271,24 @@ button {
 }
 
 .modal-overlay {
-  background: #edeff0;
-  bottom: calc(max(50%, 14.5em) - 12.5em);
-  left: calc(max(50%, 19em) - 17em);
+  bottom: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
+  left: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
   overflow-y: auto;
   position: fixed;
-  right: calc(max(50%, 19em) - 17em);
-  top: calc(max(50%, 14.5em) - 12.5em);
+  right: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
+  top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
+
+  &.help-modal {
+    --width: 38em;
+    --height: 29em;
+    background: #f8f8f8;
+  }
+
+  &.binding-modal {
+    --width: 36em;
+    --height: 21em;
+    background: #ededed;
+  }
 }
 
 .bindings {
@@ -309,7 +320,7 @@ button {
       font-size: 0.9em;
       font-weight: bold;
       position: absolute;
-      right: 0.25em;
+      right: 0.3em;
       text-align: right;
       text-transform: capitalize;
       width: 3.9em;
@@ -319,6 +330,13 @@ button {
       display: block;
       font-size: 1.1em;
       margin-bottom: 0.1em;
+    }
+
+    // line icon
+    i.fa-minus {
+      bottom: 1.1em;
+      position: absolute;
+      right: 0;
     }
 
     // dotted and dashed icons
@@ -340,5 +358,56 @@ button {
       font-weight: normal;
       text-transform: none;
     }
+  }
+
+  button.key:hover {
+    background: #ddd;
+  }
+}
+
+.binding-modal {
+  .close {
+    background: transparent;
+    color: #888;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &:hover {
+      background: transparent;
+      color: #444;
+    }
+  }
+
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
+    grid-gap: 0.25em;
+  }
+
+  button {
+    margin: 0;
+    position: relative;
+    text-align: left;
+    text-transform: capitalize;
+
+    span {
+      position: absolute;
+      top: 0.1em;
+      left: 1.5em;
+    }
+  }
+
+  // dotted and dashed icons
+  svg {
+    height: 1em !important;
+  }
+
+  // halffill icon
+  button > div {
+    display: inline;
+    margin-right: 1.25em !important;
+    top: 0.1em;
   }
 }

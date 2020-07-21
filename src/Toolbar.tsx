@@ -17,8 +17,8 @@ const Toolbar = (props: {
     Action.Eraser,
     Action.Laser,
     Action.Line,
-    Action.Ellipse,
     Action.Rectangle,
+    Action.Ellipse,
   ];
 
   return (

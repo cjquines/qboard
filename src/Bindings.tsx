@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import Modal from "react-modal";
+Modal.setAppElement("#Overlay");
 
 import { Action } from "./action";
 
-import { Visibility } from "./Overlay";
 import Icon from "./Icon";
+import BindingModal from "./BindingModal";
 
-const nameMap = {
+export const nameMap = {
   previousPage: "–Page",
   nextPage: "+Page",
   resetStyles: "Reset Styles",
@@ -32,9 +34,13 @@ const HeaderKey = (props: {
   );
 };
 
-const Key = (props: { letter: string; action?: Action }) => {
+const Key = (props: {
+  letter: string;
+  action?: Action;
+  callback: (string) => void;
+}) => {
   return (
-    <div className="key">
+    <button className="key" onClick={(e) => props.callback(props.letter)}>
       <span className="letter">{props.letter}</span>
       <div className="action">
         {props.action && Icon[props.action]}
@@ -42,15 +48,14 @@ const Key = (props: { letter: string; action?: Action }) => {
           {nameMap[props.action] || props.action || "none"}
         </span>
       </div>
-    </div>
+    </button>
   );
 };
 
-const Bindings = (props: {
-  keyMap: any;
-  visibility: Visibility;
-  modifier: string;
-}) => {
+const Bindings = (props: { keyMap: any; modifier: string }) => {
+  const [bindingModalKeys, setBindingModalKeys] = useState("");
+  const [bindingModalAction, setBindingModalAction] = useState(undefined);
+
   const rows = [
     {
       header: <HeaderKey letter="tab" label="Hide Toolbar" width="5em" />,
@@ -66,23 +71,38 @@ const Bindings = (props: {
     },
   ];
 
-  const getAction = (letter: string) => {
-    return props.modifier === ""
-      ? props.keyMap[letter]
-      : props.keyMap[`${props.modifier} + ${letter}`];
+  const getModified = (letter: string) => {
+    return props.modifier === "" ? letter : `${props.modifier} + ${letter}`;
+  };
+
+  const keyHandler = (letter: string) => {
+    setBindingModalKeys(getModified(letter));
+    setBindingModalAction(props.keyMap[getModified(letter)]);
   };
 
   return (
-    <div className={`bindings visibility-${props.visibility}`}>
-      {rows.map(({ header, letters }, index) => (
-        <div className="row" key={index}>
-          {header}
-          {letters.split("").map((letter) => (
-            <Key letter={letter} action={getAction(letter)} />
-          ))}
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="bindings">
+        {rows.map(({ header, letters }, index) => (
+          <div className="row" key={index}>
+            {header}
+            {letters.split("").map((letter) => (
+              <Key
+                letter={letter}
+                action={props.keyMap[getModified(letter)]}
+                callback={keyHandler}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <BindingModal
+        letter={bindingModalKeys}
+        action={bindingModalAction}
+        close={() => setBindingModalKeys("")}
+        callback={(action) => null}
+      />
+    </>
   );
 };
 
