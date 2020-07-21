@@ -15,6 +15,7 @@ export interface QBoardState {
   currentStyle: Style;
   canUndo: boolean;
   canRedo: boolean;
+  keyMap: any;
 }
 
 export default class QBoard {
@@ -125,6 +126,7 @@ export default class QBoard {
         currentStyle: this.currentStyle,
         canUndo: Boolean(this.history.history.length),
         canRedo: Boolean(this.history.redoStack.length),
+        keyMap: this.keyboard.keyMap,
       });
   };
 

@@ -6,11 +6,13 @@ Modal.setAppElement("#Overlay");
 import QBoard, { QBoardState } from "./qboard";
 import { Tool } from "./tools";
 import { Dash, Stroke, Fill } from "./styles";
+import { defaultKeys } from "./keyboard";
 
 import Pagination from "./Pagination";
 import UndoRedo from "./UndoRedo";
 import Toolbar from "./Toolbar";
 import Stylebar from "./Stylebar";
+import Bindings from "./Bindings";
 
 export const enum Visibility {
   None,
@@ -23,7 +25,7 @@ const Overlay = (props: { qboard: QBoard }) => {
 
   const [visibility, setVisibility] = useState(Visibility.Full);
   const [modalOpen, setModalOpen] = useState(true);
-  const [showStyleBinds, setShowStyleBinds] = useState(false);
+  const [keyModifier, setKeyModifier] = useState("");
 
   const [state, setState] = useState<QBoardState>({
     currentPage: 0,
@@ -36,6 +38,7 @@ const Overlay = (props: { qboard: QBoard }) => {
     },
     canUndo: false,
     canRedo: false,
+    keyMap: defaultKeys,
   });
 
   useEffect(() => {
@@ -88,33 +91,22 @@ const Overlay = (props: { qboard: QBoard }) => {
           </span>
         </p>
         <p>
-          Press <b>h</b> to show or hide this screen. Show:{" "}
-          <button onClick={(e) => setShowStyleBinds(false)}>
-            tool bindings
-          </button>{" "}
-          <button onClick={(e) => setShowStyleBinds(true)}>
-            style bindings
-          </button>
+          Press <b>h</b> to show or hide this screen.
         </p>
-        <img
-          src="bindings.png"
-          style={showStyleBinds ? { display: "none" } : undefined}
+        <p>
+          Show: <button onClick={(e) => setKeyModifier("")}>unmodified</button>{" "}
+          <button onClick={(e) => setKeyModifier("shift")}>with shift</button>{" "}
+          <button onClick={(e) => setKeyModifier("ctrl")}>with ctrl</button>
+        </p>
+        <Bindings
+          keyMap={state.keyMap}
+          visibility={visibility}
+          modifier={keyModifier}
         />
-        <img
-          src="stylebindings.png"
-          style={showStyleBinds ? undefined : { display: "none" }}
-        />
-        {showStyleBinds ? (
-          <p>
-            Press two or more style keys to apply them. Use <b>space</b> as a
-            placeholder.
-          </p>
-        ) : (
-          <p style={{ color: "#666" }}>
-            By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
-            <a href="https://github.com/cjquines/qboard">Github</a>.
-          </p>
-        )}
+        <p style={{ color: "#666" }}>
+          By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
+          <a href="https://github.com/cjquines/qboard">Github</a>.
+        </p>
       </Modal>
     </div>
   );

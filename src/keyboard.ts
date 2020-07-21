@@ -3,7 +3,7 @@ import keyboardJS from "keyboardjs";
 
 import { Action } from "./action";
 
-const defaultKeys = {
+export const defaultKeys = {
   "q": Action.Laser,
   "w": Action.Copy,
   "e": Action.Blue,

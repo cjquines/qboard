@@ -23,8 +23,11 @@ const Icon = {
   rectangle: fasIcon("square"),
 
   save: fasIcon("save"),
+  cut: fasIcon("cut"),
   copy: fasIcon("copy"),
   paste: fasIcon("paste"),
+
+  duplicate: fasIcon("clone"),
 
   black: fasIcon("circle", { color: Stroke.Black }),
   blue: fasIcon("circle", { color: Stroke.Blue }),
@@ -77,7 +80,7 @@ const Icon = {
   ),
   filled: fasIcon("circle"),
 
-  resetStyles: fasIcon("sync"),
+  resetStyles: null,
 };
 
 export default Icon;
