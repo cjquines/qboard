@@ -6,19 +6,15 @@
 
 ## Keybindings
 
-Here are the tool bindings:
+Here are the default keybindings:
 
 ![](public/bindings.png)
 
-Image assumes Caps Lock is mapped to Escape. Tab cycles through three toolbar visibilities: the full toolbar, a status pane, and completely hidden. Shift snaps lines to multiples of 45°, and makes squares and circles. Q is not yet implemented.
+Image assumes Caps Lock is mapped to Escape. Tab cycles through three toolbar visibilities: the full toolbar, a status pane, and completely hidden. Shift snaps lines to multiples of 45°, and makes squares and circles.
 
-X is Cut when there’s something selected, and Eraser when nothing is selected. The Eraser is element level: it removes entire paths. You can use X to delete whatever you have selected. I’m not entirely satisfied with these bindings, and these might change.
+X is Cut when there’s something selected, and Eraser when nothing is selected. The Eraser is element level: it removes entire paths. You can use X to delete whatever you have selected. E or R, when already that color, resets it to black.
 
-There’s also these style bindings, which are chorded:
-
-![](public/stylebindings.png)
-
-Pressing two or more of these keys applies the style. So for example, pressing A, E, and F at the same time makes the style dashed, blue, and filled. You can also press Space instead of pressing another key; so A and Space just turns the style into dashed without changing anything else. These chorded keys are less nice and I’m thinking about how to change them.
+There are also keybindings with Shift and Ctrl, which you can view in-app.
 
 ## Design principles
 
@@ -28,7 +24,14 @@ qboard is made for seamless lecturing. It’s designed to be easy to use and nic
 - By default, it has pages, rather than extending in different directions. It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
 - Pages are fixed at a 16:9 ratio, so when they’re later saved to a PDF, it’s in the same dimensions as a slideshow.
 
-There are *some* sense to the keybindings. The three keys I use the most are on S, D, F, and A is assigned to make sense with S. Imitating vim, X is for Cut and Erase. Ellipse and Rectangle start with E and R, while V is Move in Photoshop too. The rest are kind of random.
+There are *some* sense to the default keybindings:
+
+- The three keys I use the most are on F, D, and S. A is assigned to make sense with S, and Shift + F to make sense with F.
+- I tend to switch between colors and back while presenting, hence the E and R bindings.
+- Imitating vim, X is like delete, which both cuts and erases.
+- Ellipse and Rectangle start with E and R, while V is Move in Photoshop too.
+- Q, A, and Z control stroke style, and W, S, and X control fill style. They form a column, going from "least" to "most".
+- The Ctrl keybindings are pretty universal, except maybe D, for Duplicate.
 
 Although initially designed for giving lectures, the whiteboard controls are pretty good. I might add support for extending infinitely in several directions, in the style of a regular whiteboard app.
 
@@ -44,21 +47,17 @@ The main source is [qboard.ts](src/qboard.ts), which handles listening to mouse 
 
 ### Todo
 
-- change style of selected with chord? add to history too
-- make toolbar show selected style, not pen style (what if multiple selection though)
-- come up with better chords for styling
-- something that pops up near your cursor when you press q ([as in this](https://medium.com/@subalerts/https-medium-com-implementing-custom-context-menu-in-react-js-part-1-b103260c724c))
+- change style of selected with keybinding, add to history too
+- make toolbar show selected style, not pen style (what if multiple selection though?)
+- something that pops up near your cursor when you right click ([as in this](https://medium.com/@subalerts/https-medium-com-implementing-custom-context-menu-in-react-js-part-1-b103260c724c))
 - tooltips for the toolbar
-- customizable keybindings
-- investigate blobs not saving
-
-maybe:
-
+- save the fabricjson so we can reopen to edit later?
+- right-handed keybindings? dvorak?
 - rooms for spectating?
 - rooms for collaboration?
-- add a style for pen width? make it discrete steps, keybinding like [ ] to increase and decrease it?
+- add a style for pen width, make it discrete steps, keybinding like [ ] to increase and decrease it?
 - two modes: one "slide" mode, and one "infinite" mode. panning can be space + drag, but what about zooming? shift+A, shift+S is one possibility?
 - load prev/next pages in memory?
 - make the eraser not use the bounding box?
-- make move not use the bounding box?
+- make dragging not use the bounding box?
 - saving things to the server for a limited period?
