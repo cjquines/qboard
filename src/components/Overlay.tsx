@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import keyboardJS from "keyboardjs";
 
-import QBoard, { QBoardState } from "./qboard";
-import { Tool } from "./tools";
-import { Dash, Stroke, Fill } from "./styles";
-import { defaultKeys } from "./keyboard";
+import QBoard, { QBoardState } from "../lib/qboard";
+import { Tool } from "../lib/tools";
+import { Dash, Stroke, Fill } from "../lib/styles";
+import { defaultKeys } from "../lib/keyboard";
 
 import Pagination from "./Pagination";
 import UndoRedo from "./UndoRedo";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Action } from "./action";
+import { Action } from "../lib/action";
 
 import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";

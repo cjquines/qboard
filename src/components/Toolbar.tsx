@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Tool } from "./tools";
-import { Action } from "./action";
+import { Tool } from "../lib/tools";
+import { Action } from "../lib/action";
 
 import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";

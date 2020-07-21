@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Dash, Stroke, Fill, Style } from "./styles";
-import { Action } from "./action";
+import { Dash, Stroke, Fill, Style } from "../lib/styles";
+import { Action } from "../lib/action";
 
 import { Visibility } from "./Overlay";
 import Icon from "./Icon";

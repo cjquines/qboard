@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 Modal.setAppElement("#Overlay");
 
-import { Action } from "./action";
+import { Action } from "../lib/action";
 
 import { nameMap } from "./Bindings";
 import Icon from "./Icon";

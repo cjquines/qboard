@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Action } from "./action";
+import { Action } from "../lib/action";
+
 import Icon from "./Icon";
 
 const OverlayButton = (props: {

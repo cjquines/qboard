@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Stroke } from "./styles";
+import { Stroke } from "../lib/styles";
 
 const fasIcon = (iconName: string, style?: any) => (
   <i className={`fas fa-${iconName}`} style={style} />

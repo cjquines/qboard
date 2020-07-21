@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import Overlay from "./Overlay";
-import QBoard from "./qboard";
+import Overlay from "./components/Overlay";
+import QBoard from "./lib/qboard";
 
 import "./main.scss";
 
