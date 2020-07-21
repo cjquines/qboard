@@ -78,6 +78,9 @@ const Overlay = (props: { qboard: QBoard }) => {
         visibility={visibility}
       />
       <HelpModal
+        bind={qboard.keyboard.bind}
+        unbind={qboard.keyboard.unbind}
+        reset={qboard.keyboard.reset}
         keyMap={state.keyMap}
         isOpen={helpModalOpen}
       />

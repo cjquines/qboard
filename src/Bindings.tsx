@@ -52,7 +52,12 @@ const Key = (props: {
   );
 };
 
-const Bindings = (props: { keyMap: any; modifier: string }) => {
+const Bindings = (props: {
+  bind: (string, Action) => void;
+  unbind: (string) => void;
+  keyMap: any;
+  modifier: string;
+}) => {
   const [bindingModalKeys, setBindingModalKeys] = useState("");
   const [bindingModalAction, setBindingModalAction] = useState(undefined);
 
@@ -100,7 +105,12 @@ const Bindings = (props: { keyMap: any; modifier: string }) => {
         letter={bindingModalKeys}
         action={bindingModalAction}
         close={() => setBindingModalKeys("")}
-        callback={(action) => null} />
+        callback={(action) => {
+          props.unbind(bindingModalKeys);
+          if (action) props.bind(bindingModalKeys, action);
+          setBindingModalKeys("");
+        }}
+      />
     </>
   );
 };

@@ -4,7 +4,13 @@ Modal.setAppElement("#Overlay");
 
 import Bindings from "./Bindings";
 
-const HelpModal = (props: { keyMap: any, isOpen: boolean }) => {
+const HelpModal = (props: {
+  bind: (string, Action) => void;
+  unbind: (string) => void;
+  reset: () => void;
+  keyMap: any;
+  isOpen: boolean;
+}) => {
   const [keyModifier, setKeyModifier] = useState("");
 
   return (
@@ -28,12 +34,14 @@ const HelpModal = (props: { keyMap: any, isOpen: boolean }) => {
         <button onClick={(e) => setKeyModifier("ctrl")}>with ctrl</button>
       </p>
       <Bindings
+        bind={props.bind}
+        unbind={props.unbind}
         keyMap={props.keyMap}
         modifier={keyModifier}
       />
       <p>
         Click a key to change the binding.{" "}
-        <button onClick={(e) => null}>reset to default</button>
+        <button onClick={(e) => props.reset()}>reset to default</button>
       </p>
       <p style={{ color: "#666" }}>
         By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}

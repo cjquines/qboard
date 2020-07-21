@@ -103,6 +103,7 @@ export default class QBoard {
       (strict: boolean) => {
         this.strict = strict;
       },
+      this.updateState
     );
 
     this.switchTool(Tool.Move);

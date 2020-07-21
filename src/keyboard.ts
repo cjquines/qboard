@@ -4,20 +4,20 @@ import keyboardJS from "keyboardjs";
 import { Action } from "./action";
 
 export const defaultKeys = {
-  "q": Action.Laser,
-  "w": Action.Copy,
-  "e": Action.Blue,
-  "esc": Action.Deselect,
-  "r": Action.Green,
-  "a": Action.PreviousPage,
-  "s": Action.NextPage,
-  "d": Action.Pen,
-  "f": Action.Undo,
-  "g": Action.Paste,
-  "z": Action.ResetStyles,
-  "x": Action.Eraser,
-  "c": Action.Line,
-  "v": Action.Move,
+  q: Action.Laser,
+  w: Action.Copy,
+  e: Action.Blue,
+  esc: Action.Deselect,
+  r: Action.Green,
+  a: Action.PreviousPage,
+  s: Action.NextPage,
+  d: Action.Pen,
+  f: Action.Undo,
+  g: Action.Paste,
+  z: Action.ResetStyles,
+  x: Action.Eraser,
+  c: Action.Line,
+  v: Action.Move,
 
   "shift + q": Action.Dotted,
   "shift + w": Action.Transparent,
@@ -50,13 +50,9 @@ export class KeyboardHandler {
   constructor(
     public doAction: (action: Action) => Promise<void>,
     public setStrict: (strict: boolean) => void,
+    public updateState: () => void
   ) {
-    this.keyMap = defaultKeys;
-
-    for (const key in this.keyMap) {
-      keyboardJS.bind(`${key}`, (e) => this.doAction(this.keyMap[key]));
-    }
-
+    this.reset();
     keyboardJS.bind(
       "shift",
       (e) => {
@@ -67,4 +63,27 @@ export class KeyboardHandler {
       }
     );
   }
+
+  unbind = (key: string): void => {
+    delete this.keyMap[key];
+    keyboardJS.unbind(key);
+    this.updateState();
+  };
+
+  bind = (key: string, action: Action): void => {
+    this.keyMap[key] = action;
+    keyboardJS.bind(key, (e) => this.doAction(this.keyMap[key]));
+    this.updateState();
+  };
+
+  reset = (): void => {
+    for (const key in this.keyMap) {
+      keyboardJS.unbind(key);
+    }
+    this.keyMap = {};
+    for (const key in defaultKeys) {
+      this.bind(key, defaultKeys[key]);
+    }
+    this.updateState();
+  };
 }
