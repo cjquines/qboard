@@ -69,7 +69,7 @@ export class Page extends fabric.Canvas {
     const oldObjects = await this.getObjectByIds(ids);
 
     if (oldObjects.length && newObjects) {
-      oldObjects[0].set(newObjects[0]).setCoords();
+      oldObjects.forEach((object) => object.set(newObjects[0]).setCoords());
     } else if (oldObjects.length) {
       await this.remove(...oldObjects);
     } else if (newObjects && newObjects.length) {
@@ -135,7 +135,7 @@ export class Pages {
     const content = this.pagesJson.map((page) => {
       this.canvas.loadFromJSON(page, null);
       return { svg: this.canvas.toSVG(), width: this.canvasWidth / ratio };
-    })
+    });
 
     const docDefinition = {
       pageSize: {
@@ -143,9 +143,9 @@ export class Pages {
         height: this.canvasHeight / ratio,
       },
       pageMargins: [0, 0],
-      content
+      content,
     };
 
     pdfMake.createPdf(docDefinition).download();
-  }
+  };
 }

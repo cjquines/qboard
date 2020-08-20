@@ -5,7 +5,7 @@ import { Page, Pages } from "./pages";
 interface HistoryItem {
   ids: number[];
   oldObjects: fabric.Object[] | null;
-  newObjects: fabric.Object[] | null;
+  newObjects: any | null;
   page: number;
 }
 

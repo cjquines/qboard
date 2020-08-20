@@ -97,7 +97,7 @@ export default class QBoard {
       this.history,
       this.clipboard,
       this.style.set
-    )
+    );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,
       (strict: boolean) => {
@@ -218,10 +218,18 @@ export default class QBoard {
   };
 
   objectModified = async (e: any): Promise<void> => {
+    const oldObject = e.transform.original;
+    const newObject = e.target.toJSON();
+    const copy = Object.keys(oldObject).reduce((n, p) => {
+      n[p] = newObject[p];
+      return n;
+    }, {});
     this.history.save({
-      ids: [e.target.id],
-      oldObjects: [e.transform.original],
-      newObjects: [e.target.toJSON()],
+      ids: e.target._objects
+        ? e.target._objects.map((object) => object.id)
+        : [e.target.id],
+      oldObjects: [oldObject],
+      newObjects: [copy],
       page: this.pages.currentIndex,
     });
   };
