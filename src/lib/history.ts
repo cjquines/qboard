@@ -52,7 +52,6 @@ export class HistoryHandler {
     if (!this.history.length) return;
     this.canvas.discardActiveObject();
     const last = this.history.pop();
-    console.log(this.history, last);
     this.redoStack.push(last);
     this.locked = true;
     await this.pages.loadPage(last.page);

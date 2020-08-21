@@ -62,20 +62,31 @@ export class Page extends fabric.Canvas {
     return [];
   };
 
+  groupObjects = async (objects: fabric.Object[]): Promise<fabric.Group> => {
+    const group = new fabric.Group(objects);
+    this.remove(...objects);
+    this.add(group);
+    return group;
+  };
+
+  ungroup = async (group: fabric.Group): Promise<fabric.Object[]> => {
+    const objects = group._objects;
+    this.add(...objects);
+    this.remove(group);
+    return objects;
+  };
+
   apply = async (
     ids: number[],
     newObjects: fabric.Object[] | null
   ): Promise<void> => {
     const oldObjects = await this.getObjectByIds(ids);
     if (oldObjects.length && newObjects) {
+      const group = await this.groupObjects(oldObjects);
       const partial: any = newObjects[0];
-      const grouped = new fabric.Group(oldObjects);
-      this.remove(...oldObjects);
-      this.add(grouped);
-      grouped.set(partial).setCoords();
-      grouped._restoreObjectsState();
-      this.add(...grouped._objects);
-      this.remove(grouped);
+      group.set(partial).setCoords();
+      group._restoreObjectsState();
+      await this.ungroup(group);
     } else if (oldObjects.length) {
       await this.remove(...oldObjects);
     } else if (newObjects && newObjects.length) {
@@ -84,7 +95,6 @@ export class Page extends fabric.Canvas {
       });
       await this.add(...newObjects);
     }
-
     this.requestRenderAll();
   };
 

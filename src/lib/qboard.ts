@@ -119,7 +119,6 @@ export default class QBoard {
   }
 
   updateState = (): void => {
-    this.switchTool(this.currentTool);
     this.callback &&
       this.callback({
         currentPage: this.pages.currentIndex + 1,
