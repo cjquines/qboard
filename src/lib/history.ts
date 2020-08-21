@@ -4,8 +4,8 @@ import { Page, Pages } from "./pages";
 
 interface HistoryItem {
   ids: number[];
-  oldObjects: any | null;
-  newObjects: any | null;
+  oldObjects: fabric.Object[] | null;
+  newObjects: fabric.Object[] | null;
   page: number;
 }
 
@@ -52,6 +52,7 @@ export class HistoryHandler {
     if (!this.history.length) return;
     this.canvas.discardActiveObject();
     const last = this.history.pop();
+    console.log(this.history, last);
     this.redoStack.push(last);
     this.locked = true;
     await this.pages.loadPage(last.page);

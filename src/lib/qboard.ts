@@ -221,21 +221,17 @@ export default class QBoard {
   objectModified = async (e: any): Promise<void> => {
     let oldObject = e.transform.original;
     const newObject = e.target.toJSON();
-    const copy: any = Object.keys(oldObject).reduce((n, p) => {
-      n[p] = newObject[p];
-      return n;
-    }, {});
-    oldObject.angle = (360 - copy.angle) % 360;
-    oldObject.flipX = copy.flipX;
-    oldObject.flipY = copy.flipY;
-    oldObject.scaleX = 1 / copy.scaleX;
-    oldObject.scaleY = 1 / copy.scaleY;
+    oldObject.angle = (360 - newObject.angle) % 360;
+    oldObject.flipX = newObject.flipX;
+    oldObject.flipY = newObject.flipY;
+    oldObject.scaleX = 1 / newObject.scaleX;
+    oldObject.scaleY = 1 / newObject.scaleY;
     this.history.save({
       ids: e.target._objects
         ? e.target._objects.map((object) => object.id)
         : [e.target.id],
       oldObjects: [oldObject],
-      newObjects: [copy],
+      newObjects: [newObject],
       page: this.pages.currentIndex,
     });
   };
