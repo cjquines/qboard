@@ -119,6 +119,7 @@ export default class QBoard {
   }
 
   updateState = (): void => {
+    this.switchTool(this.currentTool);
     this.callback &&
       this.callback({
         currentPage: this.pages.currentIndex + 1,
@@ -218,12 +219,17 @@ export default class QBoard {
   };
 
   objectModified = async (e: any): Promise<void> => {
-    const oldObject = e.transform.original;
+    let oldObject = e.transform.original;
     const newObject = e.target.toJSON();
-    const copy = Object.keys(oldObject).reduce((n, p) => {
+    const copy: any = Object.keys(oldObject).reduce((n, p) => {
       n[p] = newObject[p];
       return n;
     }, {});
+    oldObject.angle = (360 - copy.angle) % 360;
+    oldObject.flipX = copy.flipX;
+    oldObject.flipY = copy.flipY;
+    oldObject.scaleX = 1 / copy.scaleX;
+    oldObject.scaleY = 1 / copy.scaleY;
     this.history.save({
       ids: e.target._objects
         ? e.target._objects.map((object) => object.id)

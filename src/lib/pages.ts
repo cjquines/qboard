@@ -62,14 +62,16 @@ export class Page extends fabric.Canvas {
     return [];
   };
 
-  apply = async (
-    ids: number[],
-    newObjects: fabric.Object[] | null
-  ): Promise<void> => {
+  apply = async (ids: number[], newObjects: any | null): Promise<void> => {
     const oldObjects = await this.getObjectByIds(ids);
-
     if (oldObjects.length && newObjects) {
-      oldObjects.forEach((object) => object.set(newObjects[0]).setCoords());
+      const grouped = new fabric.Group(oldObjects);
+      this.remove(...oldObjects);
+      this.add(grouped);
+      grouped.set(newObjects[0]).setCoords();
+      grouped._restoreObjectsState();
+      this.add(...grouped._objects);
+      this.remove(grouped);
     } else if (oldObjects.length) {
       await this.remove(...oldObjects);
     } else if (newObjects && newObjects.length) {
