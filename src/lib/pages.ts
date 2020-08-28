@@ -53,27 +53,16 @@ export class Page extends fabric.Canvas {
     }
     // single element case
     const id = ids[0];
-    let object: any;
-    for (object of this.getObjects()) {
-      if (object.id === id) {
+    for (let object of this.getObjects()) {
+      if ((object as any).id === id) {
         return [object];
       }
     }
     return [];
   };
 
-  groupObjects = async (objects: fabric.Object[]): Promise<fabric.Group> => {
-    const group = new fabric.Group(objects);
-    this.remove(...objects);
-    this.add(group);
-    return group;
-  };
-
-  ungroup = async (group: fabric.Group): Promise<fabric.Object[]> => {
-    const objects = group._objects;
-    this.add(...objects);
-    this.remove(group);
-    return objects;
+  serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
+    return objects.map((object) => (this as any)._toObject(object, "toObject"));
   };
 
   apply = async (
@@ -85,12 +74,16 @@ export class Page extends fabric.Canvas {
       await this.remove(...oldObjects);
     }
     if (newObjects && newObjects.length) {
-      fabric.util.enlivenObjects(newObjects, (objects) => {
-        objects.forEach((object: any, i) => {
-          object.id = ids[i];
-        });
-        this.add(...objects);
-      }, "fabric");
+      fabric.util.enlivenObjects(
+        newObjects,
+        (objects) => {
+          objects.forEach((object: any, i) => {
+            object.id = ids[i];
+          });
+          this.add(...objects);
+        },
+        "fabric"
+      );
     }
     this.requestRenderAll();
   };

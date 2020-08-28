@@ -26,7 +26,7 @@ export class HistoryHandler {
     this.save({
       ids: objects.map((object) => object.id),
       oldObjects: null,
-      newObjects: objects.map((object) => object.toJSON()),
+      newObjects: await this.canvas.serialize(objects),
       page: this.pages.currentIndex,
     });
     this.updateState();
@@ -36,7 +36,7 @@ export class HistoryHandler {
     if (this.locked) return;
     this.save({
       ids: objects.map((object) => object.id),
-      oldObjects: objects.map((object) => object.toJSON()),
+      oldObjects: await this.canvas.serialize(objects),
       newObjects: null,
       page: this.pages.currentIndex,
     });
@@ -48,7 +48,7 @@ export class HistoryHandler {
     this.save({
       ids: objects.map((object) => object.id),
       oldObjects: this.store,
-      newObjects: objects.map((object) => (this.canvas as any)._toObject(object, "toObject")),
+      newObjects: await this.canvas.serialize(objects),
       page: this.pages.currentIndex,
     });
     this.updateState();

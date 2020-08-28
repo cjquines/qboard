@@ -220,9 +220,7 @@ export default class QBoard {
 
   selectionCreated = async (e: any): Promise<void> => {
     const ids = e.selected.map((object) => object.id);
-    this.history.store = (
-      await this.baseCanvas.getObjectByIds(ids)
-    ).map((object) => (this.baseCanvas as any)._toObject(object, "toObject"));
+    this.history.store = await this.baseCanvas.serialize(await this.baseCanvas.getObjectByIds(ids));
   };
 
   objectModified = async (e: any): Promise<void> => {
