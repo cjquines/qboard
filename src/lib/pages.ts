@@ -62,7 +62,9 @@ export class Page extends fabric.Canvas {
   };
 
   serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
-    return objects.map((object) => (this as any)._toObject(object, "toObject"));
+    return objects.map((object) =>
+      (this as any)._toObject(object, "toObject", ["strokeUniform"])
+    );
   };
 
   apply = async (
@@ -107,7 +109,10 @@ export class Pages {
   ) {}
 
   savePage = async (): Promise<void> => {
-    this.pagesJson[this.currentIndex] = await this.canvas.toJSON(["id"]);
+    this.pagesJson[this.currentIndex] = await this.canvas.toJSON([
+      "id",
+      "strokeUniform",
+    ]);
   };
 
   loadPage = async (index: number): Promise<void> => {
