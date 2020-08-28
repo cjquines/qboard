@@ -22,48 +22,39 @@ export class HistoryHandler {
   ) {}
 
   add = async (objects: any[]): Promise<void> => {
-    if (this.locked) return;
-    this.save({
-      ids: objects.map((object) => object.id),
-      oldObjects: null,
-      newObjects: await this.canvas.serialize(objects),
-      page: this.pages.currentIndex,
-    });
-    this.updateState();
+    this.save(null, objects);
   };
 
   remove = async (objects: any[]): Promise<void> => {
-    if (this.locked) return;
-    this.save({
-      ids: objects.map((object) => object.id),
-      oldObjects: await this.canvas.serialize(objects),
-      newObjects: null,
-      page: this.pages.currentIndex,
-    });
-    this.updateState();
+    this.save(objects, null);
   };
 
   store = async (objects: any[]): Promise<void> => {
     if (this.locked) return;
     const ids = objects.map((object) => object.id);
     this.selection = await this.canvas.serialize(objects);
-  }
-
-  modify = async (objects: any[]): Promise<void> => {
-    if (this.locked) return;
-    this.save({
-      ids: objects.map((object) => object.id),
-      oldObjects: this.selection,
-      newObjects: await this.canvas.serialize(objects),
-      page: this.pages.currentIndex,
-    });
-    this.updateState();
   };
 
-  save = async (item: HistoryItem): Promise<void> => {
+  modify = async (objects: any[]): Promise<void> => {
+    this.save(this.selection, objects);
+  };
+
+  save = async (
+    oldObjects: any[] | null,
+    newObjects: any[] | null
+  ): Promise<void> => {
     if (this.locked) return;
-    this.history.push(item);
+    const basis = newObjects || oldObjects;
+    this.history.push({
+      ids: basis.map((object) => object.id),
+      oldObjects: newObjects
+        ? oldObjects
+        : await this.canvas.serialize(oldObjects),
+      newObjects: newObjects && (await this.canvas.serialize(newObjects)),
+      page: this.pages.currentIndex,
+    });
     this.redoStack = [];
+    this.updateState();
   };
 
   undo = async (): Promise<void> => {
