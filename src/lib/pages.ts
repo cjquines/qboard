@@ -9,8 +9,7 @@ const defaultPageJSON = {
 
 export class Page extends fabric.Canvas {
   latestId: number = 0;
-  latestCursorX: number;
-  latestCursorY: number;
+  cursor: { x: number; y: number };
 
   fitToWindow = async (
     canvasWidth: number,
@@ -88,12 +87,6 @@ export class Page extends fabric.Canvas {
       );
     }
     this.requestRenderAll();
-  };
-
-  updateCursor = async (e: fabric.IEvent): Promise<void> => {
-    const { x, y } = this.getPointer(e.e);
-    this.latestCursorX = x;
-    this.latestCursorY = y;
   };
 }
 

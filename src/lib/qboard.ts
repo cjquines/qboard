@@ -116,7 +116,7 @@ export default class QBoard {
     this.baseCanvas.on("path:created", this.pathCreated);
     this.baseCanvas.on("selection:created", this.selectionCreated);
     this.baseCanvas.on("object:modified", this.objectModified);
-    this.baseCanvas.on("mouse:move", this.baseCanvas.updateCursor);
+    this.baseCanvas.on("mouse:move", this.updateCursor);
   }
 
   updateState = (): void => {
@@ -224,5 +224,10 @@ export default class QBoard {
 
   objectModified = async (e: any): Promise<void> => {
     await this.history.modify(e.target._objects || [e.target]);
+  };
+
+  updateCursor = async (e: fabric.IEvent): Promise<void> => {
+    const { x, y } = this.baseCanvas.getPointer(e.e);
+    this.baseCanvas.cursor = { x, y };
   };
 }

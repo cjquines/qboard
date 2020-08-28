@@ -41,7 +41,7 @@ export class ClipboardHandler {
 
   paste = async (): Promise<void> => {
     if (!this.clipboard) return;
-    const { latestCursorX: x, latestCursorY: y } = this.canvas;
+    const { x, y } = this.canvas.cursor;
 
     this.clipboard.clone(async (clone) => {
       this.canvas.discardActiveObject();
