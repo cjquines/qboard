@@ -52,25 +52,22 @@ export class ClipboardHandler {
           top: y,
           originX: "center",
           originY: "center",
-          strokeUniform: true,
         });
       });
-      if (clone.type === "activeSelection") {
+      if (clone._objects) {
         clone.canvas = this.canvas;
         await clone.forEachObject((object) => {
           this.canvas.getNextId().then((id) => {
             object.id = id;
-            object.strokeUniform = true;
             this.canvas.add(object);
           });
         });
         clone.setCoords();
-        this.history.add(clone._objects);
       } else {
         this.canvas.add(clone);
-        this.history.add([clone]);
       }
       this.canvas.setActiveObject(clone);
+      this.history.add(clone._objects || [clone]);
       this.canvas.requestRenderAll();
     });
   };
