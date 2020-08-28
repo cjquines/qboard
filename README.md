@@ -45,19 +45,9 @@ We also work with *two* canvas elements. The top canvas is a temporary one that 
 
 The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mouse events and switching tools. Everything else is delegated to handlers, which are in individual files:
 
-### Todo
-
-- change style of selected with keybinding, add to history too
-- make toolbar show selected style, not pen style (what if multiple selection though?)
-- something that pops up near your cursor when you right click ([as in this](https://medium.com/@subalerts/https-medium-com-implementing-custom-context-menu-in-react-js-part-1-b103260c724c))
-- tooltips for the toolbar
-- save the fabricjson so we can reopen to edit later?
-- right-handed keybindings? dvorak?
-- rooms for spectating?
-- rooms for collaboration?
-- add a style for pen width, make it discrete steps, keybinding like [ ] to increase and decrease it?
-- two modes: one "slide" mode, and one "infinite" mode. panning can be space + drag, but what about zooming? shift+A, shift+S is one possibility?
-- load prev/next pages in memory?
-- make the eraser not use the bounding box?
-- make dragging not use the bounding box?
-- saving things to the server for a limited period?
+- [action.ts](src/lib/action.ts), which abstracts the actions for the front-end.
+- [clipboard.ts](src/lib/clipboard.ts), which handles cutting, copying, and pasting.
+- [history.ts](src/lib/history.ts), which undoes and redoes with a pure(-ish) history stack.
+- [keyboard.ts](src/lib/keyboard.ts), which catches keyboard events that aren't H.
+- [styles.ts](src/lib/styles.ts), which gives an interface for changing pen style.
+- [tools.ts](src/lib/tools.ts), which implements each non-free-drawing tool.
