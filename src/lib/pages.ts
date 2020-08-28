@@ -81,21 +81,16 @@ export class Page extends fabric.Canvas {
     newObjects: fabric.Object[] | null
   ): Promise<void> => {
     const oldObjects = await this.getObjectByIds(ids);
-    if (oldObjects.length && newObjects) {
-      const group = await this.groupObjects(oldObjects);
-      const partial: any = newObjects[0];
-      group.set(partial).setCoords();
-      group._restoreObjectsState();
-      await this.ungroup(group);
-    } else if (oldObjects.length) {
+    if (oldObjects.length) {
       await this.remove(...oldObjects);
-    } else if (newObjects && newObjects.length) {
+    }
+    if (newObjects && newObjects.length) {
       fabric.util.enlivenObjects(newObjects, (objects) => {
         objects.forEach((object: any, i) => {
           object.id = ids[i];
         });
         this.add(...objects);
-      }, "");
+      }, "fabric");
     }
     this.requestRenderAll();
   };

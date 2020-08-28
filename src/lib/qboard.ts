@@ -114,6 +114,7 @@ export default class QBoard {
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
     this.baseCanvas.on("path:created", this.pathCreated);
+    this.baseCanvas.on("selection:created", this.selectionCreated);
     this.baseCanvas.on("object:modified", this.objectModified);
     this.baseCanvas.on("mouse:move", this.baseCanvas.updateCursor);
   }
@@ -217,21 +218,17 @@ export default class QBoard {
     }
   };
 
+  selectionCreated = async (e: any): Promise<void> => {
+    const ids = e.selected.map((object) => object.id);
+    this.history.store = (
+      await this.baseCanvas.getObjectByIds(ids)
+    ).map((object) => (this.baseCanvas as any)._toObject(object, "toObject"));
+  };
+
   objectModified = async (e: any): Promise<void> => {
-    let oldObject = e.transform.original;
-    const newObject = e.target.toJSON();
-    oldObject.angle = (360 - newObject.angle) % 360;
-    oldObject.flipX = newObject.flipX;
-    oldObject.flipY = newObject.flipY;
-    oldObject.scaleX = 1 / newObject.scaleX;
-    oldObject.scaleY = 1 / newObject.scaleY;
-    this.history.save({
-      ids: e.target._objects
-        ? e.target._objects.map((object) => object.id)
-        : [e.target.id],
-      oldObjects: [oldObject],
-      newObjects: [newObject],
-      page: this.pages.currentIndex,
-    });
+    const ids = e.target._objects
+      ? e.target._objects.map((object) => object.id)
+      : [e.target.id];
+    this.history.modify(await this.baseCanvas.getObjectByIds(ids));
   };
 }

@@ -12,6 +12,7 @@ interface HistoryItem {
 export class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
+  store: fabric.Object[];
   locked: boolean = false;
 
   constructor(
@@ -37,6 +38,17 @@ export class HistoryHandler {
       ids: objects.map((object) => object.id),
       oldObjects: objects.map((object) => object.toJSON()),
       newObjects: null,
+      page: this.pages.currentIndex,
+    });
+    this.updateState();
+  };
+
+  modify = async (objects: any[]): Promise<void> => {
+    if (this.locked) return;
+    this.save({
+      ids: objects.map((object) => object.id),
+      oldObjects: this.store,
+      newObjects: objects.map((object) => (this.canvas as any)._toObject(object, "toObject")),
       page: this.pages.currentIndex,
     });
     this.updateState();
