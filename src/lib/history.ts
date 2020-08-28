@@ -25,7 +25,7 @@ export class HistoryHandler {
     this.save({
       ids: objects.map((object) => object.id),
       oldObjects: null,
-      newObjects: objects,
+      newObjects: objects.map((object) => object.toJSON()),
       page: this.pages.currentIndex,
     });
     this.updateState();
@@ -35,7 +35,7 @@ export class HistoryHandler {
     if (this.locked) return;
     this.save({
       ids: objects.map((object) => object.id),
-      oldObjects: objects,
+      oldObjects: objects.map((object) => object.toJSON()),
       newObjects: null,
       page: this.pages.currentIndex,
     });

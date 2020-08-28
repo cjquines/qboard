@@ -90,10 +90,12 @@ export class Page extends fabric.Canvas {
     } else if (oldObjects.length) {
       await this.remove(...oldObjects);
     } else if (newObjects && newObjects.length) {
-      newObjects.forEach((object: any, i) => {
-        object.id = ids[i];
-      });
-      await this.add(...newObjects);
+      fabric.util.enlivenObjects(newObjects, (objects) => {
+        objects.forEach((object: any, i) => {
+          object.id = ids[i];
+        });
+        this.add(...objects);
+      }, "");
     }
     this.requestRenderAll();
   };
