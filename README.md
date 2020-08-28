@@ -1,6 +1,6 @@
 # qboard
 
-*The whiteboard app with vim-inspired bindings.*
+*The efficient digital whiteboard.*
 
 **qboard** is a whiteboard app with aggresively efficient keybindings. It is sketchily hosted on [my website](https://cjquines.com/qboard/).
 

@@ -22,7 +22,7 @@ const HelpModal = (props: {
       <p>
         <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
         <span style={{ color: "#666", marginLeft: "0.2em" }}>
-          The whiteboard app with vim-inspired bindings.
+          The efficient digital whiteboard.
         </span>
       </p>
       <p>
