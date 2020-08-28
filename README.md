@@ -2,7 +2,7 @@
 
 *The efficient digital whiteboard.*
 
-**qboard** is a whiteboard app with aggresively efficient keybindings. It is sketchily hosted on [my website](https://cjquines.com/qboard/).
+**qboard** is a whiteboard app with efficient keyboard shortcuts, to make drawing feel as seamless as possible. In the spirit of Vim, it's possible to do everything that isn't drawing without moving your hands. It is sketchily hosted on [my website](https://cjquines.com/qboard/).
 
 ## Keybindings
 
@@ -12,17 +12,17 @@ Here are the default keybindings:
 
 Image assumes Caps Lock is mapped to Escape. Tab cycles through three toolbar visibilities: the full toolbar, a status pane, and completely hidden. Shift snaps lines to multiples of 45°, and makes squares and circles.
 
-X is Cut when there’s something selected, and Eraser when nothing is selected. The Eraser is element level: it removes entire paths. You can use X to delete whatever you have selected. E or R, when already that color, resets it to black.
+X is Cut when there's something selected, and Eraser when nothing is selected. The Eraser is element level: it removes entire paths. You can use X to delete whatever you have selected. E or R, when already that color, resets it to black.
 
 There are also keybindings with Shift and Ctrl, which you can view in-app.
 
 ## Design principles
 
-qboard is made for seamless lecturing. It’s designed to be easy to use and nice to look at while sharing your screen. It should also be easy to share what you’ve written afterward as a PDF. This guides some of its principles:
+qboard is made for seamless lecturing. It's designed to be easy to use and nice to look at while sharing your screen. It should also be easy to share what you've written afterward as a PDF. This guides some of its principles:
 
-- It should be possible to do everything with the keys on one half of the keyboard, to make presentations flow smoothly. You shouldn’t need to move your mouse all the way to the left to change tools, or to move your hand to the right to switch to the pen tool.
+- It should be possible to do everything that isn't drawing just with keys. Ideally, only with the keys on one half of the keyboard, to make presentations flow smoothly. You shouldn't need to move your mouse all the way to the left to change tools, or to move your hand to the right to switch to the pen tool.
 - By default, it has pages, rather than extending in different directions. It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
-- Pages are fixed at a 16:9 ratio, so when they’re later saved to a PDF, it’s in the same dimensions as a slideshow.
+- Pages are fixed at a 16:9 ratio, so when they're later saved to a PDF, it's in the same dimensions as a slideshow.
 
 There are *some* sense to the default keybindings:
 
@@ -37,13 +37,13 @@ Although initially designed for giving lectures, the whiteboard controls are pre
 
 ## Implementation details
 
-It’s build on the [nwb](https://github.com/insin/nwb) toolkit, which handles React, Webpack, and Babel. We’re using Typescript. The main app is mostly powered through [Fabric.js](http://fabricjs.com/), with [KeyboardJS](https://github.com/RobertWHurst/KeyboardJS) handling keybindings, and [pdfmake](http://pdfmake.org/#/) handling exporting to PDF.
+It's build on the [nwb](https://github.com/insin/nwb) toolkit, which handles React, Webpack, and Babel. We're using Typescript. The main app is mostly powered through [Fabric.js](http://fabricjs.com/), with [KeyboardJS](https://github.com/RobertWHurst/KeyboardJS) handling keybindings, and [pdfmake](http://pdfmake.org/#/) handling exporting to PDF.
 
-We extend the Fabric canvas to a Page class with some convenience functions. The Pages class stores pages in a JSON array; whenever we switch pages, we remove all the objects in the canvas and reload from memory.
+We extend the Fabric canvas to a [Page class](src/lib/pages.ts) with some convenience functions. The Pages class stores pages in a JSON array; whenever we switch pages, we remove all the objects in the canvas and reload from memory.
 
-We also work with *two* canvas elements. The top canvas is a temporary one that renders lines, ellipses, and rectangles as they’re being drawn, and after they’re drawn, they’re removed and added to the base canvas. The base canvas handles everything else: the move tool, free drawing, the eraser, and so on; the top canvas is hidden for these operations. This is for performance reasons, so the base canvas doesn’t have to rerender every time the mouse moves on the top canvas.
+We also work with *two* canvas elements. The top canvas is a temporary one that renders lines, ellipses, and rectangles as they're being drawn, and after they're drawn, they're removed and added to the base canvas. The base canvas handles everything else: the move tool, free drawing, the eraser, and so on; the top canvas is hidden for these operations. This is for performance reasons, so the base canvas doesn't have to rerender every time the mouse moves on the top canvas.
 
-The main source is [qboard.ts](src/qboard.ts), which handles listening to mouse events and switching tools. Everything else is delegated to handlers, which are in individual files.
+The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mouse events and switching tools. Everything else is delegated to handlers, which are in individual files:
 
 ### Todo
 
