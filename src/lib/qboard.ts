@@ -219,14 +219,10 @@ export default class QBoard {
   };
 
   selectionCreated = async (e: any): Promise<void> => {
-    const ids = e.selected.map((object) => object.id);
-    this.history.store = await this.baseCanvas.serialize(await this.baseCanvas.getObjectByIds(ids));
+    await this.history.store(e.selected);
   };
 
   objectModified = async (e: any): Promise<void> => {
-    const ids = e.target._objects
-      ? e.target._objects.map((object) => object.id)
-      : [e.target.id];
-    this.history.modify(await this.baseCanvas.getObjectByIds(ids));
+    await this.history.modify(e.target._objects || [e.target]);
   };
 }
