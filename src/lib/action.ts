@@ -48,6 +48,22 @@ export enum Action {
   ResetStyles = "resetStyles",
 }
 
+const nameMap = {
+  previousPage: "–Page",
+  nextPage: "+Page",
+  resetStyles: "Reset Styles",
+  eraser: "Cut / Eraser",
+  halfFilled: "Half Fill",
+  transparent: "Unfilled",
+  rectangle: "Rect.",
+  selectAll: "Select All",
+  duplicate: "Clone",
+};
+
+export const actionName = (action: Action): string => {
+  return nameMap[action] || action;
+}
+
 export class ActionHandler {
   canvas: fabric.Canvas;
   actionMap: any;

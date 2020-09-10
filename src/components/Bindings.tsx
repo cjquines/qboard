@@ -2,22 +2,10 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 Modal.setAppElement("#Overlay");
 
-import { Action } from "../lib/action";
+import { Action, actionName } from "../lib/action";
 
 import Icon from "./Icon";
 import BindingModal from "./BindingModal";
-
-export const nameMap = {
-  previousPage: "–Page",
-  nextPage: "+Page",
-  resetStyles: "Reset Styles",
-  eraser: "Cut / Eraser",
-  halfFilled: "Half Fill",
-  transparent: "Unfilled",
-  rectangle: "Rect.",
-  selectAll: "Select All",
-  duplicate: "Clone",
-};
 
 const HeaderKey = (props: {
   letter: string;
@@ -41,13 +29,13 @@ const Key = (props: {
 }) => {
   return (
     <button className="key" onClick={(e) => props.callback(props.letter)}>
-      <span className="letter">{props.letter}</span>
       <div className="action">
         {props.action && Icon[props.action]}
         <span className={props.action ? undefined : "unassigned"}>
-          {nameMap[props.action] || props.action || "none"}
+          {actionName(props.action) || "none"}
         </span>
       </div>
+      <span className="letter">{props.letter}</span>
     </button>
   );
 };

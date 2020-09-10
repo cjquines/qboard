@@ -2,9 +2,8 @@ import React from "react";
 import Modal from "react-modal";
 Modal.setAppElement("#Overlay");
 
-import { Action } from "../lib/action";
+import { Action, actionName } from "../lib/action";
 
-import { nameMap } from "./Bindings";
 import Icon from "./Icon";
 
 const BindingModal = (props: {
@@ -42,7 +41,7 @@ const BindingModal = (props: {
               >
                 {Icon[action]}
                 <span style={Icon[action] ? {} : { left: "0.25em" }}>
-                  {nameMap[action] || action}
+                  {actionName(action)}
                 </span>
               </button>
             )
