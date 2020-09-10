@@ -58,7 +58,8 @@ const Overlay = (props: { qboard: QBoard }) => {
       setVisibility((visibility) => (visibility + 2) % 3);
     });
 
-    keyboardJS.bind("h", (e) => toggleOpen());
+    keyboardJS.bind("1", (e) => toggleOpen());
+    keyboardJS.bind("0", (e) => toggleOpen());
   }, []);
 
   return (

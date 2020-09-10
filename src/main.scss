@@ -321,6 +321,10 @@ button {
 
   .row {
     display: flex;
+
+    &.left {
+      justify-content: flex-end;
+    }
   }
 
   .key {

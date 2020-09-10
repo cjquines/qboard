@@ -64,7 +64,7 @@ const nameMap = {
 export const actionName = (action: Action): string => {
   const name = nameMap[action] || action;
   return name && name[0].toUpperCase() + name.slice(1);
-}
+};
 
 export class ActionHandler {
   canvas: fabric.Canvas;

@@ -63,7 +63,7 @@ const mirrorMap = {
   b: "n",
 };
 
-const mirror = (key: string): string => {
+export const mirror = (key: string): string => {
   return mirrorMap[key] || key.slice(0, -1) + mirrorMap[key.slice(-1)];
 };
 
