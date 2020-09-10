@@ -19,10 +19,10 @@ const BindingModal = (props: {
       isOpen={props.letter !== ""}
     >
       <button className="close" onClick={(e) => props.close()}>
-        <i className="fas fa-times-circle" />
+        {Icon.close}
       </button>
       <p>
-        changing <b>{props.letter}</b> binding
+        Changing <span className="binding">{props.letter}</span> binding…
       </p>
       <div className="tools">
         <button

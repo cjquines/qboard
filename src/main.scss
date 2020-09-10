@@ -265,16 +265,22 @@ button {
     }
   }
 
+  .close {
+    background: transparent;
+    color: #888;
+    padding: 0;
+    position: absolute;
+    right: -0.25em;
+    top: 0;
+
+    &:hover {
+      background: transparent;
+      color: #444;
+    }
+  }
+
   img {
     width: 100%;
-  }
-}
-
-.help-modal {
-  .close {
-    padding: 0.125em 0.4em 0;
-    position: absolute;
-    right: -0.75em;
   }
 }
 
@@ -377,18 +383,9 @@ button {
 }
 
 .binding-modal {
-  .close {
-    background: transparent;
-    color: #888;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-
-    &:hover {
-      background: transparent;
-      color: #444;
-    }
+  .binding {
+    font-weight: bold;
+    text-transform: capitalize;
   }
 
   .tools {

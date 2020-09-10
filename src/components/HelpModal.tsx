@@ -21,7 +21,9 @@ const HelpModal = (props: {
       overlayClassName="modal-overlay help-modal"
       isOpen={props.isOpen}
     >
-      <button className="close" onClick={(e) => props.toggleOpen()}>{Icon.close}</button>
+      <button className="close" onClick={(e) => props.toggleOpen()}>
+        {Icon.close}
+      </button>
       <p>
         <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
         <span style={{ color: "#666", marginLeft: "0.2em" }}>

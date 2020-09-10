@@ -7,7 +7,7 @@ const fasIcon = (iconName: string, style?: any) => (
 );
 
 const Icon = {
-  close: fasIcon("times"),
+  close: fasIcon("times-circle"),
 
   previousPage: fasIcon("caret-left"),
   nextPage: fasIcon("caret-right"),
