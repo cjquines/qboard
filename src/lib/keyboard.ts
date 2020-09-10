@@ -42,6 +42,31 @@ export const defaultKeys = {
   "ctrl + v": Action.Paste,
 };
 
+const mirrorMap = {
+  tab: "[",
+  q: "p",
+  w: "o",
+  e: "i",
+  r: "u",
+  t: "y",
+  esc: "'",
+  a: ";",
+  s: "l",
+  d: "k",
+  f: "j",
+  g: "h",
+  shift: "shift",
+  z: "/",
+  x: ".",
+  c: ",",
+  v: "m",
+  b: "n",
+};
+
+const mirror = (key: string): string => {
+  return mirrorMap[key] || key.slice(0, -1) + mirrorMap[key.slice(-1)];
+};
+
 export class KeyboardHandler {
   keyMap: any = {};
 
@@ -70,18 +95,19 @@ export class KeyboardHandler {
 
   save = (): void => {
     localStorage.setItem("keyMap", JSON.stringify(this.keyMap));
-  }
+  };
 
   bindAll = (): void => {
     for (const key in this.keyMap) {
       this.bind(key, this.keyMap[key]);
     }
     this.updateState();
-  }
+  };
 
   unbind = (key: string): void => {
     delete this.keyMap[key];
     keyboardJS.unbind(key);
+    keyboardJS.unbind(mirror(key));
     this.updateState();
     this.save();
   };
@@ -89,6 +115,7 @@ export class KeyboardHandler {
   bind = (key: string, action: Action): void => {
     this.keyMap[key] = action;
     keyboardJS.bind(key, (e) => this.doAction(this.keyMap[key]));
+    keyboardJS.bind(mirror(key), (e) => this.doAction(this.keyMap[key]));
     this.updateState();
     this.save();
   };
@@ -96,8 +123,9 @@ export class KeyboardHandler {
   reset = (): void => {
     for (const key in this.keyMap) {
       keyboardJS.unbind(key);
+      keyboardJS.unbind(mirror(key));
     }
-    this.keyMap = {...defaultKeys};
+    this.keyMap = { ...defaultKeys };
     this.bindAll();
     this.save();
   };
