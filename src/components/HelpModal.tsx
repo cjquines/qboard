@@ -3,6 +3,7 @@ import Modal from "react-modal";
 Modal.setAppElement("#Overlay");
 
 import Bindings from "./Bindings";
+import Icon from "./Icon";
 
 const HelpModal = (props: {
   bind: (string, Action) => void;
@@ -10,6 +11,7 @@ const HelpModal = (props: {
   reset: () => void;
   keyMap: any;
   isOpen: boolean;
+  toggleOpen: () => void;
 }) => {
   const [keyModifier, setKeyModifier] = useState("");
 
@@ -19,6 +21,7 @@ const HelpModal = (props: {
       overlayClassName="modal-overlay help-modal"
       isOpen={props.isOpen}
     >
+      <button className="close" onClick={(e) => props.toggleOpen()}>{Icon.close}</button>
       <p>
         <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
         <span style={{ color: "#666", marginLeft: "0.2em" }}>

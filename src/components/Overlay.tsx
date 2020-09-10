@@ -39,6 +39,13 @@ const Overlay = (props: { qboard: QBoard }) => {
     keyMap: defaultKeys,
   });
 
+  const toggleOpen = (): void => {
+    setHelpModalOpen((helpModalOpen) => {
+      localStorage.setItem("helpModalOpen", helpModalOpen ? "false" : "true");
+      return !helpModalOpen;
+    });
+  };
+
   useEffect(() => {
     if (localStorage.getItem("helpModalOpen") !== "false") {
       setHelpModalOpen(true);
@@ -51,12 +58,7 @@ const Overlay = (props: { qboard: QBoard }) => {
       setVisibility((visibility) => (visibility + 2) % 3);
     });
 
-    keyboardJS.bind("h", (e) => {
-      setHelpModalOpen((helpModalOpen) => {
-        localStorage.setItem("helpModalOpen", helpModalOpen ? "false" : "true");
-        return !helpModalOpen;
-      });
-    });
+    keyboardJS.bind("h", (e) => toggleOpen());
   }, []);
 
   return (
@@ -90,6 +92,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         reset={qboard.keyboard.reset}
         keyMap={state.keyMap}
         isOpen={helpModalOpen}
+        toggleOpen={toggleOpen}
       />
     </div>
   );

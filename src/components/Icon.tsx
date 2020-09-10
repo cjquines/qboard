@@ -7,6 +7,8 @@ const fasIcon = (iconName: string, style?: any) => (
 );
 
 const Icon = {
+  close: fasIcon("times"),
+
   previousPage: fasIcon("caret-left"),
   nextPage: fasIcon("caret-right"),
   addPage: fasIcon("plus", { transform: "scale(0.7)" }),
