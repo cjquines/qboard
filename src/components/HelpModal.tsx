@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 Modal.setAppElement("#Overlay");
 
@@ -15,6 +15,19 @@ const HelpModal = (props: {
 }) => {
   const [keyModifier, setKeyModifier] = useState("");
   const [leftHanded, setLeftHanded] = useState(false);
+
+  const toggleHand = (): void => {
+    setLeftHanded((leftHanded) => {
+      localStorage.setItem("leftHanded", leftHanded ? "false" : "true");
+      return !leftHanded;
+    });
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("leftHanded") === "true") {
+      setLeftHanded(true);
+    }
+  }, []);
 
   return (
     <Modal
@@ -39,7 +52,7 @@ const HelpModal = (props: {
         <button onClick={(e) => setKeyModifier("")}>unmodified</button>
         <button onClick={(e) => setKeyModifier("shift")}>with shift</button>
         <button onClick={(e) => setKeyModifier("ctrl")}>with ctrl</button>
-        <button onClick={(e) => setLeftHanded((leftHanded) => !leftHanded)}>
+        <button onClick={(e) => toggleHand()}>
           {leftHanded ? "right-handed" : "left-handed"}
         </button>
       </p>
