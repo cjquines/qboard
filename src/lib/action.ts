@@ -51,6 +51,7 @@ export enum Action {
 const nameMap = {
   previousPage: "–Page",
   nextPage: "+Page",
+  addPage: "+Page",
   resetStyles: "Reset Styles",
   eraser: "Cut / Eraser",
   halfFilled: "Half Fill",

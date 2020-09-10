@@ -74,6 +74,17 @@ button {
   }
 }
 
+.__react_component_tooltip {
+  background-color: #aaa;
+  font-size: 1em;
+  padding: 0.25em 0.5em;
+  transition: opacity 0.2s;
+
+  &.show {
+    opacity: 1;
+  }
+}
+
 .overlay {
   left: 0;
   opacity: 0.5;

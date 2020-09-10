@@ -13,7 +13,8 @@
     "pdfmake": "^0.1.65",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-modal": "^3.11.2"
+    "react-modal": "^3.11.2",
+    "react-tooltip": "^4.2.9"
   },
   "devDependencies": {
     "@types/fabric": "^3.6.7",
