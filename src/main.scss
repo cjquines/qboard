@@ -339,7 +339,6 @@ button {
       position: absolute;
       right: 0.3em;
       text-align: right;
-      text-transform: capitalize;
       width: 3.9em;
     }
 
@@ -373,7 +372,6 @@ button {
     .unassigned {
       color: #555;
       font-weight: normal;
-      text-transform: none;
     }
   }
 
@@ -398,7 +396,6 @@ button {
     margin: 0;
     position: relative;
     text-align: left;
-    text-transform: capitalize;
 
     span {
       position: absolute;

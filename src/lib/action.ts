@@ -61,7 +61,8 @@ const nameMap = {
 };
 
 export const actionName = (action: Action): string => {
-  return nameMap[action] || action;
+  const name = nameMap[action] || action;
+  return name && name[0].toUpperCase() + name.slice(1);
 }
 
 export class ActionHandler {
