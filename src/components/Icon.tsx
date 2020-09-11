@@ -65,9 +65,9 @@ const Icon = {
       </g>
     </svg>
   ),
-  solid: <i className="far fa-circle"></i>,
+  solid: <i className="far fa-circle" />,
 
-  transparent: <i className="far fa-circle"></i>,
+  transparent: <i className="far fa-circle" />,
   halfFilled: (
     <div style={{ height: "0.7em", marginRight: "1em", position: "relative" }}>
       <i
