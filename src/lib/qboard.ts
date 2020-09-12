@@ -19,6 +19,8 @@ export interface QBoardState {
 }
 
 export default class QBoard {
+  document: HTMLDocument;
+  window: Window;
   baseCanvas: Page;
   canvas: Page;
   pages: Pages;
@@ -49,6 +51,7 @@ export default class QBoard {
   currentObject: any;
   isDown: boolean = false;
   strict: boolean = false;
+  isMobile: boolean;
   callback: (state: QBoardState) => any;
 
   constructor(
@@ -57,6 +60,11 @@ export default class QBoard {
     public canvasWidth: number,
     public canvasHeight: number
   ) {
+    this.document = baseCanvasElement.ownerDocument;
+    this.window = this.document.defaultView;
+    this.isMobile =
+      new URLSearchParams(this.window.location.search).get("device") ===
+      "mobile";
     this.baseCanvas = new Page(baseCanvasElement, {
       backgroundColor: "white",
       selection: false,
@@ -91,6 +99,8 @@ export default class QBoard {
       this.updateState
     );
     this.action = new ActionHandler(
+      this.document,
+      this.window,
       this.switchTool,
       this.currentStyle,
       this.pages,
@@ -109,7 +119,7 @@ export default class QBoard {
     this.switchTool(Tool.Move);
     this.windowResize();
 
-    window.onresize = this.windowResize;
+    this.window.onresize = this.windowResize;
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
