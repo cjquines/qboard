@@ -86,6 +86,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         currentStyle={state.currentStyle}
         doAction={qboard.action.doAction}
         visibility={visibility}
+        isMobile={qboard.isMobile}
       />
       <HelpModal
         bind={qboard.keyboard.bind}
@@ -94,6 +95,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         keyMap={state.keyMap}
         isOpen={helpModalOpen}
         toggleOpen={toggleOpen}
+        isMobile={qboard.isMobile}
       />
     </div>
   );
