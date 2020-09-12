@@ -2,7 +2,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react",
-    "target": "ESNext"
+    "target": "ESNext",
+    "moduleResolution": "Node"
   },
   "include": ["./src/**/*"]
 }
