@@ -24,6 +24,7 @@ const Overlay = (props: { qboard: QBoard }) => {
   const [visibility, setVisibility] = useState(Visibility.Full);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [keyModifier, setKeyModifier] = useState("");
+  const [isMobile, setMobility] = useState(false);
 
   const [state, setState] = useState<QBoardState>({
     currentPage: 0,
@@ -46,9 +47,19 @@ const Overlay = (props: { qboard: QBoard }) => {
     });
   };
 
+  const toggleMobility = (): void => {
+    setMobility((isMobile) => {
+      localStorage.setItem("isMobile", isMobile ? "false" : "true");
+      return !isMobile;
+    });
+  };
+
   useEffect(() => {
     if (localStorage.getItem("helpModalOpen") !== "false") {
       setHelpModalOpen(true);
+    }
+    if (localStorage.getItem("isMobile") !== "false") {
+      setMobility(true);
     }
 
     qboard.callback = setState;
@@ -86,7 +97,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         currentStyle={state.currentStyle}
         doAction={qboard.action.doAction}
         visibility={visibility}
-        isMobile={qboard.isMobile}
+        isMobile={isMobile}
       />
       <HelpModal
         bind={qboard.keyboard.bind}
@@ -95,7 +106,8 @@ const Overlay = (props: { qboard: QBoard }) => {
         keyMap={state.keyMap}
         isOpen={helpModalOpen}
         toggleOpen={toggleOpen}
-        isMobile={qboard.isMobile}
+        isMobile={isMobile}
+        toggleMobility={toggleMobility}
       />
     </div>
   );

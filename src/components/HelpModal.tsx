@@ -13,6 +13,7 @@ const HelpModal = (props: {
   isOpen: boolean;
   toggleOpen: () => void;
   isMobile: boolean;
+  toggleMobility: () => void;
 }) => {
   const [keyModifier, setKeyModifier] = useState("");
   const [leftHanded, setLeftHanded] = useState(false);
@@ -71,7 +72,7 @@ const HelpModal = (props: {
       <p style={{ color: "#666" }}>
         By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
         <a href="https://github.com/cjquines/qboard">Github</a>. Use{" "}
-        <a href={props.isMobile ? "/" : "?device=mobile"}>
+        <a onClick={(e) => props.toggleMobility()} tabIndex={0}>
           {props.isMobile ? "desktop" : "mobile"} site
         </a>
         .
