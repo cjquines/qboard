@@ -51,7 +51,6 @@ export default class QBoard {
   currentObject: any;
   isDown: boolean = false;
   strict: boolean = false;
-  isMobile: boolean;
   callback: (state: QBoardState) => any;
 
   constructor(
@@ -62,9 +61,6 @@ export default class QBoard {
   ) {
     this.document = baseCanvasElement.ownerDocument;
     this.window = this.document.defaultView;
-    this.isMobile =
-      new URLSearchParams(this.window.location.search).get("device") ===
-      "mobile";
     this.baseCanvas = new Page(baseCanvasElement, {
       backgroundColor: "white",
       selection: false,

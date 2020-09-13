@@ -1,27 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
 
-@media all and (min-width:760px) {body {font-size: 20px}}
-@media all and (max-width:760px) {body {font-size: 19px}}
-@media all and (max-width:720px) {body {font-size: 18px}}
-@media all and (max-width:680px) {body {font-size: 17px}}
-@media all and (max-width:640px) {body {font-size: 16px}}
-@media all and (max-width:600px) {body {font-size: 15px}}
-@media all and (max-width:560px) {body {font-size: 14px}}
-@media all and (max-width:520px) {body {font-size: 13px}}
-@media all and (max-width:400px) {body {font-size: 12px}}
-@media all and (max-width:360px) {body {font-size: 11px}}
-@media all and (max-width:330px) {body {font-size: 10px}}
-@media all and (max-width:300px) {body {font-size: 9px}}
+@media all and (min-width: 760px) {
+  body {
+    font-size: 20px;
+  }
+}
+@media all and (max-width: 760px) {
+  body {
+    font-size: 19px;
+  }
+}
+@media all and (max-width: 720px) {
+  body {
+    font-size: 18px;
+  }
+}
+@media all and (max-width: 680px) {
+  body {
+    font-size: 17px;
+  }
+}
+@media all and (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+}
+@media all and (max-width: 600px) {
+  body {
+    font-size: 15px;
+  }
+}
+@media all and (max-width: 560px) {
+  body {
+    font-size: 14px;
+  }
+}
+@media all and (max-width: 520px) {
+  body {
+    font-size: 13px;
+  }
+}
+@media all and (max-width: 400px) {
+  body {
+    font-size: 12px;
+  }
+}
+@media all and (max-width: 360px) {
+  body {
+    font-size: 11px;
+  }
+}
+@media all and (max-width: 330px) {
+  body {
+    font-size: 10px;
+  }
+}
+@media all and (max-width: 300px) {
+  body {
+    font-size: 9px;
+  }
+}
 
 body {
   background-color: #262626;
   color: #262626;
-  font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Verdana", sans-serif;
+  font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
+    "Verdana", sans-serif;
   margin: 0;
   padding: 0;
 }
 
-html, body, .container {
+html,
+body,
+.container {
   height: 100%;
   width: 100%;
 }
@@ -56,7 +107,8 @@ button {
   vertical-align: baseline;
   width: 1.5em;
 
-  &.active, &:hover {
+  &.active,
+  &:hover {
     background-color: #aaaaaa99;
   }
 
@@ -64,7 +116,8 @@ button {
     color: #26262699;
   }
 
-  &.inactive, &.disabled:hover {
+  &.inactive,
+  &.disabled:hover {
     background-color: transparent;
     cursor: unset;
   }
@@ -207,7 +260,7 @@ button {
     position: absolute;
     top: -0.25em;
   }
-  
+
   .style:hover .substyle {
     display: flex;
   }
@@ -221,7 +274,8 @@ button {
       padding: 0.15em 0.2em 0.4em;
     }
 
-    & > button, .style:hover .substyle {
+    & > button,
+    .style:hover .substyle {
       display: none;
     }
   }
@@ -263,6 +317,11 @@ button {
 
     &:hover {
       color: #00c3ff;
+
+      &[href],
+      &[tabindex] {
+        cursor: pointer;
+      }
     }
   }
 
@@ -271,7 +330,8 @@ button {
     margin: 0 0.25em;
     width: initial;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       background: #bbb;
     }
   }
