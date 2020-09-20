@@ -149,11 +149,7 @@ export default class QBoard {
       this.canvasElement.parentElement.style.display = "block";
     }
 
-    if (this.tool.isBrush) {
-      this.baseCanvas.isDrawingMode = true;
-    } else {
-      this.baseCanvas.isDrawingMode = false;
-    }
+    this.baseCanvas.isDrawingMode = this.tool.isBrush;
 
     this.updateState();
   };
