@@ -85,8 +85,10 @@ const Stylebar = (props: {
   currentStyle: Style;
   doAction: (Action) => Promise<void>;
   visibility: Visibility;
+  isMobile: boolean;
 }) => {
   const actions = [Action.Save, Action.Copy, Action.Paste];
+  const mobileMethods = props.isMobile ? [Action.FullScreen] : [];
 
   return (
     <div className={`stylebar visibility-${props.visibility}`}>
@@ -105,6 +107,9 @@ const Stylebar = (props: {
         fillStyle={props.currentStyle.fill}
         callback={props.doAction}
       />
+      {mobileMethods.map((action) => (
+        <OverlayButton action={action} callback={props.doAction} key={action} />
+      ))}
     </div>
   );
 };

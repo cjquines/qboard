@@ -46,6 +46,7 @@ export enum Action {
   Filled = "filled",
 
   ResetStyles = "resetStyles",
+  FullScreen = "fullScreen",
 }
 
 const nameMap = {
@@ -59,6 +60,7 @@ const nameMap = {
   rectangle: "Rect.",
   selectAll: "Select All",
   duplicate: "Clone",
+  fullScreen: "Full Screen",
 };
 
 export const actionName = (action: Action): string => {
@@ -137,6 +139,22 @@ export class ActionHandler {
 
       resetStyles: () =>
         this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent),
+      fullScreen: () => {
+        if (!document.fullscreenElement) {
+          document.documentElement
+            .requestFullscreen()
+            .then(() => {
+              // TODO: set icon to fasIcon("compress")
+              // TODO: set tooltip text to "Exit Full Screen"
+            })
+            .catch();
+        } else {
+          document.exitFullscreen().then(() => {
+            // TODO: set icon to fasIcon("expand")
+            // TODO: set tooltip text to "Enter Full Screen"
+          });
+        }
+      },
     };
   }
 
