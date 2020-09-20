@@ -73,8 +73,6 @@ export class ActionHandler {
   actionMap: any;
 
   constructor(
-    public document: HTMLDocument,
-    public window: Window,
     public switchTool: (tool: Tool) => Promise<void>,
     public currentStyle: Style,
     public pages: Pages,
@@ -142,8 +140,8 @@ export class ActionHandler {
       resetStyles: () =>
         this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent),
       fullScreen: () => {
-        if (!this.document.fullscreenElement) {
-          this.document.documentElement
+        if (!document.fullscreenElement) {
+          document.documentElement
             .requestFullscreen()
             .then(() => {
               // TODO: set icon to fasIcon("compress")
@@ -151,7 +149,7 @@ export class ActionHandler {
             })
             .catch();
         } else {
-          this.document.exitFullscreen().then(() => {
+          document.exitFullscreen().then(() => {
             // TODO: set icon to fasIcon("expand")
             // TODO: set tooltip text to "Enter Full Screen"
           });
