@@ -51,3 +51,25 @@ The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mo
 - [keyboard.ts](src/lib/keyboard.ts), which catches keyboard events that aren't H.
 - [styles.ts](src/lib/styles.ts), which gives an interface for changing pen style.
 - [tools.ts](src/lib/tools.ts), which implements each non-free-drawing tool.
+
+## Running as a container
+
+The `Dockerfile` included can be used to build a container image that will work across different container runtimes, such as Docker. This is based on the official [node:alpine container](https://hub.docker.com/_/node).
+
+Build the container image
+
+```bash
+docker build -t qboard . 
+```
+
+Run the built container image
+
+```bash
+docker run -d --name qboard qboard
+```
+
+Run on an alternative port number (8080)
+
+```bash
+docker run -d --name qboard -p 8080:3000 qboard
+```
