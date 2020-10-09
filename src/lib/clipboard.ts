@@ -41,34 +41,37 @@ export class ClipboardHandler {
 
   paste = async (): Promise<void> => {
     if (!this.clipboard) return;
-    const { x, y } = this.canvas.cursor;
-
     this.clipboard.clone(async (clone) => {
-      this.canvas.discardActiveObject();
-      await this.canvas.getNextId().then((id) => {
-        clone.set({
-          id,
-          left: x,
-          top: y,
-          originX: "center",
-          originY: "center",
+      await this.placeObject(clone);
+    });
+  };
+
+  placeObject = async (obj: any): Promise<void> => {
+    const { x, y } = this.canvas.cursor;
+    this.canvas.discardActiveObject();
+    await this.canvas.getNextId().then((id) => {
+      obj.set({
+        id,
+        left: x,
+        top: y,
+        originX: "center",
+        originY: "center",
+      });
+    });
+    if (obj._objects) {
+      obj.canvas = this.canvas;
+      await obj.forEachObject((object) => {
+        this.canvas.getNextId().then((id) => {
+          object.id = id;
+          this.canvas.add(object);
         });
       });
-      if (clone._objects) {
-        clone.canvas = this.canvas;
-        await clone.forEachObject((object) => {
-          this.canvas.getNextId().then((id) => {
-            object.id = id;
-            this.canvas.add(object);
-          });
-        });
-        clone.setCoords();
-      } else {
-        this.canvas.add(clone);
-      }
-      this.canvas.setActiveObject(clone);
-      this.history.add(clone._objects || [clone]);
-      this.canvas.requestRenderAll();
-    });
+      obj.setCoords();
+    } else {
+      this.canvas.add(obj);
+    }
+    this.canvas.setActiveObject(obj);
+    this.history.add(obj._objects || [obj]);
+    this.canvas.requestRenderAll();
   };
 }
