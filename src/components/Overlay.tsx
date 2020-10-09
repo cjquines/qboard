@@ -75,43 +75,48 @@ const Overlay = (props: { qboard: QBoard }) => {
   }, []);
 
   return (
-    <div className={`overlay visibility-${visibility}`}>
-      <Pagination
-        loadPage={qboard.pages.loadPage}
-        currentPage={state.currentPage}
-        totalPages={state.totalPages}
-        doAction={qboard.action.doAction}
-        visibility={visibility}
-      />
-      <UndoRedo
-        canUndo={state.canUndo}
-        canRedo={state.canRedo}
-        doAction={qboard.action.doAction}
-        visibility={visibility}
-      />
-      <Toolbar
-        currentTool={state.currentTool}
-        doAction={qboard.action.doAction}
-        visibility={visibility}
-      />
-      <Stylebar
+    <>
+      <div className={`overlay visibility-${visibility}`}>
+        <Pagination
+          loadPage={qboard.pages.loadPage}
+          currentPage={state.currentPage}
+          totalPages={state.totalPages}
+          doAction={qboard.action.doAction}
+          visibility={visibility}
+        />
+        <UndoRedo
+          canUndo={state.canUndo}
+          canRedo={state.canRedo}
+          doAction={qboard.action.doAction}
+          visibility={visibility}
+        />
+        <Toolbar
+          currentTool={state.currentTool}
+          doAction={qboard.action.doAction}
+          visibility={visibility}
+        />
+        <Stylebar
+          currentStyle={state.currentStyle}
+          doAction={qboard.action.doAction}
+          visibility={visibility}
+          isMobile={isMobile}
+        />
+        <HelpModal
+          bind={qboard.keyboard.bind}
+          unbind={qboard.keyboard.unbind}
+          reset={qboard.keyboard.reset}
+          keyMap={state.keyMap}
+          isOpen={helpModalOpen}
+          toggleOpen={toggleOpen}
+          isMobile={isMobile}
+          toggleMobility={toggleMobility}
+        />
+      </div>
+      <ContextMenu
         currentStyle={state.currentStyle}
         doAction={qboard.action.doAction}
-        visibility={visibility}
-        isMobile={isMobile}
       />
-      <HelpModal
-        bind={qboard.keyboard.bind}
-        unbind={qboard.keyboard.unbind}
-        reset={qboard.keyboard.reset}
-        keyMap={state.keyMap}
-        isOpen={helpModalOpen}
-        toggleOpen={toggleOpen}
-        isMobile={isMobile}
-        toggleMobility={toggleMobility}
-      />
-      <ContextMenu doAction={qboard.action.doAction} />
-    </div>
+    </>
   );
 };
 
