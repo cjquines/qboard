@@ -7,14 +7,16 @@ import Icon from "./Icon";
 import OverlayButton from "./OverlayButton";
 
 const DashStyle = (props: {
-  dashStyle: Dash;
+  dashStyle: null | Dash;
   callback: (Action) => Promise<void>;
 }) => {
   const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
 
   return (
     <div className="style">
-      <button className="inactive">{Icon[dashes[props.dashStyle]]}</button>
+      {props.dashStyle !== null && (
+        <button className="inactive">{Icon[dashes[props.dashStyle]]}</button>
+      )}
       <div className="substyle">
         {dashes.map((action) => (
           <OverlayButton
@@ -29,7 +31,7 @@ const DashStyle = (props: {
 };
 
 const StrokeStyle = (props: {
-  strokeStyle: string;
+  strokeStyle: null | string;
   callback: (Action) => Promise<void>;
 }) => {
   const strokes = [
@@ -42,9 +44,11 @@ const StrokeStyle = (props: {
 
   return (
     <div className="style">
-      <button className="inactive">
-        <i className="fas fa-circle" style={{ color: props.strokeStyle }} />
-      </button>
+      {props.strokeStyle !== null && (
+        <button className="inactive">
+          <i className="fas fa-circle" style={{ color: props.strokeStyle }} />
+        </button>
+      )}
       <div className="substyle">
         {strokes.map((action) => (
           <OverlayButton
@@ -59,14 +63,16 @@ const StrokeStyle = (props: {
 };
 
 const FillStyle = (props: {
-  fillStyle: Fill;
+  fillStyle: null | Fill;
   callback: (Action) => Promise<void>;
 }) => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
 
   return (
     <div className="style">
-      <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
+      {props.fillStyle !== null && (
+        <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
+      )}
       <div className="substyle">
         {fills.map((action) => (
           <OverlayButton
@@ -81,21 +87,21 @@ const FillStyle = (props: {
 };
 
 const StyleMenu = (props: {
-  currentStyle: Style;
+  currentStyle?: Style;
   doAction: (Action) => Promise<void>;
 }) => {
   return (
     <>
       <DashStyle
-        dashStyle={props.currentStyle.dash}
+        dashStyle={props.currentStyle ? props.currentStyle.dash : null}
         callback={props.doAction}
       />
       <StrokeStyle
-        strokeStyle={props.currentStyle.stroke}
+        strokeStyle={props.currentStyle ? props.currentStyle.stroke : null}
         callback={props.doAction}
       />
       <FillStyle
-        fillStyle={props.currentStyle.fill}
+        fillStyle={props.currentStyle ? props.currentStyle.fill : null}
         callback={props.doAction}
       />
     </>
