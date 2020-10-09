@@ -11,7 +11,9 @@ export class ClipboardHandler {
     public history: HistoryHandler,
     public canvasWidth: number,
     public canvasHeight: number
-  ) {}
+  ) {
+    window.addEventListener("paste", this.pasteExternal);
+  }
 
   copy = async (): Promise<any> => {
     const objects = this.canvas.getActiveObject();
@@ -46,6 +48,18 @@ export class ClipboardHandler {
     });
   };
 
+  pasteExternal = async (e: ClipboardEvent): Promise<void> => {
+    for (const file of e.clipboardData.files) {
+      if (!file.type.includes("image")) continue;
+      const url = window.URL.createObjectURL(file);
+      fabric.Image.fromURL(url, async (obj: any) => {
+        await this.placeObject(obj);
+      });
+      return;
+    }
+    await this.paste();
+  };
+
   placeObject = async (obj: any): Promise<void> => {
     const { x, y } = this.canvas.cursor;
     this.canvas.discardActiveObject();
@@ -73,16 +87,5 @@ export class ClipboardHandler {
     this.canvas.setActiveObject(obj);
     this.history.add(obj._objects || [obj]);
     this.canvas.requestRenderAll();
-  };
-
-  pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    for (const file of e.clipboardData.files) {
-      if (!file.type.includes("image")) continue;
-      const url = window.URL.createObjectURL(file);
-      fabric.Image.fromURL(url, async (obj: any) => {
-        await this.placeObject(obj);
-      });
-      return;
-    }
   };
 }
