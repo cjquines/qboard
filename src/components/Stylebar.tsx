@@ -108,7 +108,17 @@ const Stylebar = (props: {
         callback={props.doAction}
       />
       {mobileMethods.map((action) => (
-        <OverlayButton action={action} callback={props.doAction} key={action} />
+        <OverlayButton
+          action={
+            action === Action.FullScreen
+              ? !document.fullscreenElement
+                ? Action.EnterFullScreen
+                : Action.ExitFullScreen
+              : action
+          }
+          callback={props.doAction}
+          key={action}
+        />
       ))}
     </div>
   );
