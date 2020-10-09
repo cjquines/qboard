@@ -110,6 +110,7 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
+    window.addEventListener("paste", this.pasteExternal);
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
@@ -160,6 +161,17 @@ export default class QBoard {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
       this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);
+  };
+
+  pasteExternal = async (e: ClipboardEvent): Promise<void> => {
+    for (const file of e.clipboardData.files) {
+      if (!file.type.includes("image")) continue;
+      const url = window.URL.createObjectURL(file);
+      fabric.Image.fromURL(url, async (obj: any) => {
+        await this.clipboard.placeObject(obj);
+      });
+      return;
+    }
   };
 
   mouseDown = async (e: fabric.IEvent): Promise<void> => {
