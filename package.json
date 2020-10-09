@@ -22,6 +22,7 @@
     "awesome-typescript-loader": "^5.2.1",
     "nwb": "0.25.x",
     "nwb-sass": "^0.10.2",
+    "prettier": "^2.1.2",
     "typescript": "^3.9.5"
   },
   "author": "cjquines",

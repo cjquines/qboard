@@ -111,9 +111,7 @@ export class ActionHandler {
         );
         this.canvas.requestRenderAll();
       },
-      duplicate: () => {
-        this.clipboard.copy().then(() => this.clipboard.paste());
-      },
+      duplicate: () => this.clipboard.copy().then(() => this.clipboard.paste()),
 
       move: () => this.switchTool(Tool.Move),
       pen: () => this.switchTool(Tool.Pen),
@@ -158,9 +156,7 @@ export class ActionHandler {
     };
   }
 
-  doAction = async (action: Action): Promise<void> => {
-    await this.actionMap[action]();
-  };
+  doAction = async (action: Action): Promise<void> => this.actionMap[action]();
 
   setDash = async (dash: Dash): Promise<void> => {
     if (dash === this.currentStyle.dash) {
