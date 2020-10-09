@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Dash, Stroke, Fill, Style } from "../lib/styles";
 import { Action } from "../lib/action";
@@ -90,6 +90,15 @@ const Stylebar = (props: {
   const actions = [Action.Save, Action.Copy, Action.Paste];
   const mobileMethods = props.isMobile ? [Action.FullScreen] : [];
 
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    setIsFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", (e) =>
+      setIsFullscreen(Boolean(document.fullscreenElement))
+    );
+  }, []);
+
   return (
     <div className={`stylebar visibility-${props.visibility}`}>
       {actions.map((action) => (
@@ -111,7 +120,7 @@ const Stylebar = (props: {
         <OverlayButton
           action={
             action === Action.FullScreen
-              ? !document.fullscreenElement
+              ? !isFullscreen
                 ? Action.EnterFullScreen
                 : Action.ExitFullScreen
               : action
