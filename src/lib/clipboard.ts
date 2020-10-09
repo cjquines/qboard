@@ -32,10 +32,10 @@ export class ClipboardHandler {
       objects.forEachObject((object) => {
         this.canvas.remove(object);
       });
-      this.history.remove(objects._objects);
+      await this.history.remove(objects._objects);
     } else {
       this.canvas.remove(objects);
-      this.history.remove([objects]);
+      await this.history.remove([objects]);
     }
     this.canvas.requestRenderAll();
     return true;
@@ -71,21 +71,21 @@ export class ClipboardHandler {
         originX: "center",
         originY: "center",
       });
-    });
-    if (obj._objects) {
-      obj.canvas = this.canvas;
-      await obj.forEachObject((object) => {
-        this.canvas.getNextId().then((id) => {
-          object.id = id;
-          this.canvas.add(object);
+      if (obj._objects) {
+        obj.canvas = this.canvas;
+        await obj.forEachObject((object) => {
+          this.canvas.getNextId().then((id) => {
+            object.id = id;
+            this.canvas.add(object);
+          });
         });
-      });
-      obj.setCoords();
-    } else {
-      this.canvas.add(obj);
-    }
-    this.canvas.setActiveObject(obj);
-    this.history.add(obj._objects || [obj]);
-    this.canvas.requestRenderAll();
+        obj.setCoords();
+      } else {
+        this.canvas.add(obj);
+      }
+      this.canvas.setActiveObject(obj);
+      await this.history.add(obj._objects || [obj]);
+      this.canvas.requestRenderAll();
+    });
   };
 }

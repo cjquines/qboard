@@ -21,13 +21,11 @@ export class HistoryHandler {
     public updateState: () => void
   ) {}
 
-  add = async (objects: any[]): Promise<void> => {
-    this.save(null, objects);
-  };
+  add = async (objects: any[]): Promise<void> =>
+    objects.length && this.save(null, objects);
 
-  remove = async (objects: any[]): Promise<void> => {
-    this.save(objects, null);
-  };
+  remove = async (objects: any[]): Promise<void> =>
+    objects.length && this.save(objects, null);
 
   store = async (objects: any[]): Promise<void> => {
     if (this.locked) return;
@@ -35,9 +33,8 @@ export class HistoryHandler {
     this.selection = await this.canvas.serialize(objects);
   };
 
-  modify = async (objects: any[]): Promise<void> => {
+  modify = async (objects: any[]): Promise<void> =>
     this.save(this.selection, objects);
-  };
 
   save = async (
     oldObjects: any[] | null,
@@ -60,22 +57,26 @@ export class HistoryHandler {
   undo = async (): Promise<void> => {
     if (!this.history.length) return;
     this.canvas.discardActiveObject();
-    const last = this.history.pop();
-    this.redoStack.push(last);
-    this.locked = true;
-    await this.pages.loadPage(last.page);
-    await this.canvas.apply(last.ids, last.oldObjects);
-    this.locked = false;
-    this.updateState();
+    await this.move(this.history, this.redoStack, "oldObjects");
   };
 
   redo = async (): Promise<void> => {
     if (!this.redoStack.length) return;
-    const last = this.redoStack.pop();
-    this.history.push(last);
+    await this.move(this.redoStack, this.history, "newObjects");
+  };
+
+  private move = async (
+    from: HistoryItem[],
+    to: HistoryItem[],
+    type: string
+  ): Promise<void> => {
+    const last = from.pop();
+    to.push(last);
     this.locked = true;
     await this.pages.loadPage(last.page);
-    await this.canvas.apply(last.ids, last.newObjects);
+
+    await this.canvas.apply(last.ids, last[type]);
+    // TODO: Use symbols or enums or something for type
     this.locked = false;
     this.updateState();
   };
