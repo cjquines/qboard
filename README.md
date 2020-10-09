@@ -4,7 +4,7 @@
 
 **qboard** is a whiteboard app with efficient keyboard shortcuts, to make drawing feel as seamless as possible. In the spirit of Vim, it's possible to do everything that isn't drawing without moving your hands. It's hosted on [my website](https://cjquines.com/qboard/). Here's a [demo video](https://youtu.be/8NvXHukL8ic).
 
-## Keybindings
+## Features
 
 Here are the default keybindings:
 
@@ -14,7 +14,11 @@ Image assumes Caps Lock is mapped to Escape. Tab cycles through three toolbar vi
 
 X is Cut when there's something selected, and Eraser when nothing is selected. The Eraser is element level: it removes entire paths. You can use X to delete whatever you have selected. E or R, when already that color, resets it to black.
 
-There are also keybindings with Shift and Ctrl, which you can view in-app.
+There are also keybindings with Shift and Ctrl, which you can view in-app. Other neat things you can do:
+
+- Hit the save button to save to a PDF.
+- Hit Ctrl+V to paste images from the system clipboard.
+- Right-clicking to bring up a context menu to change the style.
 
 ## Design principles
 
