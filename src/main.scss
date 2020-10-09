@@ -435,3 +435,20 @@ button {
     top: 0.1em;
   }
 }
+
+.context-menu {
+  align-items: center;
+  border-radius: 0.25em;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+
+  .substyle {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .__react_component_tooltip {
+    opacity: 0;
+  }
+}

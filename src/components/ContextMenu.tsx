@@ -5,9 +5,7 @@ import { Action } from "../lib/action";
 
 import StyleMenu from "./StyleMenu";
 
-const ContextMenu = (props: {
-  doAction: (Action) => Promise<void>;
-}) => {
+const ContextMenu = (props: { doAction: (Action) => Promise<void> }) => {
   const [coords, setCoords] = useState<null | [Number, Number]>(null);
 
   useEffect(() => {
@@ -15,15 +13,15 @@ const ContextMenu = (props: {
       e.preventDefault();
       setCoords([e.clientX, e.clientY]);
     });
+    document.addEventListener("click", (e) => setCoords(null));
   }, []);
 
   return coords ? (
     <div
-      className="contextMenu"
+      className="context-menu"
       style={{
-        position: "absolute",
-        top: `${coords[1]}px`,
-        left: `${coords[0]}px`,
+        top: `calc(${coords[1]}px - 2.5em)`,
+        left: `calc(${coords[0]}px - 4em)`,
       }}
     >
       <StyleMenu
