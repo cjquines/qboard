@@ -74,4 +74,15 @@ export class ClipboardHandler {
     this.history.add(obj._objects || [obj]);
     this.canvas.requestRenderAll();
   };
+
+  pasteExternal = async (e: ClipboardEvent): Promise<void> => {
+    for (const file of e.clipboardData.files) {
+      if (!file.type.includes("image")) continue;
+      const url = window.URL.createObjectURL(file);
+      fabric.Image.fromURL(url, async (obj: any) => {
+        await this.placeObject(obj);
+      });
+      return;
+    }
+  };
 }
