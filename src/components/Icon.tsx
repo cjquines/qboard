@@ -32,6 +32,8 @@ const Icon = {
   duplicate: fasIcon("clone"),
 
   fullScreen: fasIcon("expand"),
+  enterFullScreen: fasIcon("expand"),
+  exitFullScreen: fasIcon("compress"),
 
   black: fasIcon("circle", { color: Stroke.Black }),
   blue: fasIcon("circle", { color: Stroke.Blue }),

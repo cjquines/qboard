@@ -47,6 +47,8 @@ export enum Action {
 
   ResetStyles = "resetStyles",
   FullScreen = "fullScreen",
+  EnterFullScreen = "enterFullScreen",
+  ExitFullScreen = "exitFullScreen",
 }
 
 const nameMap = {
@@ -61,6 +63,8 @@ const nameMap = {
   halfFilled: "Half Fill",
   resetStyles: "Reset Styles",
   fullScreen: "Full Screen",
+  enterFullScreen: "Enter Full Screen",
+  exitFullScreen: "Exit Full Screen",
 };
 
 export const actionName = (action: Action): string => {
@@ -82,7 +86,8 @@ export class ActionHandler {
       dash: Dash | null,
       stroke: Stroke | null,
       fill: Fill | null
-    ) => void
+    ) => void,
+    public updateState: () => void
   ) {
     this.canvas = this.pages.canvas;
 
@@ -139,21 +144,19 @@ export class ActionHandler {
 
       resetStyles: () =>
         this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent),
-      fullScreen: () => {
-        if (!document.fullscreenElement) {
-          document.documentElement
-            .requestFullscreen()
-            .then(() => {
-              // TODO: set icon to fasIcon("compress")
-              // TODO: set tooltip text to "Exit Full Screen"
-            })
-            .catch();
-        } else {
-          document.exitFullscreen().then(() => {
-            // TODO: set icon to fasIcon("expand")
-            // TODO: set tooltip text to "Enter Full Screen"
-          });
-        }
+      fullScreen: () =>
+        this.doAction(
+          !document.fullscreenElement
+            ? Action.EnterFullScreen
+            : Action.ExitFullScreen
+        ),
+      enterFullScreen: async () => {
+        await document.documentElement.requestFullscreen();
+        this.updateState();
+      },
+      exitFullScreen: async () => {
+        await document.exitFullscreen();
+        this.updateState();
       },
     };
   }
