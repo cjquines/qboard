@@ -11,7 +11,7 @@ const ContextMenu = (props: { doAction: (Action) => Promise<void> }) => {
   useEffect(() => {
     document.addEventListener("contextmenu", (e: MouseEvent) => {
       e.preventDefault();
-      setCoords([e.clientX, e.clientY]);
+      setCoords((coords) => (coords ? null : [e.clientX, e.clientY]));
     });
     document.addEventListener("click", (e) => setCoords(null));
   }, []);
