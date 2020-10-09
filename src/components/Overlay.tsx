@@ -11,6 +11,7 @@ import UndoRedo from "./UndoRedo";
 import Toolbar from "./Toolbar";
 import Stylebar from "./Stylebar";
 import HelpModal from "./HelpModal";
+import ContextMenu from "./ContextMenu";
 
 export const enum Visibility {
   None,
@@ -23,6 +24,9 @@ const Overlay = (props: { qboard: QBoard }) => {
 
   const [visibility, setVisibility] = useState(Visibility.Full);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
+  const [contextMenuCoords, setContextMenuCoords] = useState<
+    null | [Number, Number]
+  >(null);
   const [keyModifier, setKeyModifier] = useState("");
   const [isMobile, setMobility] = useState(false);
 
@@ -71,6 +75,11 @@ const Overlay = (props: { qboard: QBoard }) => {
 
     keyboardJS.bind("1", (e) => toggleOpen());
     keyboardJS.bind("0", (e) => toggleOpen());
+
+    document.addEventListener("contextmenu", (e: MouseEvent) => {
+      e.preventDefault();
+      setContextMenuCoords([e.clientX, e.clientY]);
+    });
   }, []);
 
   return (
@@ -109,6 +118,14 @@ const Overlay = (props: { qboard: QBoard }) => {
         isMobile={isMobile}
         toggleMobility={toggleMobility}
       />
+      {contextMenuCoords && (
+        <ContextMenu
+          coords={contextMenuCoords}
+          currentStyle={state.currentStyle}
+          doAction={qboard.action.doAction}
+          toggleOpen={() => setContextMenuCoords(null)}
+        />
+      )}
     </div>
   );
 };
