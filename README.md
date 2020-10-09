@@ -51,3 +51,5 @@ The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mo
 - [keyboard.ts](src/lib/keyboard.ts), which catches keyboard events that aren't H.
 - [styles.ts](src/lib/styles.ts), which gives an interface for changing pen style.
 - [tools.ts](src/lib/tools.ts), which implements each non-free-drawing tool.
+
+Running `npm start` will start the development server. Run `npm run build` to bundle it. There's also a [Dockerfile](Dockerfile); build the image with `docker build -t qboard .`, then run with `docker run -d --name qboard qboard`. 
