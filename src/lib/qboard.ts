@@ -110,8 +110,6 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
-    window.addEventListener("paste", this.clipboard.pasteExternal);
-    
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);

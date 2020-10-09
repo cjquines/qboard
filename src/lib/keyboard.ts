@@ -32,14 +32,12 @@ export const defaultKeys = {
   "shift + c": Action.Yellow,
   "shift + v": Action.Orange,
 
-  "ctrl + y": Action.Redo,
   "ctrl + a": Action.SelectAll,
   "ctrl + s": Action.Save,
   "ctrl + d": Action.Duplicate,
   "ctrl + z": Action.Undo,
   "ctrl + x": Action.Cut,
   "ctrl + c": Action.Copy,
-  "ctrl + v": Action.Paste,
 };
 
 const mirrorMap = {
