@@ -53,13 +53,13 @@ const nameMap = {
   previousPage: "–Page",
   nextPage: "+Page",
   addPage: "+Page",
-  resetStyles: "Reset Styles",
-  eraser: "Cut / Eraser",
-  halfFilled: "Half Fill",
-  transparent: "Unfilled",
-  rectangle: "Rect.",
   selectAll: "Select All",
   duplicate: "Clone",
+  eraser: "Cut / Eraser",
+  rectangle: "Rect.",
+  transparent: "Unfilled",
+  halfFilled: "Half Fill",
+  resetStyles: "Reset Styles",
   fullScreen: "Full Screen",
 };
 
