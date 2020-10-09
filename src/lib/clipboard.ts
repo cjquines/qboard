@@ -11,7 +11,9 @@ export class ClipboardHandler {
     public history: HistoryHandler,
     public canvasWidth: number,
     public canvasHeight: number
-  ) {}
+  ) {
+    window.addEventListener("paste", this.pasteExternal);
+  }
 
   copy = async (): Promise<any> => {
     const objects = this.canvas.getActiveObject();
@@ -41,33 +43,48 @@ export class ClipboardHandler {
 
   paste = async (): Promise<void> => {
     if (!this.clipboard) return;
-    const { x, y } = this.canvas.cursor;
-
     this.clipboard.clone(async (clone) => {
-      this.canvas.discardActiveObject();
-      await this.canvas.getNextId().then((id) => {
-        clone.set({
-          id,
-          left: x,
-          top: y,
-          originX: "center",
-          originY: "center",
-        });
+      await this.placeObject(clone);
+    });
+  };
+
+  pasteExternal = async (e: ClipboardEvent): Promise<void> => {
+    for (const file of e.clipboardData.files) {
+      if (!file.type.includes("image")) continue;
+      const url = window.URL.createObjectURL(file);
+      fabric.Image.fromURL(url, async (obj: any) => {
+        await this.placeObject(obj);
       });
-      if (clone._objects) {
-        clone.canvas = this.canvas;
-        await clone.forEachObject((object) => {
+      return;
+    }
+    await this.paste();
+  };
+
+  placeObject = async (obj: any): Promise<void> => {
+    const { x, y } = this.canvas.cursor;
+    this.canvas.discardActiveObject();
+    await this.canvas.getNextId().then((id) => {
+      obj.set({
+        id,
+        left: x,
+        top: y,
+        originX: "center",
+        originY: "center",
+      });
+      if (obj._objects) {
+        obj.canvas = this.canvas;
+        await obj.forEachObject((object) => {
           this.canvas.getNextId().then((id) => {
             object.id = id;
             this.canvas.add(object);
           });
         });
-        clone.setCoords();
+        obj.setCoords();
       } else {
-        this.canvas.add(clone);
+        this.canvas.add(obj);
       }
-      this.canvas.setActiveObject(clone);
-      await this.history.add(clone._objects || [clone]);
+      this.canvas.setActiveObject(obj);
+      await this.history.add(obj._objects || [obj]);
       this.canvas.requestRenderAll();
     });
   };

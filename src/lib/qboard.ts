@@ -96,7 +96,8 @@ export default class QBoard {
       this.pages,
       this.history,
       this.clipboard,
-      this.style.set
+      this.style.set,
+      this.updateState
     );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,

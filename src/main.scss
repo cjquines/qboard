@@ -60,12 +60,15 @@ button {
     background-color: #aaaaaa99;
   }
 
+  &.inactive, &.disabled:hover {
+    background-color: transparent;
+  }
+
   &.disabled {
     color: #26262699;
   }
 
-  &.inactive, &.disabled:hover {
-    background-color: transparent;
+  &.active, &.inactive, &.disabled:hover {
     cursor: unset;
   }
 
@@ -433,5 +436,36 @@ button {
     display: inline;
     margin-right: 1.25em !important;
     top: 0.1em;
+  }
+}
+
+.context-menu {
+  background-color: #edeff0;
+  border-radius: 0.25em;
+  padding: 0.25em;
+  position: absolute;
+
+  .substyle {
+    display: flex;
+    flex-direction: row;
+  }
+
+  button {
+    opacity: 0.5;
+    margin: 0.1em;
+  }
+
+  button.active {
+    background: none;
+    border-radius: 0;
+    border-bottom: 1px solid #262626;
+  }
+
+  button.active, button:hover {
+    opacity: 1;
+  }
+
+  .__react_component_tooltip {
+    display: none;
   }
 }
