@@ -5,7 +5,10 @@ import { Action } from "../lib/action";
 
 import StyleMenu from "./StyleMenu";
 
-const ContextMenu = (props: { doAction: (Action) => Promise<void> }) => {
+const ContextMenu = (props: {
+  currentStyle: Style;
+  doAction: (Action) => Promise<void>;
+}) => {
   const [coords, setCoords] = useState<null | [Number, Number]>(null);
 
   useEffect(() => {
@@ -20,15 +23,17 @@ const ContextMenu = (props: { doAction: (Action) => Promise<void> }) => {
     <div
       className="context-menu"
       style={{
-        top: `calc(${coords[1]}px - 2.5em)`,
-        left: `calc(${coords[0]}px - 4em)`,
+        top: `calc(${coords[1]}px - 2.8em)`,
+        left: `calc(${coords[0]}px - 1.1em)`,
       }}
     >
       <StyleMenu
+        currentStyle={props.currentStyle}
         doAction={(action: Action) => {
           setCoords(null);
           return props.doAction(action);
         }}
+        inContext={true}
       />
     </div>
   ) : null;
