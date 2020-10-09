@@ -30,10 +30,10 @@ export class ClipboardHandler {
       objects.forEachObject((object) => {
         this.canvas.remove(object);
       });
-      this.history.remove(objects._objects);
+      await this.history.remove(objects._objects);
     } else {
       this.canvas.remove(objects);
-      this.history.remove([objects]);
+      await this.history.remove([objects]);
     }
     this.canvas.requestRenderAll();
     return true;
@@ -67,7 +67,7 @@ export class ClipboardHandler {
         this.canvas.add(clone);
       }
       this.canvas.setActiveObject(clone);
-      this.history.add(clone._objects || [clone]);
+      await this.history.add(clone._objects || [clone]);
       this.canvas.requestRenderAll();
     });
   };

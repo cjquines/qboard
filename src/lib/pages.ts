@@ -88,6 +88,13 @@ export class Page extends fabric.Canvas {
     }
     this.requestRenderAll();
   };
+
+  loadFromJSONAsync = async (json: any) =>
+    new Promise<void>((resolve) => {
+      super.loadFromJSON(json, () => {
+        resolve();
+      });
+    });
 }
 
 export class Pages {
@@ -108,36 +115,37 @@ export class Pages {
     ]);
   };
 
-  loadPage = async (index: number): Promise<void> => {
-    if (index === this.currentIndex) return;
+  loadPage = async (index: number, reload: boolean = true): Promise<number> => {
+    if (index === this.currentIndex) return index;
     await this.savePage();
-    await this.canvas.loadFromJSON(this.pagesJson[index], null);
     this.currentIndex = index;
-    this.updateState();
+    await this.canvas.loadFromJSONAsync(this.pagesJson[index]);
+    if (reload) this.updateState();
+    return index;
   };
 
-  newPage = async (): Promise<void> => {
+  newPage = async (reload: boolean = true): Promise<number> => {
     this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
-    await this.loadPage(this.currentIndex + 1);
+    return this.loadPage(this.currentIndex + 1, reload);
   };
 
-  previousPage = async (): Promise<void> => {
-    if (this.currentIndex === 0) return;
-    await this.loadPage(this.currentIndex - 1);
+  previousPage = async (): Promise<number> => {
+    if (this.currentIndex === 0) return 0;
+    return this.loadPage(this.currentIndex - 1);
   };
 
-  nextOrNewPage = async (): Promise<void> => {
+  nextOrNewPage = async (reload: boolean = true): Promise<number> => {
     if (this.currentIndex === this.pagesJson.length - 1) {
-      return this.newPage();
+      return this.newPage(reload);
     }
-    await this.loadPage(this.currentIndex + 1);
+    return this.loadPage(this.currentIndex + 1, reload);
   };
 
   export = async (): Promise<void> => {
     await this.savePage();
     const ratio = 2;
-    const content = this.pagesJson.map((page) => {
-      this.canvas.loadFromJSON(page, null);
+    const content = this.pagesJson.map(async (page) => {
+      await this.canvas.loadFromJSONAsync(page);
       return { svg: this.canvas.toSVG(), width: this.canvasWidth / ratio };
     });
 
@@ -151,5 +159,35 @@ export class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
+  };
+
+  jsonify = async (): Promise<string> => {
+    await this.savePage();
+    return JSON.stringify(this.pagesJson);
+  };
+
+  // It doesn't exactly splice _Pages_ (insert Page objects) as the name claims it does but whatever
+  // It accepts an array instead of rest parameters, for convenience when exposing this API
+  // pages is an array of pure objects
+  // @returns array of objects in the union of all the pages
+  // FIXME: Do I need to worry about concurrency issues here (we use the pagesJson once by providing a default value for index and then once in the body)? It shouldn't be an issue because it should only be called by something that uses the locked property but idk
+  splicePages = async (
+    index: number = this.pagesJson.length - 1,
+    deleteCount: number,
+    pages: any[] = []
+  ): Promise<any[]> => {
+    await this.loadPage(index);
+
+    this.pagesJson.splice(index + 1, deleteCount, ...pages);
+
+    for (const page of pages) {
+      console.log({ index, pages, pagesJSON: this.pagesJson });
+      await this.nextOrNewPage(false);
+    }
+
+    await this.updateState();
+
+    // TODO: this is the wrong type of objects to be put into history
+    return pages.flatMap((page) => page.objects);
   };
 }

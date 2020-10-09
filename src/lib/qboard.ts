@@ -110,6 +110,19 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
+
+    // TODO: move these inner calls to whichever class you think is good
+
+    // @ts-ignore for dev purposes
+    window.exportJSON = this.pages.jsonify;
+
+    // Takes an array (not a JSONified string but you can change that with a JSON.parse) pages (as pure objects) and adds them to the pagesJson array beginning one unit to the right of the current page. Is obvious once you open the splicePages function
+    // @ts-ignore for dev purposes
+    window.loadQ = async (pages): Promise<void> => {
+      const objects = await this.pages.splicePages(undefined, 0, pages);
+      // await this.history.add(objects);
+    };
+
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
@@ -141,11 +154,14 @@ export default class QBoard {
     this.tool = this.handlers[tool];
 
     if (tool === Tool.Move || this.tool.isBrush) {
-      this.baseCanvas.activateSelection();
+      await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
-      this.tool.setBrush(this.baseCanvas.freeDrawingBrush, this.drawerOptions);
+      await this.tool.setBrush(
+        this.baseCanvas.freeDrawingBrush,
+        this.drawerOptions
+      );
     } else {
-      this.baseCanvas.deactivateSelection();
+      await this.baseCanvas.deactivateSelection();
       this.canvasElement.parentElement.style.display = "block";
     }
 
@@ -190,13 +206,13 @@ export default class QBoard {
     this.baseCanvas.requestRenderAll();
     await this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
-    this.history.add([this.currentObject]);
+    await this.history.add([this.currentObject]);
   };
 
   pathCreated = async (e: any): Promise<void> => {
     if (this.currentTool === Tool.Pen) {
       e.path.id = await this.baseCanvas.getNextId();
-      this.history.add([e.path]);
+      await this.history.add([e.path]);
     } else if (this.currentTool === Tool.Eraser) {
       const path = fabric.util.object.clone(e.path);
       await this.baseCanvas.remove(e.path);
@@ -204,8 +220,8 @@ export default class QBoard {
         .getObjects()
         .filter((object) => object.intersectsWithObject(path));
       if (!objects.length) return;
-      await this.baseCanvas.remove(...objects);
-      this.history.remove(objects);
+      this.baseCanvas.remove(...objects);
+      await this.history.remove(objects);
     } else if (this.currentTool === Tool.Laser) {
       setTimeout(async () => {
         await this.baseCanvas.remove(e.path);
@@ -214,13 +230,10 @@ export default class QBoard {
     }
   };
 
-  selectionCreated = async (e: any): Promise<void> => {
-    await this.history.store(e.selected);
-  };
+  selectionCreated = (e: any): Promise<void> => this.history.store(e.selected);
 
-  objectModified = async (e: any): Promise<void> => {
-    await this.history.modify(e.target._objects || [e.target]);
-  };
+  objectModified = async (e: any): Promise<void> =>
+    this.history.modify(e.target._objects || [e.target]);
 
   updateCursor = async (e: fabric.IEvent): Promise<void> => {
     const { x, y } = this.baseCanvas.getPointer(e.e);
