@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Style } from "../lib/styles";
 import { Action } from "../lib/action";
@@ -6,29 +6,34 @@ import { Action } from "../lib/action";
 import StyleMenu from "./StyleMenu";
 
 const ContextMenu = (props: {
-  coords: null | [Number, Number];
-  currentStyle: Style;
   doAction: (Action) => Promise<void>;
-  toggleOpen: () => void;
 }) => {
-  return (
+  const [coords, setCoords] = useState<null | [Number, Number]>(null);
+
+  useEffect(() => {
+    document.addEventListener("contextmenu", (e: MouseEvent) => {
+      e.preventDefault();
+      setCoords([e.clientX, e.clientY]);
+    });
+  }, []);
+
+  return coords ? (
     <div
       className="contextMenu"
       style={{
         position: "absolute",
-        top: `${props.coords[1]}px`,
-        left: `${props.coords[0]}px`,
+        top: `${coords[1]}px`,
+        left: `${coords[0]}px`,
       }}
     >
       <StyleMenu
-        currentStyle={props.currentStyle}
         doAction={(action: Action) => {
-          props.toggleOpen();
+          setCoords(null);
           return props.doAction(action);
         }}
       />
     </div>
-  );
+  ) : null;
 };
 
 export default ContextMenu;
