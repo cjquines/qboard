@@ -9,11 +9,11 @@ WORKDIR $WORKDIR
 RUN addgroup -S $GROUP \
  && adduser -S $USER -G $GROUP -D \
  && chown $USER:$GROUP $WORKDIR
-USER qboard
+USER $USER 
 
 COPY ./ .
  
-RUN npm install nwb@0.25.2
+RUN npm install
 RUN npm run build 
 
 ENTRYPOINT ["npm"]
