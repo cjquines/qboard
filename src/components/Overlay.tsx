@@ -110,9 +110,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         isMobile={isMobile}
         toggleMobility={toggleMobility}
       />
-      <ContextMenu
-        doAction={qboard.action.doAction}
-      />
+      <ContextMenu doAction={qboard.action.doAction} />
     </div>
   );
 };
