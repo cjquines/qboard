@@ -6,6 +6,12 @@ import { Action, actionName } from "../lib/action";
 
 import Icon from "./Icon";
 
+const nonBinding: Action[] = [
+  Action.AddPage,
+  Action.EnterFullScreen,
+  Action.ExitFullScreen,
+];
+
 const BindingModal = (props: {
   letter: string;
   action: Action | null;
@@ -33,7 +39,7 @@ const BindingModal = (props: {
         </button>
         {Object.values(Action).map(
           (action) =>
-            action !== Action.AddPage && (
+            !nonBinding.includes(action) && (
               <button
                 key={action}
                 className={props.action === action ? "active" : undefined}
