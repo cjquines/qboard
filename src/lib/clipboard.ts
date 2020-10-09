@@ -7,10 +7,10 @@ export class ClipboardHandler {
   clipboard: fabric.Object;
 
   constructor(
-    public canvas: Page,
-    public history: HistoryHandler,
-    public canvasWidth: number,
-    public canvasHeight: number
+      public canvas: Page,
+      public history: HistoryHandler,
+      public canvasWidth: number,
+      public canvasHeight: number
   ) {
     window.addEventListener("paste", this.pasteExternal);
   }
@@ -63,29 +63,29 @@ export class ClipboardHandler {
   placeObject = async (obj: any): Promise<void> => {
     const { x, y } = this.canvas.cursor;
     this.canvas.discardActiveObject();
-    await this.canvas.getNextId().then((id) => {
-      obj.set({
-        id,
-        left: x,
-        top: y,
-        originX: "center",
-        originY: "center",
-      });
-      if (obj._objects) {
-        obj.canvas = this.canvas;
-        await obj.forEachObject((object) => {
-          this.canvas.getNextId().then((id) => {
-            object.id = id;
-            this.canvas.add(object);
-          });
-        });
-        obj.setCoords();
-      } else {
-        this.canvas.add(obj);
-      }
-      this.canvas.setActiveObject(obj);
-      await this.history.add(obj._objects || [obj]);
-      this.canvas.requestRenderAll();
+    const id = await this.canvas.getNextId();
+
+    obj.set({
+      id,
+      left: x,
+      top: y,
+      originX: "center",
+      originY: "center",
     });
+    if (obj._objects) {
+      obj.canvas = this.canvas;
+      obj.forEachObject((object) => {
+        this.canvas.getNextId().then((id) => {
+          object.id = id;
+          this.canvas.add(object);
+        });
+      });
+      obj.setCoords();
+    } else {
+      this.canvas.add(obj);
+    }
+    this.canvas.setActiveObject(obj);
+    await this.history.add(obj._objects || [obj]);
+    this.canvas.requestRenderAll();
   };
 }
