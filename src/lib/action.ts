@@ -150,14 +150,8 @@ export class ActionHandler {
             ? Action.EnterFullScreen
             : Action.ExitFullScreen
         ),
-      enterFullScreen: async () => {
-        await document.documentElement.requestFullscreen();
-        this.updateState();
-      },
-      exitFullScreen: async () => {
-        await document.exitFullscreen();
-        this.updateState();
-      },
+      enterFullScreen: () => document.documentElement.requestFullscreen(),
+      exitFullScreen: () => document.exitFullscreen(),
     };
   }
 
