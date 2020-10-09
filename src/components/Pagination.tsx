@@ -6,7 +6,7 @@ import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";
 
 const Pagination = (props: {
-  loadPage: (number) => Promise<void>;
+  loadPage: (number) => Promise<void | number>;
   currentPage: number;
   totalPages: number;
   doAction: (Action) => Promise<void>;
@@ -57,15 +57,9 @@ const Pagination = (props: {
       </form>
       <span className="total-pages"> / {props.totalPages}</span>
       {props.currentPage === props.totalPages ? (
-        <OverlayButton
-          action={Action.AddPage}
-          callback={props.doAction}
-        />
+        <OverlayButton action={Action.AddPage} callback={props.doAction} />
       ) : (
-        <OverlayButton
-          action={Action.NextPage}
-          callback={props.doAction}
-        />
+        <OverlayButton action={Action.NextPage} callback={props.doAction} />
       )}
     </div>
   );
