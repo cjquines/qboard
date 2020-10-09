@@ -13,7 +13,7 @@ USER $USER
 
 COPY ./ .
  
-RUN npm install nwb@0.25.2
+RUN npm install
 RUN npm run build 
 
 ENTRYPOINT ["npm"]
