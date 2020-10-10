@@ -5,6 +5,5 @@
     "target": "ESNext",
     "moduleResolution": "Node"
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/lib/historyCopy.ts", "./src/lib/pagesCopy.ts", "./src/lib/qboardCopy.ts"]
+  "include": ["./src/**/*"]
 }
