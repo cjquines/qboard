@@ -115,8 +115,8 @@ export class Pages {
   loadPage = async (index: number, reload: boolean = true): Promise<number> => {
     if (index === this.currentIndex) return index;
     this.savePage();
-    this.currentIndex = index;
     await this.canvas.loadFromJSONAsync(this.pagesJson[index]);
+    this.currentIndex = index;
     if (reload) this.updateState();
     return index;
   };
