@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+
 Modal.setAppElement("#Overlay");
 
 import { Action, actionName } from "../lib/action";
@@ -16,7 +17,9 @@ const HeaderKey = (props: {
 }) => {
   return (
     <div className="key" style={{ width: props.width }}>
-      <span className="letter">{props.leftHanded ? mirror(props.letter): props.letter}</span>
+      <span className="letter">
+        {props.leftHanded ? mirror(props.letter) : props.letter}
+      </span>
       <div className="action">
         <span className="unassigned">{props.label || ""}</span>
       </div>
@@ -38,7 +41,9 @@ const Key = (props: {
           {actionName(props.action) || "none"}
         </span>
       </div>
-      <span className="letter">{props.leftHanded ? mirror(props.letter): props.letter}</span>
+      <span className="letter">
+        {props.leftHanded ? mirror(props.letter) : props.letter}
+      </span>
     </button>
   );
 };
@@ -55,15 +60,36 @@ const Bindings = (props: {
 
   const rows = [
     {
-      header: <HeaderKey letter="tab" label="Hide Toolbar" width="4.5em" leftHanded={props.leftHanded} />,
+      header: (
+        <HeaderKey
+          letter="tab"
+          label="Hide Toolbar"
+          width="4.5em"
+          leftHanded={props.leftHanded}
+        />
+      ),
       letters: "qwert".split(""),
     },
     {
-      header: <HeaderKey letter="esc" label="Deselect" width="6em" leftHanded={props.leftHanded} />,
+      header: (
+        <HeaderKey
+          letter="esc"
+          label="Deselect"
+          width="6em"
+          leftHanded={props.leftHanded}
+        />
+      ),
       letters: "asdfg".split(""),
     },
     {
-      header: <HeaderKey letter="shift" label="Snap" width="7.5em" leftHanded={props.leftHanded} />,
+      header: (
+        <HeaderKey
+          letter="shift"
+          label="Snap"
+          width="7.5em"
+          leftHanded={props.leftHanded}
+        />
+      ),
       letters: "zxcvb".split(""),
     },
   ];
@@ -83,7 +109,7 @@ const Bindings = (props: {
         {rows.map(({ header, letters }, index) => (
           <div className={`row ${props.leftHanded ? "left" : ""}`} key={index}>
             {!props.leftHanded && header}
-            {(props.leftHanded ? letters.reverse(): letters).map((letter) => (
+            {(props.leftHanded ? letters.reverse() : letters).map((letter) => (
               <Key
                 letter={letter}
                 action={props.keyMap[getModified(letter)]}
