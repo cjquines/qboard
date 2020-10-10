@@ -170,7 +170,7 @@ export class Pages {
   // It accepts an array instead of rest parameters, for convenience when exposing this API
   // pages is an array of pure objects
   // @returns array of objects in the union of all the pages
-  // FIXME: Do I need to worry about concurrency issues here (we use the pagesJson once by providing a default value for index and then once in the body)? It shouldn't be an issue because it should only be called by something that uses the locked property but idk
+  // FIXME: Do I need to worry about concurrency and parellelism issues here (we use the pagesJson once by providing a default value for index and then once in the body)? It shouldn't be an issue because it should only be called by something that respects the locked property but idk
   splicePages = async (
     index: number = this.pagesJson.length - 1,
     deleteCount: number,
