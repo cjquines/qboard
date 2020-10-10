@@ -75,8 +75,9 @@ export class HistoryHandler {
     this.locked = true;
     await this.pages.loadPage(last.page);
 
-    await this.canvas.apply(last.ids, last[type]);
     // TODO: Use symbols or enums or something for type
+    await this.canvas.apply(last.ids, last[type]);
+
     this.locked = false;
     this.updateState();
   };
