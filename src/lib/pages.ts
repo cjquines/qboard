@@ -181,7 +181,6 @@ export class Pages {
     this.pagesJson.splice(index + 1, deleteCount, ...pages);
 
     for (const page of pages) {
-      console.log({ index, pages, pagesJSON: this.pagesJson });
       await this.nextOrNewPage(false);
     }
 
