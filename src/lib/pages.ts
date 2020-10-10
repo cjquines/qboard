@@ -144,14 +144,10 @@ export class Pages {
   export = async (): Promise<void> => {
     this.savePage();
     const ratio = 2;
-    const content = this.pagesJson.map(async (page) => {
-        console.log({page});
-      await this.canvas.loadFromJSONAsync(page);
-      console.log(this.canvas);
-      return { svg: this.canvas.toSVG(), width: this.canvasWidth / ratio };
-    });
-
-    console.log(content);
+    const content = await Promise.all(this.pagesJson.map(async (page, index) => {
+      await this.loadPage(index, false);
+      return {svg: this.canvas.toSVG(), width: this.canvasWidth / ratio};
+    }));
 
     const docDefinition = {
       pageSize: {
