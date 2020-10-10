@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
+
 Modal.setAppElement("#Overlay");
 
 import { Action, actionName } from "../lib/action";
