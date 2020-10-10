@@ -7,10 +7,10 @@ export class ClipboardHandler {
   clipboard: fabric.Object;
 
   constructor(
-      public canvas: Page,
-      public history: HistoryHandler,
-      public canvasWidth: number,
-      public canvasHeight: number
+    public canvas: Page,
+    public history: HistoryHandler,
+    public canvasWidth: number,
+    public canvasHeight: number
   ) {
     window.addEventListener("paste", this.pasteExternal);
   }

@@ -66,10 +66,7 @@ export class Page extends fabric.Canvas {
     );
   };
 
-  apply =  (
-    ids: number[],
-    newObjects: fabric.Object[] | null
-  ): void => {
+  apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
     const oldObjects = this.getObjectByIds(ids);
     if (oldObjects.length) {
       this.remove(...oldObjects);
@@ -144,10 +141,12 @@ export class Pages {
   export = async (): Promise<void> => {
     this.savePage();
     const ratio = 2;
-    const content = await Promise.all(this.pagesJson.map(async (page, index) => {
-      await this.loadPage(index, false);
-      return {svg: this.canvas.toSVG(), width: this.canvasWidth / ratio};
-    }));
+    const content = await Promise.all(
+      this.pagesJson.map(async (page, index) => {
+        await this.loadPage(index, false);
+        return { svg: this.canvas.toSVG(), width: this.canvasWidth / ratio };
+      })
+    );
 
     const docDefinition = {
       pageSize: {

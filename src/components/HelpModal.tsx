@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
+
 Modal.setAppElement("#Overlay");
 
 import Bindings from "./Bindings";
