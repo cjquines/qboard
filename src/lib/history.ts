@@ -18,7 +18,8 @@ export class HistoryHandler {
   constructor(
     public canvas: Page,
     public pages: Pages,
-    public updateState: () => void
+    public updateState: () => void,
+    public modified: () => void
   ) {}
 
   add = async (objects: any[]): Promise<void> =>
@@ -51,6 +52,7 @@ export class HistoryHandler {
       page: this.pages.currentIndex,
     });
     this.redoStack = [];
+    this.modified();
     this.updateState();
   };
 
@@ -79,6 +81,7 @@ export class HistoryHandler {
     await this.canvas.apply(last.ids, last[type]);
 
     this.locked = false;
+    this.modified();
     this.updateState();
   };
 }
