@@ -102,7 +102,9 @@ export class Pages {
     public canvas: Page,
     public canvasWidth: number,
     public canvasHeight: number,
-    public updateState: () => void
+    public updateState: () => void,
+    // TODO: this should be handled by the synchronization class and not this class
+    public saved: () => void
   ) {}
 
   savePage = (): void => {
@@ -160,6 +162,7 @@ export class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
+    this.saved();
   };
 
   jsonify = (): string => {
@@ -186,6 +189,7 @@ export class Pages {
     }
 
     this.updateState();
+    this.saved();
 
     // TODO: this is the wrong type of objects to be put into history
     return pages.flatMap((page) => page.objects);
