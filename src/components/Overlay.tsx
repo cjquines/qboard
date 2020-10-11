@@ -22,12 +22,14 @@ export const enum Visibility {
 const Overlay = (props: { qboard: QBoard }) => {
   const qboard = props.qboard;
 
-  const [visibility, setVisibility] = useState(Visibility.Full);
-  const [helpModalOpen, setHelpModalOpen] = useState(false);
-  const [keyModifier, setKeyModifier] = useState("");
-  const [isMobile, setMobility] = useState(false);
+  const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
+  const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
+  const [isMobile, setMobility] = useState<boolean>(false);
 
-  const [state, setState] = useState<QBoardState>({
+  const [state, setState]: [
+    QBoardState,
+    React.Dispatch<React.SetStateAction<QBoardState>>
+  ] = useState<QBoardState>({
     currentPage: 0,
     totalPages: 0,
     currentTool: Tool.Move,

@@ -1,9 +1,15 @@
-import { fabric } from "fabric";
 import keyboardJS from "keyboardjs";
 
 import { Action } from "./action";
 
-export const defaultKeys = {
+export type KeyMap = {
+  [key: string]: Action;
+};
+export type MirrorMap = {
+  [key: string]: string;
+};
+
+export const defaultKeys: KeyMap = {
   q: Action.Laser,
   w: Action.Copy,
   e: Action.Blue,
@@ -40,7 +46,7 @@ export const defaultKeys = {
   "ctrl + c": Action.Copy,
 };
 
-const mirrorMap = {
+const mirrorMap: MirrorMap = {
   tab: "[",
   q: "p",
   w: "o",

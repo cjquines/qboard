@@ -9,7 +9,7 @@ const ContextMenu = (props: {
   currentStyle: Style;
   doAction: (Action) => Promise<void>;
 }) => {
-  const [coords, setCoords] = useState<null | [Number, Number]>(null);
+  const [coords, setCoords] = useState<[Number, Number] | null>(null);
 
   useEffect(() => {
     document.addEventListener("contextmenu", (e: MouseEvent) => {
