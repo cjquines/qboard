@@ -1,10 +1,10 @@
 import { fabric } from "fabric";
 
-import { Tool, ToolHandler, Handlers } from "./tools";
+import { Handlers, Tool, ToolHandler } from "./tools";
 import { Page, Pages } from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
-import { Dash, Stroke, Fill, Style, StyleHandler } from "./styles";
+import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
 import { KeyboardHandler } from "./keyboard";
 import { ActionHandler } from "./action";
 
@@ -48,6 +48,7 @@ export default class QBoard {
   tool: ToolHandler;
   currentObject: any;
   isDown: boolean = false;
+  isModified: boolean = false;
   strict: boolean = false;
   callback: (state: QBoardState) => any;
 
@@ -70,13 +71,15 @@ export default class QBoard {
       this.baseCanvas,
       this.canvasWidth,
       this.canvasHeight,
-      this.updateState
+      this.updateState,
+      () => (this.isModified = false)
     );
 
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
-      this.updateState
+      this.updateState,
+      () => (this.isModified = true)
     );
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
@@ -111,6 +114,7 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
+    window.onbeforeunload = () => this.isModified || null;
 
     // TODO: move these inner calls to whichever class you think is good
 
