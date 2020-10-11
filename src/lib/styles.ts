@@ -1,5 +1,4 @@
 import { fabric } from "fabric";
-import keyboardJS from "keyboardjs";
 
 export const enum Dash {
   Solid,

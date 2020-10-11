@@ -1,11 +1,9 @@
 import React from "react";
 import Modal from "react-modal";
+import { Action, actionName } from "../lib/action";
+import Icon from "./Icon";
 
 Modal.setAppElement("#Overlay");
-
-import { Action, actionName } from "../lib/action";
-
-import Icon from "./Icon";
 
 const nonBinding: Action[] = [
   Action.AddPage,

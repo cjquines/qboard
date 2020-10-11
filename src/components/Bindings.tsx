@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-
-Modal.setAppElement("#Overlay");
-
 import { Action, actionName } from "../lib/action";
-import { mirror } from "../lib/keyboard";
+import { KeyMap, mirror } from "../lib/keyboard";
 
 import Icon from "./Icon";
 import BindingModal from "./BindingModal";
+
+Modal.setAppElement("#Overlay");
 
 const HeaderKey = (props: {
   letter: string;
@@ -51,11 +50,14 @@ const Key = (props: {
 const Bindings = (props: {
   bind: (string, Action) => void;
   unbind: (string) => void;
-  keyMap: any;
+  keyMap: KeyMap;
   modifier: string;
   leftHanded: boolean;
 }) => {
-  const [bindingModalKeys, setBindingModalKeys] = useState("");
+  const [bindingModalKeys, setBindingModalKeys]: [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ] = useState<string>("");
   const [bindingModalAction, setBindingModalAction] = useState(undefined);
 
   const rows = [
@@ -94,11 +96,10 @@ const Bindings = (props: {
     },
   ];
 
-  const getModified = (letter: string) => {
-    return props.modifier === "" ? letter : `${props.modifier} + ${letter}`;
-  };
+  const getModified = (letter: string): string =>
+    props.modifier === "" ? letter : `${props.modifier} + ${letter}`;
 
-  const keyHandler = (letter: string) => {
+  const keyHandler = (letter: string): void => {
     setBindingModalKeys(getModified(letter));
     setBindingModalAction(props.keyMap[getModified(letter)]);
   };
