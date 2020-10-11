@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-
-Modal.setAppElement("#Overlay");
-
 import { Action, actionName } from "../lib/action";
 import { KeyMap, mirror } from "../lib/keyboard";
 
 import Icon from "./Icon";
 import BindingModal from "./BindingModal";
+
+Modal.setAppElement("#Overlay");
 
 const HeaderKey = (props: {
   letter: string;
