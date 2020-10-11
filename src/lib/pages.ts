@@ -103,7 +103,6 @@ export class Pages {
     public canvasWidth: number,
     public canvasHeight: number,
     public updateState: () => void,
-    // TODO: this should be handled by the synchronization class and not this class
     public saved: () => void
   ) {}
 
