@@ -114,7 +114,7 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
-    window.onbeforeunload = () => this.isModified;
+    window.onbeforeunload = () => this.isModified || null;
 
     // TODO: move these inner calls to whichever class you think is good
 
