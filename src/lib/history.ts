@@ -60,13 +60,11 @@ export class HistoryHandler {
     if (!this.history.length) return;
     this.canvas.discardActiveObject();
     await this.move(this.history, this.redoStack, "oldObjects");
-    this.modified();
   };
 
   redo = async (): Promise<void> => {
     if (!this.redoStack.length) return;
     await this.move(this.redoStack, this.history, "newObjects");
-    this.modified();
   };
 
   private move = async (
