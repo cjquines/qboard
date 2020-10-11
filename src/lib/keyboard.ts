@@ -1,4 +1,3 @@
-import { fabric } from "fabric";
 import keyboardJS from "keyboardjs";
 
 import { Action } from "./action";
