@@ -115,8 +115,8 @@ export class Pages {
   loadPage = async (index: number, reload: boolean = true): Promise<number> => {
     if (index === this.currentIndex) return index;
     this.savePage();
-    this.currentIndex = index;
     await this.canvas.loadFromJSONAsync(this.pagesJson[index]);
+    this.currentIndex = index;
     if (reload) this.updateState();
     return index;
   };
@@ -141,12 +141,14 @@ export class Pages {
   export = async (): Promise<void> => {
     this.savePage();
     const ratio = 2;
-    const content = await Promise.all(
-      this.pagesJson.map(async (page, index) => {
-        await this.loadPage(index, false);
-        return { svg: this.canvas.toSVG(), width: this.canvasWidth / ratio };
-      })
-    );
+    const content = [];
+    for (let i = 0; i < this.pagesJson.length; i++) {
+      await this.loadPage(i);
+      content.push({
+        svg: this.canvas.toSVG(),
+        width: this.canvasWidth / ratio,
+      });
+    }
 
     const docDefinition = {
       pageSize: {
