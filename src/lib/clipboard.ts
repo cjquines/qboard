@@ -49,19 +49,31 @@ export class ClipboardHandler {
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    for (const file of e.clipboardData.files) {
-      if (!file.type.includes("image")) continue;
-      const url = window.URL.createObjectURL(file);
-      fabric.Image.fromURL(url, async (obj: any) => {
-        await this.placeObject(obj);
-      });
-      return;
-    }
+    await this.processFiles(e.clipboardData.files);
     await this.paste();
   };
 
-  placeObject = async (obj: any): Promise<void> => {
-    const { x, y } = this.canvas.cursor;
+  processFiles = async (files: FileList, cursor?): Promise<void[]> => {
+    const promises = [...files]
+      .filter(({ type }) => type.includes("image"))
+      .map(
+        (file) =>
+          new Promise<void>((resolve) => {
+            const url = window.URL.createObjectURL(file);
+            fabric.Image.fromURL(url, (obj: fabric.Image) => {
+              resolve(this.placeObject(obj, cursor));
+            });
+          })
+      );
+    return Promise.all(promises);
+  };
+
+  placeObject = async (
+    obj: any,
+    cursor: any = this.canvas.cursor
+  ): Promise<void> => {
+    const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
+      cursor || {};
     this.canvas.discardActiveObject();
     const id = await this.canvas.getNextId();
 
