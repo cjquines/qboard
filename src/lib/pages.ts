@@ -102,8 +102,8 @@ export class Pages {
     public canvas: Page,
     public canvasWidth: number,
     public canvasHeight: number,
-    public updateState: () => void,
-    public saved: () => void
+    public unmodify: () => void,
+    public updateState: () => void
   ) {}
 
   savePage = (): void => {
@@ -161,40 +161,27 @@ export class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
-    this.saved();
   };
 
-  jsonify = (): string => {
+  saveFile = (): void => {
     this.savePage();
     return JSON.stringify(this.pagesJson);
   };
 
-  // It doesn't exactly splice _Pages_ (insert Page objects) as the name claims it does but whatever
-  // It accepts an array instead of rest parameters, for convenience when exposing this API
-  // pages is an array of pure objects
-  // @returns array of objects in the union of all the pages
-  // FIXME: Do I need to worry about concurrency and parellelism issues here (we use the pagesJson once by providing a default value for index and then once in the body)? It shouldn't be an issue because it should only be called by something that respects the locked property but idk
   splicePages = async (
-    index: number = this.pagesJson.length - 1,
+    start: number,
     deleteCount: number,
     pages: any[] = []
-  ): Promise<any[]> => {
-    await this.loadPage(index);
-
-    this.pagesJson.splice(index + 1, deleteCount, ...pages);
-
+  ): Promise<void> => {
+    await this.loadPage(start);
+    this.pagesJson.splice(start + 1, deleteCount, ...pages);
     for (const page of pages) {
       await this.nextOrNewPage(false);
     }
-
     this.updateState();
-    this.saved();
-
-    // TODO: this is the wrong type of objects to be put into history
-    return pages.flatMap((page) => page.objects);
   };
 
-  import = async (e: Event): Promise<void> => {
+  openFile = async (e: Event): Promise<void> => {
     console.log((e.target as HTMLInputElement).files);
-  }
+  };
 }

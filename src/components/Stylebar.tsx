@@ -10,7 +10,7 @@ import OverlayButton from "./OverlayButton";
 const Stylebar = (props: {
   currentStyle: Style;
   doAction: (Action) => Promise<void>;
-  import: (Event) => Promise<void>;
+  openFile: (Event) => Promise<void>;
   visibility: Visibility;
   isMobile: boolean;
 }) => {
@@ -31,7 +31,7 @@ const Stylebar = (props: {
     <div className={`stylebar visibility-${props.visibility}`}>
       <input
         accept=".json"
-        onChange={props.import}
+        onChange={props.openFile}
         ref={fileInputRef}
         type="file"
       />

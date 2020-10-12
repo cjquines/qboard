@@ -59,8 +59,8 @@ export class ClipboardHandler {
       .map(
         (file) =>
           new Promise<void>((resolve) => {
-            const url = window.URL.createObjectURL(file);
-            fabric.Image.fromURL(url, (obj: fabric.Image) => {
+            const fileURL = URL.createObjectURL(file);
+            fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
               resolve(this.placeObject(obj, cursor));
             });
           })
