@@ -14,6 +14,7 @@ export enum Action {
   Undo = "undo",
   Redo = "redo",
 
+  Open = "open",
   Save = "save",
   Cut = "cut",
   Copy = "copy",

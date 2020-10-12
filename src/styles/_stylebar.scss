@@ -3,6 +3,10 @@
   flex-direction: column;
   padding: 0 0.25em 0.25em 0;
 
+  input {
+    display: none;
+  }
+
   button {
     width: 100%;
   }

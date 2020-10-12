@@ -24,6 +24,7 @@ const Icon = {
   ellipse: fasIcon("circle"),
   rectangle: fasIcon("square"),
 
+  open: fasIcon("folder-open"),
   save: fasIcon("save"),
   cut: fasIcon("cut"),
   copy: fasIcon("copy"),

@@ -193,4 +193,8 @@ export class Pages {
     // TODO: this is the wrong type of objects to be put into history
     return pages.flatMap((page) => page.objects);
   };
+
+  import = async (e: Event): Promise<void> => {
+    console.log((e.target as HTMLInputElement).files);
+  }
 }
