@@ -100,6 +100,7 @@ const Overlay = (props: { qboard: QBoard }) => {
         <Stylebar
           currentStyle={state.currentStyle}
           doAction={qboard.action.doAction}
+          import={qboard.pages.import}
           visibility={visibility}
           isMobile={isMobile}
         />

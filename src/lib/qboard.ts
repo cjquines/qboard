@@ -117,18 +117,6 @@ export default class QBoard {
     window.onresize = this.windowResize;
     window.onbeforeunload = () => this.isModified || null;
 
-    // TODO: move these inner calls to whichever class you think is good
-
-    // @ts-ignore for dev purposes
-    window.exportJSON = this.pages.jsonify;
-
-    // Takes an array (not a JSONified string but you can change that with a JSON.parse) pages (as pure objects) and adds them to the pagesJson array beginning one unit to the right of the current page. Is obvious once you open the splicePages function
-    // @ts-ignore for dev purposes
-    window.loadQ = async (pages): Promise<void> => {
-      const objects = await this.pages.splicePages(undefined, 0, pages);
-      // await this.history.add(objects);
-    };
-
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
