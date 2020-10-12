@@ -14,7 +14,6 @@ export class HistoryHandler {
   redoStack: HistoryItem[] = [];
   selection: fabric.Object[];
   locked: boolean = false;
-  isModified: boolean = false;
 
   constructor(
     public canvas: Page,
@@ -52,7 +51,7 @@ export class HistoryHandler {
       page: this.pages.currentIndex,
     });
     this.redoStack = [];
-    this.isModified = true;
+    this.canvas.modified = true;
     this.updateState();
   };
 
@@ -78,7 +77,7 @@ export class HistoryHandler {
     await this.canvas.apply(last.ids, undo ? last.oldObjects : last.newObjects);
     to.push(last);
     this.locked = false;
-    this.isModified = true;
+    this.canvas.modified = true;
     this.updateState();
   };
 }
