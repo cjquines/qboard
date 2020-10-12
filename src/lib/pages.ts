@@ -199,26 +199,30 @@ export class Pages {
     if (!this.canvas.modified && start === 0) {
       this.pagesJson.shift();
       await this.loadPage(0, true);
+      this.canvas.modified = true;
     }
     this.updateState();
   };
 
   openFile = async (e: Event): Promise<void> => {
+    const files = (e.target as HTMLInputElement).files;
+    if (!files.length) return;
+
     this.savePage();
-    const file = (e.target as HTMLInputElement).files[0];
-    const asyncReader = new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.splicePages(
-          this.pagesJson.length - 1,
-          0,
-          JSON.parse(reader.result as string)
-        );
-        resolve();
-      };
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
-    await asyncReader;
+    for (const file of files) {
+      const asyncReader = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.splicePages(
+            this.pagesJson.length - 1,
+            0,
+            JSON.parse(reader.result as string)
+          );
+          resolve();
+        };
+        reader.readAsText(file);
+      });
+      await asyncReader;
+    }
   };
 }
