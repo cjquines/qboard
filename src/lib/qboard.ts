@@ -133,7 +133,7 @@ export default class QBoard {
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
 
-    this.dropArea.ondragenter = this.dragOver;
+    this.dropArea.ondragenter = this.dragEnter;
     this.dropArea.ondragleave = this.dragLeave;
     this.baseCanvas.on("drop", this.drop);
 
@@ -221,8 +221,6 @@ export default class QBoard {
 
   dragEnter = (e: DragEvent): void =>
     this.dropArea.classList.add("file-drop-active");
-
-  dragOver = this.dragEnter;
 
   dragLeave = (e: DragEvent): void =>
     this.dropArea.classList.remove("file-drop-active");
