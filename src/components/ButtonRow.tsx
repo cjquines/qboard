@@ -6,16 +6,16 @@ import OverlayButton from "./OverlayButton";
 
 const ButtonRow = (props: {
   actions: Action[];
-  className?: (action: Action, i?: number) => null | string;
   callback: (action: Action) => Promise<void>;
+  className?: (action: Action, i?: number) => null | string;
+  cName?: string;
   outerButton?: boolean | ReactNode;
-  vertical?: boolean;
 }) => {
   return (
     <div
-      className={`button-row
-        ${props.vertical && "button-row-vertical"}
-        ${props.outerButton && "button-row-hover"}`}
+      className={`button-row ${props.cName} ${
+        props.outerButton && "button-row-hover"
+      }`}
     >
       {props.outerButton}
       <div className="button-row-inner">
