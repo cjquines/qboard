@@ -9,9 +9,14 @@ const ButtonRow = (props: {
   className?: (Action, number?) => null | string;
   callback: (Action) => Promise<void>;
   outerButton?: boolean | ReactNode;
+  vertical?: boolean;
 }) => {
   return (
-    <div className={`button-row ${props.outerButton && "button-row-hover"}`}>
+    <div
+      className={`button-row
+        ${props.vertical && "button-row-vertical"}
+        ${props.outerButton && "button-row-hover"}`}
+    >
       {props.outerButton}
       <div className="button-row-inner">
         {props.actions.map((action, i) => (

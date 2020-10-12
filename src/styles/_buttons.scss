@@ -59,6 +59,11 @@ button {
     top: 0;
   }
 
+  &.button-row-vertical .button-row-inner {
+    flex-direction: column;
+    padding: 0;
+  }
+
   &.button-row-hover {
     .button-row-inner {
       display: none;
