@@ -3,7 +3,6 @@ FROM node:14-alpine
 ENV WORKDIR=/qboard
 ENV USER=qboard
 ENV GROUP=$USER
-ENV PORT=3000
 
 WORKDIR $WORKDIR
 
@@ -19,4 +18,4 @@ RUN npm run build
 
 ENTRYPOINT ["npm"]
 CMD ["start"]
-EXPOSE $PORT
+EXPOSE 3000
