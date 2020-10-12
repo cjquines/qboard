@@ -1,0 +1,23 @@
+.overlay .stylebar {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.25em 0.25em 0;
+
+  button {
+    width: 100%;
+  }
+
+  &.visibility-1 {
+    display: flex;
+    flex-direction: row;
+    padding: 0.1em 0.15em 0.1em 0;
+
+    button {
+      padding: 0.15em 0.2em 0.4em;
+    }
+
+    & > button, .button-row:hover .button-row-inner {
+      display: none;
+    }
+  }
+}
