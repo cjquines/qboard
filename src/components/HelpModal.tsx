@@ -3,12 +3,14 @@ import Modal from "react-modal";
 
 Modal.setAppElement("#Overlay");
 
+import { Action } from "../lib/action";
+
 import Bindings from "./Bindings";
 import Icon from "./Icon";
 
 const HelpModal = (props: {
-  bind: (string, Action) => void;
-  unbind: (string) => void;
+  bind: (key: string, action: Action) => void;
+  unbind: (key: string) => void;
   reset: () => void;
   keyMap: any;
   isOpen: boolean;

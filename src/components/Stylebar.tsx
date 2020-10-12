@@ -10,8 +10,8 @@ import StyleMenu from "./StyleMenu";
 
 const Stylebar = (props: {
   currentStyle: Style;
-  doAction: (Action) => Promise<void>;
-  openFile: (Event) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
+  openFile: (files: FileList) => Promise<void>;
   visibility: Visibility;
   isMobile: boolean;
 }) => {
@@ -35,7 +35,7 @@ const Stylebar = (props: {
     <div className={`stylebar visibility-${props.visibility}`}>
       <input
         accept=".json"
-        onChange={props.openFile}
+        onChange={(e) => props.openFile(e.target.files)}
         multiple={true}
         ref={fileInputRef}
         type="file"

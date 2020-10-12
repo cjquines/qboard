@@ -8,7 +8,7 @@ import OverlayButton from "./OverlayButton";
 
 const Toolbar = (props: {
   currentTool: Tool;
-  doAction: (Action) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
 }) => {
   const tools = [

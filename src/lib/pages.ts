@@ -118,10 +118,8 @@ export class Pages {
     this.updateState();
   };
 
-  openFile = async (e: Event): Promise<void> => {
-    const files = (e.target as HTMLInputElement).files;
+  openFile = async (files: FileList): Promise<void> => {
     if (!files.length) return;
-
     this.savePage();
     for (const file of files) {
       const asyncReader = new Promise((resolve, reject) => {

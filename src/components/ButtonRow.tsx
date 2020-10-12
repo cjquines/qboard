@@ -6,8 +6,8 @@ import OverlayButton from "./OverlayButton";
 
 const ButtonRow = (props: {
   actions: Action[];
-  className?: (Action, number?) => null | string;
-  callback: (Action) => Promise<void>;
+  className?: (action: Action, i?: number) => null | string;
+  callback: (action: Action) => Promise<void>;
   outerButton?: boolean | ReactNode;
   vertical?: boolean;
 }) => {
