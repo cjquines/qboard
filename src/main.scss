@@ -88,6 +88,24 @@ button {
   }
 }
 
+.button-row {
+  position: relative;
+
+  .button-row-inner {
+    background: #edeff0;
+    display: none;
+    flex-direction: row;
+    left: calc(50% + 0.8em);
+    padding: 0.25em 0.25em 0.25em 0;
+    position: absolute;
+    top: -0.25em;
+  }
+
+  &:hover .button-row-inner {
+    display: flex;
+  }
+}
+
 .overlay {
   left: 0;
   opacity: 0.5;
@@ -198,23 +216,6 @@ button {
     width: 100%;
   }
 
-  .style {
-    position: relative;
-  }
-
-  .substyle {
-    background: #edeff0;
-    display: none;
-    left: calc(50% + 0.8em);
-    padding: 0.25em 0.25em 0.25em 0;
-    position: absolute;
-    top: -0.25em;
-  }
-
-  .style:hover .substyle {
-    display: flex;
-  }
-
   &.visibility-1 {
     display: flex;
     flex-direction: row;
@@ -224,7 +225,7 @@ button {
       padding: 0.15em 0.2em 0.4em;
     }
 
-    & > button, .style:hover .substyle {
+    & > button, .button-row:hover .button-row-inner {
       display: none;
     }
   }
@@ -449,14 +450,16 @@ button {
   padding: 0.25em;
   position: absolute;
 
-  .substyle {
+  .button-row-inner {
     display: flex;
-    flex-direction: row;
+    left: 0;
+    position: relative;
+    top: 0;
   }
 
   button {
     opacity: 0.5;
-    margin: 0.1em;
+    margin: 0 0.1em;
   }
 
   button.active {
