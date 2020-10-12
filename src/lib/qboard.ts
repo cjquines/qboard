@@ -48,7 +48,6 @@ export default class QBoard {
   tool: ToolHandler;
   currentObject: any;
   isDown: boolean = false;
-  isModified: boolean = false;
   strict: boolean = false;
   callback: (state: QBoardState) => any;
 
@@ -73,14 +72,13 @@ export default class QBoard {
       this.canvasWidth,
       this.canvasHeight,
       this.updateState,
-      () => (this.isModified = false)
+      () => (this.history.isModified = false)
     );
 
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
-      this.updateState,
-      () => (this.isModified = true)
+      this.updateState
     );
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
@@ -105,9 +103,7 @@ export default class QBoard {
     );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,
-      (strict: boolean) => {
-        this.strict = strict;
-      },
+      (strict: boolean) => (this.strict = strict),
       this.updateState
     );
 
@@ -115,7 +111,7 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
-    window.onbeforeunload = () => this.isModified || null;
+    window.onbeforeunload = () => this.history.isModified || null;
 
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);

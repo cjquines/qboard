@@ -14,12 +14,12 @@ export class HistoryHandler {
   redoStack: HistoryItem[] = [];
   selection: fabric.Object[];
   locked: boolean = false;
+  isModified: boolean = false;
 
   constructor(
     public canvas: Page,
     public pages: Pages,
     public updateState: () => void,
-    public modified: () => void
   ) {}
 
   add = async (objects: any[]): Promise<void> =>
@@ -52,7 +52,7 @@ export class HistoryHandler {
       page: this.pages.currentIndex,
     });
     this.redoStack = [];
-    this.modified();
+    this.isModified = true;
     this.updateState();
   };
 
@@ -81,7 +81,7 @@ export class HistoryHandler {
     await this.canvas.apply(last.ids, last[type]);
 
     this.locked = false;
-    this.modified();
+    this.isModified = true;
     this.updateState();
   };
 }
