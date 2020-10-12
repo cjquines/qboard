@@ -6,7 +6,7 @@ import OverlayButton from "./OverlayButton";
 
 const ButtonRow = (props: {
   actions: Action[];
-  className: (Action, number?) => null | string;
+  className?: (Action, number?) => null | string;
   callback: (Action) => Promise<void>;
   outerButton?: boolean | ReactNode;
 }) => {
@@ -17,7 +17,7 @@ const ButtonRow = (props: {
         {props.actions.map((action, i) => (
           <OverlayButton
             action={action}
-            className={props.className(action, i) || null}
+            className={props.className && props.className(action, i)}
             callback={props.callback}
             key={action}
           />

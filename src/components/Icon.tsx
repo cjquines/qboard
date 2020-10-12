@@ -26,6 +26,7 @@ const Icon = {
 
   open: fasIcon("folder-open"),
   save: fasIcon("save"),
+  export: fasIcon("file-export"),
   cut: fasIcon("cut"),
   copy: fasIcon("copy"),
   paste: fasIcon("paste"),

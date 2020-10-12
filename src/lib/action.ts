@@ -16,6 +16,7 @@ export enum Action {
 
   Open = "open",
   Save = "save",
+  Export = "export",
   Cut = "cut",
   Copy = "copy",
   Paste = "paste",
@@ -100,7 +101,9 @@ export class ActionHandler {
       undo: history.undo,
       redo: history.redo,
 
-      save: pages.export,
+      open: pages.openFile,
+      save: pages.saveFile,
+      export: pages.export,
       cut: clipboard.cut,
       copy: clipboard.copy,
       paste: clipboard.paste,
