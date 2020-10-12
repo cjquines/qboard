@@ -6,6 +6,7 @@ import { Action } from "../lib/action";
 import { Visibility } from "./Overlay";
 import StyleMenu from "./StyleMenu";
 import OverlayButton from "./OverlayButton";
+import ButtonRow from "./ButtonRow";
 
 const Stylebar = (props: {
   currentStyle: Style;
@@ -14,8 +15,9 @@ const Stylebar = (props: {
   visibility: Visibility;
   isMobile: boolean;
 }) => {
-  const actions = [Action.Save, Action.Copy, Action.Paste];
-  const mobileMethods = props.isMobile ? [Action.FullScreen] : [];
+  const fileActions = [Action.Open, Action.Save, Action.Export];
+  const otherActions = [Action.Copy, Action.Paste];
+  const mobileActions = props.isMobile ? [Action.FullScreen] : [];
   const fileInputRef = useRef(null);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -27,7 +29,7 @@ const Stylebar = (props: {
     );
   }, []);
 
-  return (
+  return <>
     <div className={`stylebar visibility-${props.visibility}`}>
       <input
         accept=".json"
@@ -36,15 +38,22 @@ const Stylebar = (props: {
         ref={fileInputRef}
         type="file"
       />
-      <OverlayButton
-        action={Action.Open}
-        callback={async () => fileInputRef.current.click()}
+      <ButtonRow
+        actions={fileActions}
+        callback={async (action) => {
+          if (action === Action.Open) {
+            fileInputRef.current.click()
+          } else {
+            props.doAction(action)
+          }
+        }}
       />
-      {actions.map((action) => (
-        <OverlayButton action={action} callback={props.doAction} key={action} />
-      ))}
+      <ButtonRow
+        actions={otherActions}
+        callback={props.doAction}
+      />
       <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
-      {mobileMethods.map((action) => (
+      {mobileActions.map((action) => (
         <OverlayButton
           action={
             action === Action.FullScreen
@@ -58,7 +67,7 @@ const Stylebar = (props: {
         />
       ))}
     </div>
-  );
+    </>;
 };
 
 export default Stylebar;
