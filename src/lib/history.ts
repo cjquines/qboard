@@ -1,6 +1,7 @@
 import { fabric } from "fabric";
 
-import { Page, Pages } from "./pages";
+import { Page } from "./page";
+import { Pages } from "./pages";
 
 interface HistoryItem {
   ids: number[];
