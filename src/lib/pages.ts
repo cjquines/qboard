@@ -197,6 +197,14 @@ export class Pages {
   };
 
   openFile = async (e: Event): Promise<void> => {
-    console.log((e.target as HTMLInputElement).files);
+    const file = (e.target as HTMLInputElement).files[0];
+    const reader = new FileReader();
+    reader.onload = () =>
+      this.splicePages(
+        this.pagesJson.length - 1,
+        0,
+        JSON.parse(reader.result as string)
+      );
+    reader.readAsText(file);
   };
 }
