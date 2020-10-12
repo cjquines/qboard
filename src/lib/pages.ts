@@ -8,8 +8,9 @@ const defaultPageJSON = {
 };
 
 export class Page extends fabric.Canvas {
-  latestId: number = 0;
   cursor: { x: number; y: number };
+  latestId: number = 0;
+  modified: boolean = false;
 
   fitToWindow = async (
     canvasWidth: number,
@@ -102,7 +103,6 @@ export class Pages {
     public canvas: Page,
     public canvasWidth: number,
     public canvasHeight: number,
-    public unmodify: () => void,
     public updateState: () => void
   ) {}
 
@@ -180,7 +180,7 @@ export class Pages {
     elt.parentElement.removeChild(elt);
 
     URL.revokeObjectURL(fileURL);
-    this.unmodify();
+    this.canvas.modified = false;
   };
 
   splicePages = async (

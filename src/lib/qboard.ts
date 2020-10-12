@@ -71,7 +71,6 @@ export default class QBoard {
       this.baseCanvas,
       this.canvasWidth,
       this.canvasHeight,
-      () => (this.history.isModified = false),
       this.updateState
     );
 
@@ -111,7 +110,7 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
-    window.onbeforeunload = () => this.history.isModified || null;
+    window.onbeforeunload = () => this.baseCanvas.modified || null;
 
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
