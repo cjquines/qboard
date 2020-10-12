@@ -70,7 +70,10 @@ export class ClipboardHandler {
   };
 
   placeObject = async (obj: any): Promise<void> => {
-    const { x, y } = this.canvas.cursor;
+    const {
+      x = this.canvasWidth / 2,
+      y = this.canvasHeight / 2,
+    } = this.canvas.cursor;
     this.canvas.discardActiveObject();
     const id = await this.canvas.getNextId();
 
