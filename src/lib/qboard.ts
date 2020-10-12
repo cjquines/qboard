@@ -55,6 +55,7 @@ export default class QBoard {
   constructor(
     public canvasElement: HTMLCanvasElement,
     public baseCanvasElement: HTMLCanvasElement,
+    public dropArea: HTMLElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -131,6 +132,11 @@ export default class QBoard {
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
+
+    this.dropArea.ondragenter = this.dragEnter;
+    this.dropArea.ondragleave = this.dragLeave;
+    this.baseCanvas.on("drop", this.drop);
+
     this.baseCanvas.on("path:created", this.pathCreated);
     this.baseCanvas.on("selection:created", this.selectionCreated);
     this.baseCanvas.on("object:modified", this.objectModified);
@@ -195,10 +201,9 @@ export default class QBoard {
   };
 
   mouseMove = async (e: fabric.IEvent): Promise<void> => {
-    if (!this.tool.draw) return;
+    if (!(this.tool.draw && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
-    if (!this.isDown) return;
     await this.tool.resize(this.currentObject, x, y, this.strict);
     this.canvas.requestRenderAll();
   };
@@ -212,6 +217,22 @@ export default class QBoard {
     await this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     await this.history.add([this.currentObject]);
+  };
+
+  dragEnter = (e: DragEvent): void =>
+    this.dropArea.classList.add("file-drop-active");
+
+  dragLeave = (e: DragEvent): void =>
+    this.dropArea.classList.remove("file-drop-active");
+
+  drop = async (iEvent: fabric.IEvent): Promise<void[]> => {
+    iEvent.e.stopPropagation();
+    iEvent.e.preventDefault();
+    this.updateCursor(iEvent);
+    this.dragLeave(iEvent.e as DragEvent);
+    return this.clipboard.processFiles(
+      (iEvent.e as DragEvent).dataTransfer.files
+    );
   };
 
   pathCreated = async (e: any): Promise<void> => {
@@ -240,7 +261,7 @@ export default class QBoard {
   objectModified = async (e: any): Promise<void> =>
     this.history.modify(e.target._objects || [e.target]);
 
-  updateCursor = async (e: fabric.IEvent): Promise<void> => {
+  updateCursor = (e: fabric.IEvent): void => {
     const { x, y } = this.baseCanvas.getPointer(e.e);
     this.baseCanvas.cursor = { x, y };
   };

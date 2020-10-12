@@ -1,6 +1,6 @@
 {
   "name": "qboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The efficient digital whiteboard.",
   "scripts": {
     "build": "nwb build-react-app",
@@ -24,7 +24,19 @@
     "nwb-sass": "^0.10.2",
     "typescript": "^3.9.5"
   },
+  "files": [
+    "./src/**/*"
+  ],
+  "bugs": {
+    "url": "https://github.com/cjquines/qboard/issues"
+  },
   "author": "cjquines",
+  "contributors": [
+    {
+      "name": "Avi Mehra",
+      "url": "https://pihart.github.io"
+    }
+  ],
   "license": "MIT",
-  "repository": "https://github.com/cjquines/qboard"
+  "repository": "github:cjquines/qboard"
 }
