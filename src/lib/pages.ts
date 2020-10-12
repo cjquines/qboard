@@ -193,6 +193,12 @@ export class Pages {
     for (const page of pages) {
       await this.nextOrNewPage(false);
     }
+    if (!this.canvas.modified && start === 0) {
+      this.pagesJson.shift();
+      // can't call load page because it saves the current page
+      await this.canvas.loadFromJSONAsync(this.pagesJson[start]);
+      this.currentIndex = start;
+    }
     this.updateState();
   };
 
