@@ -8,7 +8,7 @@ import ButtonRow from "./ButtonRow";
 
 const DashStyle = (props: {
   dashStyle: Dash;
-  callback: (Action) => Promise<void>;
+  callback: (action: Action) => Promise<void>;
   inContext: Boolean;
 }) => {
   const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
@@ -30,7 +30,7 @@ const DashStyle = (props: {
 
 const StrokeStyle = (props: {
   strokeStyle: string;
-  callback: (Action) => Promise<void>;
+  callback: (action: Action) => Promise<void>;
   inContext: Boolean;
 }) => {
   const strokes = [
@@ -67,7 +67,7 @@ const StrokeStyle = (props: {
 
 const FillStyle = (props: {
   fillStyle: Fill;
-  callback: (Action) => Promise<void>;
+  callback: (action: Action) => Promise<void>;
   inContext: Boolean;
 }) => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
@@ -89,7 +89,7 @@ const FillStyle = (props: {
 
 const StyleMenu = (props: {
   currentStyle: Style;
-  doAction: (Action) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
   inContext?: Boolean;
 }) => {
   return (

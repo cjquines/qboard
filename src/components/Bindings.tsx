@@ -29,7 +29,7 @@ const HeaderKey = (props: {
 const Key = (props: {
   letter: string;
   action?: Action;
-  callback: (string) => void;
+  callback: (key: string) => void;
   leftHanded: boolean;
 }) => {
   return (
@@ -48,8 +48,8 @@ const Key = (props: {
 };
 
 const Bindings = (props: {
-  bind: (string, Action) => void;
-  unbind: (string) => void;
+  bind: (key: string, action: Action) => void;
+  unbind: (key: string) => void;
   keyMap: KeyMap;
   modifier: string;
   leftHanded: boolean;
