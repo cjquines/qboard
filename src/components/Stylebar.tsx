@@ -4,9 +4,9 @@ import { Style } from "../lib/styles";
 import { Action } from "../lib/action";
 
 import { Visibility } from "./Overlay";
-import StyleMenu from "./StyleMenu";
-import OverlayButton from "./OverlayButton";
 import ButtonRow from "./ButtonRow";
+import Icon from "./Icon";
+import StyleMenu from "./StyleMenu";
 
 const Stylebar = (props: {
   currentStyle: Style;
@@ -15,10 +15,12 @@ const Stylebar = (props: {
   visibility: Visibility;
   isMobile: boolean;
 }) => {
+  const fileInputRef = useRef(null);
+  const fileButton = <button className="inactive">{Icon.file}</button>;
   const fileActions = [Action.Open, Action.Save, Action.Export];
+
   const otherActions = [Action.Copy, Action.Paste];
   const mobileActions = props.isMobile ? [Action.FullScreen] : [];
-  const fileInputRef = useRef(null);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -29,7 +31,7 @@ const Stylebar = (props: {
     );
   }, []);
 
-  return <>
+  return (
     <div className={`stylebar visibility-${props.visibility}`}>
       <input
         accept=".json"
@@ -42,32 +44,32 @@ const Stylebar = (props: {
         actions={fileActions}
         callback={async (action) => {
           if (action === Action.Open) {
-            fileInputRef.current.click()
+            fileInputRef.current.click();
           } else {
-            props.doAction(action)
+            props.doAction(action);
           }
         }}
+        outerButton={fileButton}
       />
       <ButtonRow
         actions={otherActions}
         callback={props.doAction}
+        vertical={true}
       />
       <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
-      {mobileActions.map((action) => (
-        <OverlayButton
-          action={
-            action === Action.FullScreen
-              ? !isFullscreen
-                ? Action.EnterFullScreen
-                : Action.ExitFullScreen
-              : action
-          }
-          callback={props.doAction}
-          key={action}
-        />
-      ))}
+      <ButtonRow
+        actions={mobileActions.map((action) =>
+          action === Action.FullScreen
+            ? !isFullscreen
+              ? Action.EnterFullScreen
+              : Action.ExitFullScreen
+            : action
+        )}
+        callback={props.doAction}
+        vertical={true}
+      />
     </div>
-    </>;
+  );
 };
 
 export default Stylebar;
