@@ -206,13 +206,19 @@ export class Pages {
   openFile = async (e: Event): Promise<void> => {
     this.savePage();
     const file = (e.target as HTMLInputElement).files[0];
-    const reader = new FileReader();
-    reader.onload = () =>
-      this.splicePages(
-        this.pagesJson.length - 1,
-        0,
-        JSON.parse(reader.result as string)
-      );
-    reader.readAsText(file);
+    const asyncReader = new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.splicePages(
+          this.pagesJson.length - 1,
+          0,
+          JSON.parse(reader.result as string)
+        );
+        resolve();
+      };
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+    await asyncReader;
   };
 }
