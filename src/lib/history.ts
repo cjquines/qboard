@@ -19,7 +19,7 @@ export class HistoryHandler {
   constructor(
     public canvas: Page,
     public pages: Pages,
-    public updateState: () => void,
+    public updateState: () => void
   ) {}
 
   add = async (objects: any[]): Promise<void> =>
@@ -59,27 +59,24 @@ export class HistoryHandler {
   undo = async (): Promise<void> => {
     if (!this.history.length) return;
     this.canvas.discardActiveObject();
-    await this.move(this.history, this.redoStack, "oldObjects");
+    await this.move(this.history, this.redoStack, true);
   };
 
   redo = async (): Promise<void> => {
     if (!this.redoStack.length) return;
-    await this.move(this.redoStack, this.history, "newObjects");
+    await this.move(this.redoStack, this.history, false);
   };
 
   private move = async (
     from: HistoryItem[],
     to: HistoryItem[],
-    type: string
+    undo: boolean
   ): Promise<void> => {
-    const last = from.pop();
-    to.push(last);
     this.locked = true;
+    const last = from.pop();
     await this.pages.loadPage(last.page);
-
-    // TODO: Use symbols or enums or something for type
-    await this.canvas.apply(last.ids, last[type]);
-
+    await this.canvas.apply(last.ids, undo ? last.oldObjects : last.newObjects);
+    to.push(last);
     this.locked = false;
     this.isModified = true;
     this.updateState();
