@@ -133,7 +133,7 @@ export default class QBoard {
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
 
-    this.dropArea.ondragover = this.dragOver;
+    this.dropArea.ondragenter = this.dragOver;
     this.dropArea.ondragleave = this.dragLeave;
     this.baseCanvas.on("drop", this.drop);
 
@@ -227,11 +227,12 @@ export default class QBoard {
   dragLeave = (e: DragEvent): void =>
     this.dropArea.classList.remove("file-drop-active");
 
-  drop = async ({ e }: fabric.IEvent): Promise<void[]> => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.dragLeave(e as DragEvent);
-    return this.clipboard.processFiles((e as DragEvent).dataTransfer.files);
+  drop = async (iEvent: fabric.IEvent): Promise<void[]> => {
+    iEvent.e.stopPropagation();
+    iEvent.e.preventDefault();
+    this.updateCursor(iEvent);
+    this.dragLeave(iEvent.e as DragEvent);
+    return this.clipboard.processFiles((iEvent.e as DragEvent).dataTransfer.files);
   };
 
   pathCreated = async (e: any): Promise<void> => {
@@ -260,7 +261,7 @@ export default class QBoard {
   objectModified = async (e: any): Promise<void> =>
     this.history.modify(e.target._objects || [e.target]);
 
-  updateCursor = async (e: fabric.IEvent): Promise<void> => {
+  updateCursor =  (e: fabric.IEvent): void => {
     const { x, y } = this.baseCanvas.getPointer(e.e);
     this.baseCanvas.cursor = { x, y };
   };
