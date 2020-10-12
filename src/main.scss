@@ -93,16 +93,25 @@ button {
 
   .button-row-inner {
     background: #edeff0;
-    display: none;
+    display: flex;
     flex-direction: row;
-    left: calc(50% + 0.8em);
+    left: 0;
     padding: 0.25em 0.25em 0.25em 0;
-    position: absolute;
-    top: -0.25em;
+    position: relative;
+    top: 0;
   }
 
-  &:hover .button-row-inner {
-    display: flex;
+  &.button-row-hover {
+    .button-row-inner {
+      display: none;
+      left: calc(50% + 0.8em);
+      position: absolute;
+      top: -0.25em;
+    }
+
+    &:hover .button-row-inner {
+      display: flex;
+    }
   }
 }
 
@@ -449,13 +458,6 @@ button {
   border-radius: 0.25em;
   padding: 0.25em;
   position: absolute;
-
-  .button-row-inner {
-    display: flex;
-    left: 0;
-    position: relative;
-    top: 0;
-  }
 
   button {
     opacity: 0.5;
