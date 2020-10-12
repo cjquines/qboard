@@ -2,7 +2,6 @@ import { fabric } from "fabric";
 
 import { Page } from "./pages";
 import { HistoryHandler } from "./history";
-import { Image } from "fabric/fabric-impl";
 
 export class ClipboardHandler {
   clipboard: fabric.Object;
@@ -61,7 +60,7 @@ export class ClipboardHandler {
         (file) =>
           new Promise<void>((resolve) => {
             const url = window.URL.createObjectURL(file);
-            fabric.Image.fromURL(url, (obj: Image) => {
+            fabric.Image.fromURL(url, (obj: fabric.Image) => {
               resolve(this.placeObject(obj, cursor));
             });
           })
