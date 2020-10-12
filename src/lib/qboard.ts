@@ -7,7 +7,6 @@ import { ClipboardHandler } from "./clipboard";
 import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
 import { KeyboardHandler } from "./keyboard";
 import { ActionHandler } from "./action";
-import { IEvent } from "fabric/fabric-impl";
 
 export interface QBoardState {
   currentPage: number;
@@ -228,7 +227,7 @@ export default class QBoard {
   dragLeave = (e: DragEvent): void =>
     this.dropArea.classList.remove("file-drop-active");
 
-  drop = async ({ e }: IEvent): Promise<void[]> => {
+  drop = async ({ e }: fabric.IEvent): Promise<void[]> => {
     e.stopPropagation();
     e.preventDefault();
     this.dragLeave(e as DragEvent);
