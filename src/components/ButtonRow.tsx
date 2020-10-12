@@ -11,7 +11,7 @@ const ButtonRow = (props: {
   outerButton?: boolean | ReactNode;
 }) => {
   return (
-    <div className="button-row">
+    <div className={`button-row ${props.outerButton && "button-row-hover"}`}>
       {props.outerButton}
       <div className="button-row-inner">
         {props.actions.map((action, i) => (
