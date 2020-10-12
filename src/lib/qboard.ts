@@ -7,6 +7,7 @@ import { ClipboardHandler } from "./clipboard";
 import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
 import { KeyboardHandler } from "./keyboard";
 import { ActionHandler } from "./action";
+import { IEvent } from "fabric/fabric-impl";
 
 export interface QBoardState {
   currentPage: number;
@@ -55,6 +56,7 @@ export default class QBoard {
   constructor(
     public canvasElement: HTMLCanvasElement,
     public baseCanvasElement: HTMLCanvasElement,
+    public dropArea: HTMLElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -131,6 +133,11 @@ export default class QBoard {
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
+
+    this.dropArea.ondragover = this.dragOver;
+    this.dropArea.ondragleave = this.dragLeave;
+    this.baseCanvas.on("drop", this.drop);
+
     this.baseCanvas.on("path:created", this.pathCreated);
     this.baseCanvas.on("selection:created", this.selectionCreated);
     this.baseCanvas.on("object:modified", this.objectModified);
@@ -195,10 +202,9 @@ export default class QBoard {
   };
 
   mouseMove = async (e: fabric.IEvent): Promise<void> => {
-    if (!this.tool.draw) return;
+    if (!(this.tool.draw && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
-    if (!this.isDown) return;
     await this.tool.resize(this.currentObject, x, y, this.strict);
     this.canvas.requestRenderAll();
   };
@@ -212,6 +218,21 @@ export default class QBoard {
     await this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     await this.history.add([this.currentObject]);
+  };
+
+  dragEnter = (e: DragEvent): void =>
+    this.dropArea.classList.add("file-drop-active");
+
+  dragOver = this.dragEnter;
+
+  dragLeave = (e: DragEvent): void =>
+    this.dropArea.classList.remove("file-drop-active");
+
+  drop = async ({ e }: IEvent): Promise<void[]> => {
+    e.stopPropagation();
+    e.preventDefault();
+    this.dragLeave(e as DragEvent);
+    return this.clipboard.processFiles((e as DragEvent).dataTransfer.files);
   };
 
   pathCreated = async (e: any): Promise<void> => {

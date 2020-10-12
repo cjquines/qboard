@@ -9,6 +9,7 @@ import "./main.scss";
 const qboard = new QBoard(
   document.querySelector("#QBoard"),
   document.querySelector("#BaseQBoard"),
+  document.querySelector("#DropArea"),
   1600,
   900
 );
