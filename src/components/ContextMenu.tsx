@@ -29,10 +29,7 @@ const ContextMenu = (props: {
     >
       <StyleMenu
         currentStyle={props.currentStyle}
-        doAction={(action: Action) => {
-          setCoords(null);
-          return props.doAction(action);
-        }}
+        doAction={(action: Action) => props.doAction(action)}
         inContext={true}
       />
     </div>
