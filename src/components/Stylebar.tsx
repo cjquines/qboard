@@ -32,6 +32,7 @@ const Stylebar = (props: {
       <input
         accept=".json"
         onChange={props.openFile}
+        multiple={true}
         ref={fileInputRef}
         type="file"
       />
