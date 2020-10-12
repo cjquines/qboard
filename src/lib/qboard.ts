@@ -232,7 +232,9 @@ export default class QBoard {
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
     this.dragLeave(iEvent.e as DragEvent);
-    return this.clipboard.processFiles((iEvent.e as DragEvent).dataTransfer.files);
+    return this.clipboard.processFiles(
+      (iEvent.e as DragEvent).dataTransfer.files
+    );
   };
 
   pathCreated = async (e: any): Promise<void> => {
@@ -261,7 +263,7 @@ export default class QBoard {
   objectModified = async (e: any): Promise<void> =>
     this.history.modify(e.target._objects || [e.target]);
 
-  updateCursor =  (e: fabric.IEvent): void => {
+  updateCursor = (e: fabric.IEvent): void => {
     const { x, y } = this.baseCanvas.getPointer(e.e);
     this.baseCanvas.cursor = { x, y };
   };
