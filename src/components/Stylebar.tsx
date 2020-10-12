@@ -49,14 +49,15 @@ const Stylebar = (props: {
             props.doAction(action);
           }
         }}
+        cName="file-actions"
         outerButton={fileButton}
       />
       <ButtonRow
         actions={otherActions}
+        cName="other-actions vertical"
         callback={props.doAction}
-        vertical={true}
       />
-      <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
+    <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
       <ButtonRow
         actions={mobileActions.map((action) =>
           action === Action.FullScreen
@@ -66,7 +67,7 @@ const Stylebar = (props: {
             : action
         )}
         callback={props.doAction}
-        vertical={true}
+        cName="mobile-actions vertical"
       />
     </div>
   );

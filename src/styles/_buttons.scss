@@ -59,7 +59,7 @@ button {
     top: 0;
   }
 
-  &.button-row-vertical .button-row-inner {
+  &.vertical .button-row-inner {
     flex-direction: column;
     padding: 0;
   }
