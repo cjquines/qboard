@@ -2,6 +2,7 @@ import { fabric } from "fabric";
 
 import { Page } from "./pages";
 import { HistoryHandler } from "./history";
+import { Image } from "fabric/fabric-impl";
 
 export class ClipboardHandler {
   clipboard: fabric.Object;
@@ -49,15 +50,23 @@ export class ClipboardHandler {
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    for (const file of e.clipboardData.files) {
-      if (!file.type.includes("image")) continue;
-      const url = window.URL.createObjectURL(file);
-      fabric.Image.fromURL(url, async (obj: any) => {
-        await this.placeObject(obj);
-      });
-      return;
-    }
+    await this.processFiles(e.clipboardData.files);
     await this.paste();
+  };
+
+  processFiles = async (files: FileList): Promise<void[]> => {
+    const promises = [...files]
+      .filter(({ type }) => type.includes("image"))
+      .map(
+        (file) =>
+          new Promise<void>((resolve) => {
+            const url = window.URL.createObjectURL(file);
+            fabric.Image.fromURL(url, (obj: Image) => {
+              resolve(this.placeObject(obj));
+            });
+          })
+      );
+    return Promise.all(promises);
   };
 
   placeObject = async (obj: any): Promise<void> => {
