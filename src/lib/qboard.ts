@@ -71,8 +71,8 @@ export default class QBoard {
       this.baseCanvas,
       this.canvasWidth,
       this.canvasHeight,
-      this.updateState,
-      () => (this.history.isModified = false)
+      () => (this.history.isModified = false),
+      this.updateState
     );
 
     this.history = new HistoryHandler(
