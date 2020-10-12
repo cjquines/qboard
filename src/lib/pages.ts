@@ -165,7 +165,22 @@ export class Pages {
 
   saveFile = (): void => {
     this.savePage();
-    return JSON.stringify(this.pagesJson);
+    const fileURL = URL.createObjectURL(
+      new Blob([JSON.stringify(this.pagesJson)], {
+        type: "application/json",
+      })
+    );
+
+    const elt = document.createElement("a");
+    elt.style.display = "none";
+    elt.href = fileURL;
+    elt.download = "file.json";
+    document.body.appendChild(elt);
+    elt.click();
+    elt.parentElement.removeChild(elt);
+
+    URL.revokeObjectURL(fileURL);
+    this.unmodify();
   };
 
   splicePages = async (
