@@ -11,9 +11,9 @@ const ButtonRow = (props: {
   outerButton?: boolean | ReactNode;
 }) => {
   return (
-    <div className="style">
+    <div className="button-row">
       {props.outerButton}
-      <div className="substyle">
+      <div className="button-row-inner">
         {props.actions.map((action, i) => (
           <OverlayButton
             action={action}
