@@ -113,18 +113,21 @@ export class Pages {
     ]);
   };
 
-  loadPage = async (index: number, reload: boolean = true): Promise<number> => {
-    if (index === this.currentIndex) return index;
-    this.savePage();
+  loadPage = async (
+    index: number,
+    fromFile: boolean = false
+  ): Promise<number> => {
+    if (!fromFile && index === this.currentIndex) return index;
+    if (!fromFile) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJson[index]);
     this.currentIndex = index;
-    if (reload) this.updateState();
+    if (!fromFile) this.updateState();
     return index;
   };
 
-  newPage = async (reload: boolean = true): Promise<number> => {
+  newPage = async (fromFile: boolean = false): Promise<number> => {
     this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
-    return this.loadPage(this.currentIndex + 1, reload);
+    return this.loadPage(this.currentIndex + 1, fromFile);
   };
 
   previousPage = async (): Promise<number> => {
@@ -132,11 +135,11 @@ export class Pages {
     return this.loadPage(this.currentIndex - 1);
   };
 
-  nextOrNewPage = async (reload: boolean = true): Promise<number> => {
+  nextOrNewPage = async (fromFile: boolean = false): Promise<number> => {
     if (this.currentIndex === this.pagesJson.length - 1) {
-      return this.newPage(reload);
+      return this.newPage(fromFile);
     }
-    return this.loadPage(this.currentIndex + 1, reload);
+    return this.loadPage(this.currentIndex + 1, fromFile);
   };
 
   export = async (): Promise<void> => {
@@ -191,18 +194,17 @@ export class Pages {
     await this.loadPage(start);
     this.pagesJson.splice(start + 1, deleteCount, ...pages);
     for (const page of pages) {
-      await this.nextOrNewPage(false);
+      await this.nextOrNewPage(true);
     }
     if (!this.canvas.modified && start === 0) {
       this.pagesJson.shift();
-      // can't call load page because it saves the current page
-      await this.canvas.loadFromJSONAsync(this.pagesJson[start]);
-      this.currentIndex = start;
+      await this.loadPage(0, true);
     }
     this.updateState();
   };
 
   openFile = async (e: Event): Promise<void> => {
+    this.savePage();
     const file = (e.target as HTMLInputElement).files[0];
     const reader = new FileReader();
     reader.onload = () =>
