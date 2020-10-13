@@ -102,8 +102,8 @@ export default class KeyboardHandler {
   };
 
   bindAll = (): void => {
-    for (const key of Object.keys(this.keyMap)) {
-      this.bind(key, this.keyMap[key]);
+    for (const [key, value] of Object.entries(this.keyMap)) {
+      this.bind(key, value as Action);
     }
     this.updateState();
   };
