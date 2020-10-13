@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Dash, Stroke, Fill, Style } from "../lib/styles";
+import { Dash, Fill, Stroke, Style } from "../lib/styles";
 import { Action } from "../lib/action";
 
 import Icon from "./Icon";
