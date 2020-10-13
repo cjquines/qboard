@@ -2,7 +2,7 @@ import { fabric } from "fabric";
 
 import { Tool } from "./tools";
 import Pages from "./pages";
-import ClipboardHandler from "./clipboard";
+import { ClipboardHandler } from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
 
@@ -74,7 +74,7 @@ export const actionName = (action: Action): string => {
   return name && name[0].toUpperCase() + name.slice(1);
 };
 
-export default class ActionHandler {
+export class ActionHandler {
   canvas: fabric.Canvas;
   actionMap: any;
 
