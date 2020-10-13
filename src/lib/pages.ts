@@ -118,7 +118,7 @@ export default class Pages {
 
     this.pagesJson = pages;
     await this.loadPage(0, true, true);
-    this.canvas.modified = true;
+    this.canvas.modified = false;
     return true;
   };
 
