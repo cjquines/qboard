@@ -4,7 +4,7 @@ import Page from "./page";
 import Pages from "./pages";
 import HistoryHandler from "./history";
 
-export class ClipboardHandler {
+export default class ClipboardHandler {
   clipboard: fabric.Object;
 
   constructor(
