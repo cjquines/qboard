@@ -7,7 +7,7 @@ import StyleMenu from "./StyleMenu";
 
 const ContextMenu = (props: {
   currentStyle: Style;
-  doAction: (Action) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
 }) => {
   const [coords, setCoords] = useState<[Number, Number] | null>(null);
 
@@ -29,10 +29,7 @@ const ContextMenu = (props: {
     >
       <StyleMenu
         currentStyle={props.currentStyle}
-        doAction={(action: Action) => {
-          setCoords(null);
-          return props.doAction(action);
-        }}
+        doAction={(action: Action) => props.doAction(action)}
         inContext={true}
       />
     </div>

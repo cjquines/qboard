@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { Page } from "./pages";
+import { Page } from "./page";
 import { HistoryHandler } from "./history";
 
 export class ClipboardHandler {
@@ -59,8 +59,8 @@ export class ClipboardHandler {
       .map(
         (file) =>
           new Promise<void>((resolve) => {
-            const url = window.URL.createObjectURL(file);
-            fabric.Image.fromURL(url, (obj: fabric.Image) => {
+            const fileURL = URL.createObjectURL(file);
+            fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
               resolve(this.placeObject(obj, cursor));
             });
           })

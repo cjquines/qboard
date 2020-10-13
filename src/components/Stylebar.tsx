@@ -1,20 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Style } from "../lib/styles";
 import { Action } from "../lib/action";
 
 import { Visibility } from "./Overlay";
+import ButtonRow from "./ButtonRow";
+import Icon from "./Icon";
 import StyleMenu from "./StyleMenu";
-import OverlayButton from "./OverlayButton";
 
 const Stylebar = (props: {
   currentStyle: Style;
-  doAction: (Action) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
+  openFile: (files: FileList) => Promise<void>;
   visibility: Visibility;
   isMobile: boolean;
 }) => {
-  const actions = [Action.Save, Action.Copy, Action.Paste];
-  const mobileMethods = props.isMobile ? [Action.FullScreen] : [];
+  const fileInputRef = useRef(null);
+  const fileButton = <button className="inactive">{Icon.file}</button>;
+  const fileActions = [Action.Open, Action.Save, Action.Export];
+
+  const otherActions = [Action.Copy, Action.Paste];
+  const mobileActions = props.isMobile ? [Action.FullScreen] : [];
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -27,23 +33,42 @@ const Stylebar = (props: {
 
   return (
     <div className={`stylebar visibility-${props.visibility}`}>
-      {actions.map((action) => (
-        <OverlayButton action={action} callback={props.doAction} key={action} />
-      ))}
-      <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
-      {mobileMethods.map((action) => (
-        <OverlayButton
-          action={
-            action === Action.FullScreen
-              ? !isFullscreen
-                ? Action.EnterFullScreen
-                : Action.ExitFullScreen
-              : action
+      <input
+        accept=".json"
+        onChange={(e) => props.openFile(e.target.files)}
+        multiple={true}
+        ref={fileInputRef}
+        type="file"
+      />
+      <ButtonRow
+        actions={fileActions}
+        callback={async (action) => {
+          if (action === Action.Open) {
+            fileInputRef.current.click();
+          } else {
+            props.doAction(action);
           }
-          callback={props.doAction}
-          key={action}
-        />
-      ))}
+        }}
+        cName="file-actions"
+        outerButton={fileButton}
+      />
+      <ButtonRow
+        actions={otherActions}
+        cName="other-actions vertical"
+        callback={props.doAction}
+      />
+    <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
+      <ButtonRow
+        actions={mobileActions.map((action) =>
+          action === Action.FullScreen
+            ? !isFullscreen
+              ? Action.EnterFullScreen
+              : Action.ExitFullScreen
+            : action
+        )}
+        callback={props.doAction}
+        cName="mobile-actions vertical"
+      />
     </div>
   );
 };

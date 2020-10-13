@@ -1,6 +1,7 @@
 import { fabric } from "fabric";
 
-import { Page, Pages } from "./pages";
+import { Page } from "./page";
+import { Pages } from "./pages";
 
 interface HistoryItem {
   ids: number[];
@@ -18,8 +19,7 @@ export class HistoryHandler {
   constructor(
     public canvas: Page,
     public pages: Pages,
-    public updateState: () => void,
-    public modified: () => void
+    public updateState: () => void
   ) {}
 
   add = async (objects: any[]): Promise<void> =>
@@ -52,36 +52,33 @@ export class HistoryHandler {
       page: this.pages.currentIndex,
     });
     this.redoStack = [];
-    this.modified();
+    this.canvas.modified = true;
     this.updateState();
   };
 
   undo = async (): Promise<void> => {
     if (!this.history.length) return;
     this.canvas.discardActiveObject();
-    await this.move(this.history, this.redoStack, "oldObjects");
+    await this.move(this.history, this.redoStack, true);
   };
 
   redo = async (): Promise<void> => {
     if (!this.redoStack.length) return;
-    await this.move(this.redoStack, this.history, "newObjects");
+    await this.move(this.redoStack, this.history, false);
   };
 
   private move = async (
     from: HistoryItem[],
     to: HistoryItem[],
-    type: string
+    undo: boolean
   ): Promise<void> => {
-    const last = from.pop();
-    to.push(last);
     this.locked = true;
+    const last = from.pop();
     await this.pages.loadPage(last.page);
-
-    // TODO: Use symbols or enums or something for type
-    await this.canvas.apply(last.ids, last[type]);
-
+    await this.canvas.apply(last.ids, undo ? last.oldObjects : last.newObjects);
+    to.push(last);
     this.locked = false;
-    this.modified();
+    this.canvas.modified = true;
     this.updateState();
   };
 }

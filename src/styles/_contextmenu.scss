@@ -1,0 +1,25 @@
+.context-menu {
+  background-color: #edeff0;
+  border-radius: 0.25em;
+  padding: 0.25em;
+  position: absolute;
+
+  button {
+    opacity: 0.5;
+    margin: 0 0.1em;
+  }
+
+  button.active {
+    background: none;
+    border-radius: 0;
+    border-bottom: 1px solid #262626;
+  }
+
+  button.active, button:hover {
+    opacity: 1;
+  }
+
+  .__react_component_tooltip {
+    display: none;
+  }
+}

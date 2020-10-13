@@ -4,37 +4,33 @@ import { Dash, Stroke, Fill, Style } from "../lib/styles";
 import { Action } from "../lib/action";
 
 import Icon from "./Icon";
-import OverlayButton from "./OverlayButton";
+import ButtonRow from "./ButtonRow";
 
 const DashStyle = (props: {
   dashStyle: Dash;
-  callback: (Action) => Promise<void>;
+  callback: (action: Action) => Promise<void>;
   inContext: Boolean;
 }) => {
   const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
+  const button = (
+    <button className="inactive">{Icon[dashes[props.dashStyle]]}</button>
+  );
 
   return (
-    <div className="style">
-      {!props.inContext && (
-        <button className="inactive">{Icon[dashes[props.dashStyle]]}</button>
-      )}
-      <div className="substyle">
-        {dashes.map((action, i) => (
-          <OverlayButton
-            action={action}
-            className={props.inContext && props.dashStyle === i && "active"}
-            callback={props.callback}
-            key={action}
-          />
-        ))}
-      </div>
-    </div>
+    <ButtonRow
+      actions={dashes}
+      className={(action, i) =>
+        props.inContext && props.dashStyle === i && "active"
+      }
+      callback={props.callback}
+      outerButton={!props.inContext && button}
+    />
   );
 };
 
 const StrokeStyle = (props: {
   strokeStyle: string;
-  callback: (Action) => Promise<void>;
+  callback: (action: Action) => Promise<void>;
   inContext: Boolean;
 }) => {
   const strokes = [
@@ -51,59 +47,49 @@ const StrokeStyle = (props: {
     Stroke.Yellow,
     Stroke.Orange,
   ];
+  const button = (
+    <button className="inactive">
+      <i className="fas fa-circle" style={{ color: props.strokeStyle }} />
+    </button>
+  );
 
   return (
-    <div className="style">
-      {!props.inContext && (
-        <button className="inactive">
-          <i className="fas fa-circle" style={{ color: props.strokeStyle }} />
-        </button>
-      )}
-      <div className="substyle">
-        {strokes.map((action, i) => (
-          <OverlayButton
-            action={action}
-            className={
-              props.inContext && props.strokeStyle === strokeMap[i] && "active"
-            }
-            callback={props.callback}
-            key={action}
-          />
-        ))}
-      </div>
-    </div>
+    <ButtonRow
+      actions={strokes}
+      className={(action, i) =>
+        props.inContext && props.strokeStyle === strokeMap[i] && "active"
+      }
+      callback={props.callback}
+      outerButton={!props.inContext && button}
+    />
   );
 };
 
 const FillStyle = (props: {
   fillStyle: Fill;
-  callback: (Action) => Promise<void>;
+  callback: (action: Action) => Promise<void>;
   inContext: Boolean;
 }) => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
+  const button = (
+    <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
+  );
 
   return (
-    <div className="style">
-      {!props.inContext && (
-        <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
-      )}
-      <div className="substyle">
-        {fills.map((action, i) => (
-          <OverlayButton
-            action={action}
-            className={props.inContext && props.fillStyle === i && "active"}
-            callback={props.callback}
-            key={action}
-          />
-        ))}
-      </div>
-    </div>
+    <ButtonRow
+      actions={fills}
+      className={(action, i) =>
+        props.inContext && props.fillStyle === i && "active"
+      }
+      callback={props.callback}
+      outerButton={!props.inContext && button}
+    />
   );
 };
 
 const StyleMenu = (props: {
   currentStyle: Style;
-  doAction: (Action) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
   inContext?: Boolean;
 }) => {
   return (

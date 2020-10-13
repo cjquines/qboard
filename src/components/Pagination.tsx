@@ -6,10 +6,10 @@ import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";
 
 const Pagination = (props: {
-  loadPage: (number) => Promise<void | number>;
+  loadPage: (index: number) => Promise<void | number>;
   currentPage: number;
   totalPages: number;
-  doAction: (Action) => Promise<void>;
+  doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
 }) => {
   const [value, setValue] = useState(0);
