@@ -22,7 +22,7 @@ const ButtonRow = (props: {
         {props.actions.map((action, i) => (
           <OverlayButton
             action={action}
-            className={props.className?.(action, i)}
+            className={props.className && props.className(action, i)}
             callback={props.callback}
             key={action}
           />

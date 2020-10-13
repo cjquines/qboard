@@ -129,15 +129,16 @@ export default class QBoard {
   }
 
   updateState = (): void => {
-    this?.callback?.({
-      currentPage: this.pages.currentIndex + 1,
-      totalPages: this.pages.pagesJson.length,
-      currentTool: this.currentTool,
-      currentStyle: this.currentStyle,
-      canUndo: Boolean(this.history.history.length),
-      canRedo: Boolean(this.history.redoStack.length),
-      keyMap: this.keyboard.keyMap,
-    });
+    this.callback &&
+      this.callback({
+        currentPage: this.pages.currentIndex + 1,
+        totalPages: this.pages.pagesJson.length,
+        currentTool: this.currentTool,
+        currentStyle: this.currentStyle,
+        canUndo: Boolean(this.history.history.length),
+        canRedo: Boolean(this.history.redoStack.length),
+        keyMap: this.keyboard.keyMap,
+      });
   };
 
   switchTool = async (tool: Tool): Promise<void> => {
@@ -214,9 +215,7 @@ export default class QBoard {
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
     this.dragLeave(iEvent.e as DragEvent);
-    const imgs = await this.pages.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files
-    );
+    const imgs = await this.pages.processFiles((iEvent.e as DragEvent).dataTransfer.files);
     return this.history.add(imgs.flat());
   };
 

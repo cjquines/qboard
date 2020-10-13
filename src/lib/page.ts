@@ -69,7 +69,7 @@ export default class Page extends fabric.Canvas {
     if (oldObjects.length) {
       this.remove(...oldObjects);
     }
-    if (newObjects?.length) {
+    if (newObjects && newObjects.length) {
       fabric.util.enlivenObjects(
         newObjects,
         (objects) => {
