@@ -1,4 +1,3 @@
-import { fabric } from "fabric";
 import pdfMake from "pdfmake/build/pdfmake.min";
 
 import { Page } from "./page";
@@ -9,7 +8,7 @@ const defaultPageJSON = {
   background: "white",
 };
 
-export class Pages {
+export default class Pages {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
 

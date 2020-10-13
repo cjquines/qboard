@@ -2,7 +2,7 @@ import { fabric } from "fabric";
 
 import { Handlers, Tool, ToolHandler } from "./tools";
 import { Page } from "./page";
-import { Pages } from "./pages";
+import Pages from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
 import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
