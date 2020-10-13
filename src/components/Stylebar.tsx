@@ -57,7 +57,7 @@ const Stylebar = (props: {
         cName="other-actions vertical"
         callback={props.doAction}
       />
-    <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
+      <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
       <ButtonRow
         actions={mobileActions.map((action) =>
           action === Action.FullScreen

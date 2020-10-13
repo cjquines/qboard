@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 
-Modal.setAppElement("#Overlay");
-
 import { Action } from "../lib/action";
 
 import Bindings from "./Bindings";
 import Icon from "./Icon";
+
+Modal.setAppElement("#Overlay");
 
 const HelpModal = (props: {
   bind: (key: string, action: Action) => void;
