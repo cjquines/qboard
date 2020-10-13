@@ -1,8 +1,8 @@
 import pdfMake from "pdfmake/build/pdfmake.min";
+import { fabric } from "fabric";
 
 import Page from "./page";
 import AsyncReader from "./asyncReader";
-import { fabric } from "fabric";
 
 const defaultPageJSON = {
   version: "3.6.3",
