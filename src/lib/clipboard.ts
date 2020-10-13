@@ -52,7 +52,7 @@ export class ClipboardHandler {
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
     const imgs = await this.pages.processFiles(e.clipboardData.files, null);
-    await this.history.add(imgs);
+    await this.history.add(imgs.flat());
     await this.paste();
   };
 }
