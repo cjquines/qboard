@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 
-import Page from "./page";
-import Pages from "./pages";
+import { Page } from "./page";
+import { Pages } from "./pages";
 
 interface HistoryItem {
   ids: number[];
@@ -10,7 +10,7 @@ interface HistoryItem {
   page: number;
 }
 
-export default class HistoryHandler {
+export class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
   selection: fabric.Object[];
@@ -70,15 +70,12 @@ export default class HistoryHandler {
   private move = async (
     from: HistoryItem[],
     to: HistoryItem[],
-    isUndo: boolean
+    undo: boolean
   ): Promise<void> => {
     this.locked = true;
     const last = from.pop();
     await this.pages.loadPage(last.page);
-    await this.canvas.apply(
-      last.ids,
-      isUndo ? last.oldObjects : last.newObjects
-    );
+    await this.canvas.apply(last.ids, undo ? last.oldObjects : last.newObjects);
     to.push(last);
     this.locked = false;
     this.canvas.modified = true;

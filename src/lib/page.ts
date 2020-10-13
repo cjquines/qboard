@@ -1,9 +1,7 @@
 import { fabric } from "fabric";
 
-export default class Page extends fabric.Canvas {
+export class Page extends fabric.Canvas {
   cursor: { x: number; y: number };
-  canvasWidth: number;
-  canvasHeight: number;
   latestId: number = 0;
   modified: boolean = false;
 
@@ -16,8 +14,6 @@ export default class Page extends fabric.Canvas {
     this.setZoom(Math.min(widthRatio, heightRatio));
     this.setWidth(canvasWidth * this.getZoom());
     this.setHeight(canvasHeight * this.getZoom());
-    this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight;
   };
 
   deactivateSelection = async (): Promise<void> => {
@@ -69,7 +65,7 @@ export default class Page extends fabric.Canvas {
     if (oldObjects.length) {
       this.remove(...oldObjects);
     }
-    if (newObjects && newObjects.length) {
+    if (newObjects?.length) {
       fabric.util.enlivenObjects(
         newObjects,
         (objects) => {
@@ -90,34 +86,4 @@ export default class Page extends fabric.Canvas {
         resolve();
       });
     });
-
-  placeObject = async (obj: any, cursor: any = this.cursor): Promise<any> => {
-    const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
-      cursor || {};
-    this.discardActiveObject();
-    const id = await this.getNextId();
-
-    obj.set({
-      id,
-      left: x,
-      top: y,
-      originX: "center",
-      originY: "center",
-    });
-    if (obj._objects) {
-      obj.canvas = this;
-      obj.forEachObject((object) => {
-        this.getNextId().then((id) => {
-          object.id = id;
-          this.add(object);
-        });
-      });
-      obj.setCoords();
-    } else {
-      this.add(obj);
-    }
-    this.setActiveObject(obj);
-    this.requestRenderAll();
-    return obj._objects || [obj];
-  };
 }

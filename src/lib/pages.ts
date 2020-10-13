@@ -1,8 +1,7 @@
+import { fabric } from "fabric";
 import pdfMake from "pdfmake/build/pdfmake.min";
 
-import Page from "./page";
-import AsyncReader from "./asyncReader";
-import { fabric } from "fabric";
+import { Page } from "./page";
 
 const defaultPageJSON = {
   version: "3.6.3",
@@ -10,7 +9,7 @@ const defaultPageJSON = {
   background: "white",
 };
 
-export default class Pages {
+export class Pages {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
 
@@ -30,14 +29,13 @@ export default class Pages {
 
   loadPage = async (
     index: number,
-    fromFile: boolean = false,
-    force: boolean = false
+    fromFile: boolean = false
   ): Promise<number> => {
-    if (index === this.currentIndex && !force) return index;
+    if (!fromFile && index === this.currentIndex) return index;
     if (!fromFile) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJson[index]);
     this.currentIndex = index;
-    if (!fromFile || force) this.updateState();
+    if (!fromFile) this.updateState();
     return index;
   };
 
@@ -62,9 +60,8 @@ export default class Pages {
     this.savePage();
     const ratio = 2;
     const content = [];
-    const currentindexcopy = this.currentIndex;
-    for (const page of this.pagesJson) {
-      await this.canvas.loadFromJSONAsync(page);
+    for (let i = 0; i < this.pagesJson.length; i++) {
+      await this.loadPage(i);
       content.push({
         svg: this.canvas.toSVG(),
         width: this.canvasWidth / ratio,
@@ -81,8 +78,6 @@ export default class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
-
-    await this.canvas.loadFromJSONAsync(this.pagesJson[currentindexcopy]);
   };
 
   saveFile = (): void => {
@@ -105,68 +100,41 @@ export default class Pages {
     this.canvas.modified = false;
   };
 
-  overwritePages = async (
-    pages: any[] = [defaultPageJSON]
-  ): Promise<boolean> => {
-    // ends up stringifying a parameter that we generated with json.parse
-    const response =
-      !this.canvas.modified ||
-      JSON.stringify(this.pagesJson) === JSON.stringify(pages) ||
-      window.confirm(
-        "You have unsaved work. Are you sure you wish to continue?"
-      );
-    if (response !== true) return false;
-
-    this.pagesJson = pages;
-    await this.loadPage(0, true, true);
-    this.canvas.modified = true;
-    return true;
-  };
-
-  insertPages = async (
-    index: number = this.currentIndex + 1,
+  splicePages = async (
+    start: number,
+    deleteCount: number,
     pages: any[] = []
-  ) => {
-    this.pagesJson.splice(index, 0, ...pages);
-    return this.loadPage(index);
+  ): Promise<void> => {
+    await this.loadPage(start);
+    this.pagesJson.splice(start + 1, deleteCount, ...pages);
+    for (const page of pages) {
+      await this.nextOrNewPage(true);
+    }
+    if (!this.canvas.modified && start === 0) {
+      this.pagesJson.shift();
+      await this.loadPage(0, true);
+      this.canvas.modified = true;
+    }
+    this.updateState();
   };
 
-  openFile = async (files: FileList): Promise<boolean> => {
+  openFile = async (files: FileList): Promise<void> => {
     if (!files.length) return;
-    const file = files[0];
-
     this.savePage();
-    const asyncReader = AsyncReader(file);
-
-    return this.overwritePages(
-      JSON.parse((await asyncReader).result.toString())
-    );
-  };
-
-  private handleImage = async (file, cursor): Promise<any> =>
-    new Promise<any>((resolve) => {
-      const fileURL = window.URL.createObjectURL(file);
-      fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
-        resolve(this.canvas.placeObject(obj, cursor));
+    for (const file of files) {
+      const asyncReader = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.splicePages(
+            this.pagesJson.length - 1,
+            0,
+            JSON.parse(reader.result as string)
+          );
+          resolve();
+        };
+        reader.readAsText(file);
       });
-    });
-
-  private handleJSON = async (file): Promise<number> => {
-    const asyncReader = AsyncReader(file);
-    return this.insertPages(
-      undefined,
-      JSON.parse((await asyncReader).result.toString())
-    );
-  };
-
-  processFiles = async (files: FileList, cursor?): Promise<any[]> => {
-    const images = [...files]
-      .filter(({ type }) => type.startsWith("image/"))
-      .map((file) => this.handleImage(file, cursor));
-    const json = [...files]
-      .filter(({ type }) => type === "application/json")
-      .map(this.handleJSON);
-    await Promise.all([...images, ...json]);
-    return Promise.all(images);
+      await asyncReader;
+    }
   };
 }
