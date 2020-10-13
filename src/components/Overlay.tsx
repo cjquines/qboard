@@ -3,7 +3,7 @@ import keyboardJS from "keyboardjs";
 
 import QBoard, { QBoardState } from "../lib/qboard";
 import { Tool } from "../lib/tools";
-import { Dash, Fill, Stroke } from "../lib/styles";
+import { Dash, Stroke, Fill } from "../lib/styles";
 import { defaultKeys } from "../lib/keyboard";
 
 import Pagination from "./Pagination";
