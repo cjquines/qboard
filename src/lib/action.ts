@@ -1,10 +1,10 @@
 import { fabric } from "fabric";
 
 import { Tool } from "./tools";
-import Pages from "./pages";
+import { Pages } from "./pages";
 import { ClipboardHandler } from "./clipboard";
 import { HistoryHandler } from "./history";
-import { Dash, Fill, Stroke, Style } from "./styles";
+import { Dash, Stroke, Fill, Style } from "./styles";
 
 export enum Action {
   PreviousPage = "previousPage",
