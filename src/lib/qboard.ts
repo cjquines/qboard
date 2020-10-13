@@ -1,7 +1,8 @@
 import { fabric } from "fabric";
 
 import { Handlers, Tool, ToolHandler } from "./tools";
-import { Page, Pages } from "./pages";
+import Page from "./page";
+import Pages from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
 import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
@@ -48,7 +49,6 @@ export default class QBoard {
   tool: ToolHandler;
   currentObject: any;
   isDown: boolean = false;
-  isModified: boolean = false;
   strict: boolean = false;
   callback: (state: QBoardState) => any;
 
@@ -72,15 +72,13 @@ export default class QBoard {
       this.baseCanvas,
       this.canvasWidth,
       this.canvasHeight,
-      this.updateState,
-      () => (this.isModified = false)
+      this.updateState
     );
 
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
-      this.updateState,
-      () => (this.isModified = true)
+      this.updateState
     );
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
@@ -105,9 +103,7 @@ export default class QBoard {
     );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,
-      (strict: boolean) => {
-        this.strict = strict;
-      },
+      (strict: boolean) => (this.strict = strict),
       this.updateState
     );
 
@@ -115,19 +111,7 @@ export default class QBoard {
     this.windowResize();
 
     window.onresize = this.windowResize;
-    window.onbeforeunload = () => this.isModified || null;
-
-    // TODO: move these inner calls to whichever class you think is good
-
-    // @ts-ignore for dev purposes
-    window.exportJSON = this.pages.jsonify;
-
-    // Takes an array (not a JSONified string but you can change that with a JSON.parse) pages (as pure objects) and adds them to the pagesJson array beginning one unit to the right of the current page. Is obvious once you open the splicePages function
-    // @ts-ignore for dev purposes
-    window.loadQ = async (pages): Promise<void> => {
-      const objects = await this.pages.splicePages(undefined, 0, pages);
-      // await this.history.add(objects);
-    };
+    window.onbeforeunload = () => this.baseCanvas.modified || null;
 
     this.canvas.on("mouse:down", this.mouseDown);
     this.canvas.on("mouse:move", this.mouseMove);

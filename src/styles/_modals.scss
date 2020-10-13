@@ -1,0 +1,76 @@
+.modal {
+  bottom: 0.5em;
+  left: 1em;
+  outline: none;
+  position: absolute;
+  right: 1em;
+  top: 0.5em;
+
+  p {
+    margin: 0 0 0.5em 0;
+  }
+
+  a {
+    color: #4a91c2;
+    text-decoration: none;
+
+    &:hover {
+      color: #00c3ff;
+
+      &[href], &[tabindex] {
+        cursor: pointer;
+      }
+    }
+  }
+
+  button {
+    background: #ddd;
+    margin: 0 0.25em;
+    width: initial;
+
+    &:hover, &.active {
+      background: #bbb;
+    }
+  }
+
+  .close {
+    background: transparent;
+    color: #888;
+    padding: 0;
+    position: absolute;
+    right: -0.25em;
+    top: 0;
+
+    &:hover {
+      background: transparent;
+      color: #444;
+    }
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.modal-overlay {
+  bottom: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
+  left: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
+  overflow-y: auto;
+  position: fixed;
+  right: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
+  top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
+
+  &.help-modal {
+    --width: 38em;
+    --height: 29em;
+    background: #f8f8f8;
+  }
+
+  &.binding-modal {
+    --width: 36em;
+    --height: 22.5em;
+    background: #ededed;
+  }
+}
+
+@import "bindings";

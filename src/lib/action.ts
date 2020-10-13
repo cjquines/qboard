@@ -1,10 +1,10 @@
 import { fabric } from "fabric";
 
 import { Tool } from "./tools";
-import { Pages } from "./pages";
+import Pages from "./pages";
 import { ClipboardHandler } from "./clipboard";
 import { HistoryHandler } from "./history";
-import { Dash, Stroke, Fill, Style } from "./styles";
+import { Dash, Fill, Stroke, Style } from "./styles";
 
 export enum Action {
   PreviousPage = "previousPage",
@@ -14,7 +14,9 @@ export enum Action {
   Undo = "undo",
   Redo = "redo",
 
+  Open = "open",
   Save = "save",
+  Export = "export",
   Cut = "cut",
   Copy = "copy",
   Paste = "paste",
@@ -99,7 +101,9 @@ export class ActionHandler {
       undo: history.undo,
       redo: history.redo,
 
-      save: pages.export,
+      open: pages.openFile,
+      save: pages.saveFile,
+      export: pages.export,
       cut: clipboard.cut,
       copy: clipboard.copy,
       paste: clipboard.paste,

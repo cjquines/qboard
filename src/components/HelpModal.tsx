@@ -3,12 +3,14 @@ import Modal from "react-modal";
 
 Modal.setAppElement("#Overlay");
 
+import { Action } from "../lib/action";
+
 import Bindings from "./Bindings";
 import Icon from "./Icon";
 
 const HelpModal = (props: {
-  bind: (string, Action) => void;
-  unbind: (string) => void;
+  bind: (key: string, action: Action) => void;
+  unbind: (key: string) => void;
   reset: () => void;
   keyMap: any;
   isOpen: boolean;
@@ -51,12 +53,26 @@ const HelpModal = (props: {
         Press <b>{leftHanded ? "0" : "1"}</b> to show or hide this screen.
       </p>
       <p>
-        Show:
-        <button onClick={(e) => setKeyModifier("")}>unmodified</button>
-        <button onClick={(e) => setKeyModifier("shift")}>with shift</button>
-        <button onClick={(e) => setKeyModifier("ctrl")}>with ctrl</button>
+        <button
+          className={keyModifier === "" ? "active" : undefined}
+          onClick={(e) => setKeyModifier("")}
+        >
+          unmodified
+        </button>
+        <button
+          className={keyModifier === "shift" ? "active" : undefined}
+          onClick={(e) => setKeyModifier("shift")}
+        >
+          with shift
+        </button>
+        <button
+          className={keyModifier === "ctrl" ? "active" : undefined}
+          onClick={(e) => setKeyModifier("ctrl")}
+        >
+          with ctrl
+        </button>
         <button onClick={(e) => toggleHand()}>
-          {leftHanded ? "right-handed" : "left-handed"}
+          {leftHanded ? "make right-handed" : "make left-handed"}
         </button>
       </p>
       <Bindings

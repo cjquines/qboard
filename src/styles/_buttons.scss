@@ -1,0 +1,79 @@
+button {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border-radius: 0.25em;
+  border: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  font: inherit;
+  height: 1.5em;
+  padding: 0.15em 0.27em 0.4em;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: baseline;
+  width: 1.5em;
+
+  &.active, &:hover {
+    background-color: #aaaaaa99;
+  }
+
+  &.inactive, &.disabled:hover {
+    background-color: transparent;
+  }
+
+  &.disabled {
+    color: #26262699;
+  }
+
+  &.active, &.inactive, &.disabled:hover {
+    cursor: unset;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.__react_component_tooltip {
+  background-color: #aaa;
+  font-size: 1em;
+  padding: 0.25em 0.5em;
+  transition: opacity 0.2s;
+
+  &.show {
+    opacity: 1;
+  }
+}
+
+.button-row {
+  position: relative;
+
+  .button-row-inner {
+    background: #edeff0;
+    display: flex;
+    flex-direction: row;
+    left: 0;
+    padding: 0.25em 0.25em 0.25em 0;
+    position: relative;
+    top: 0;
+  }
+
+  &.vertical .button-row-inner {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  &.button-row-hover {
+    .button-row-inner {
+      display: none;
+      left: calc(50% + 0.8em);
+      position: absolute;
+      top: -0.25em;
+    }
+
+    &:hover .button-row-inner {
+      display: flex;
+    }
+  }
+}

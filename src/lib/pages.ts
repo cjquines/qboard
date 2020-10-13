@@ -1,5 +1,6 @@
-import { fabric } from "fabric";
 import pdfMake from "pdfmake/build/pdfmake.min";
+
+import Page from "./page";
 
 const defaultPageJSON = {
   version: "3.6.3",
@@ -7,94 +8,7 @@ const defaultPageJSON = {
   background: "white",
 };
 
-export class Page extends fabric.Canvas {
-  latestId: number = 0;
-  cursor: { x: number; y: number };
-
-  fitToWindow = async (
-    canvasWidth: number,
-    canvasHeight: number
-  ): Promise<void> => {
-    const widthRatio = window.innerWidth / canvasWidth;
-    const heightRatio = window.innerHeight / canvasHeight;
-    this.setZoom(Math.min(widthRatio, heightRatio));
-    this.setWidth(canvasWidth * this.getZoom());
-    this.setHeight(canvasHeight * this.getZoom());
-  };
-
-  deactivateSelection = async (): Promise<void> => {
-    this.isDrawingMode = false;
-    this.selection = false;
-    this.discardActiveObject();
-    this.forEachObject((object) => {
-      object.selectable = false;
-    });
-    this.requestRenderAll();
-  };
-
-  activateSelection = async (): Promise<void> => {
-    this.isDrawingMode = false;
-    this.selection = true;
-    this.forEachObject((object) => {
-      object.selectable = true;
-    });
-  };
-
-  getNextId = async (): Promise<number> => {
-    this.latestId += 1;
-    return this.latestId;
-  };
-
-  getObjectByIds = (ids: number[]): fabric.Object[] => {
-    // multiple element case; kind of inefficient
-    if (ids.length > 1) {
-      return this.getObjects().filter((object: any) => ids.includes(object.id));
-    }
-    // single element case
-    const id = ids[0];
-    for (let object of this.getObjects()) {
-      if ((object as any).id === id) {
-        return [object];
-      }
-    }
-    return [];
-  };
-
-  serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
-    return objects.map((object) =>
-      (this as any)._toObject(object, "toObject", ["strokeUniform"])
-    );
-  };
-
-  apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
-    const oldObjects = this.getObjectByIds(ids);
-    if (oldObjects.length) {
-      this.remove(...oldObjects);
-    }
-    if (newObjects && newObjects.length) {
-      fabric.util.enlivenObjects(
-        newObjects,
-        (objects) => {
-          objects.forEach((object: any, i) => {
-            object.id = ids[i];
-          });
-          this.add(...objects);
-        },
-        "fabric"
-      );
-    }
-    this.requestRenderAll();
-  };
-
-  loadFromJSONAsync = async (json: any) =>
-    new Promise<void>((resolve) => {
-      super.loadFromJSON(json, () => {
-        resolve();
-      });
-    });
-}
-
-export class Pages {
+export default class Pages {
   pagesJson: any[] = [defaultPageJSON];
   currentIndex: number = 0;
 
@@ -102,8 +16,7 @@ export class Pages {
     public canvas: Page,
     public canvasWidth: number,
     public canvasHeight: number,
-    public updateState: () => void,
-    public saved: () => void
+    public updateState: () => void
   ) {}
 
   savePage = (): void => {
@@ -113,18 +26,21 @@ export class Pages {
     ]);
   };
 
-  loadPage = async (index: number, reload: boolean = true): Promise<number> => {
-    if (index === this.currentIndex) return index;
-    this.savePage();
+  loadPage = async (
+    index: number,
+    fromFile: boolean = false
+  ): Promise<number> => {
+    if (!fromFile && index === this.currentIndex) return index;
+    if (!fromFile) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJson[index]);
     this.currentIndex = index;
-    if (reload) this.updateState();
+    if (!fromFile) this.updateState();
     return index;
   };
 
-  newPage = async (reload: boolean = true): Promise<number> => {
+  newPage = async (fromFile: boolean = false): Promise<number> => {
     this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
-    return this.loadPage(this.currentIndex + 1, reload);
+    return this.loadPage(this.currentIndex + 1, fromFile);
   };
 
   previousPage = async (): Promise<number> => {
@@ -132,11 +48,11 @@ export class Pages {
     return this.loadPage(this.currentIndex - 1);
   };
 
-  nextOrNewPage = async (reload: boolean = true): Promise<number> => {
+  nextOrNewPage = async (fromFile: boolean = false): Promise<number> => {
     if (this.currentIndex === this.pagesJson.length - 1) {
-      return this.newPage(reload);
+      return this.newPage(fromFile);
     }
-    return this.loadPage(this.currentIndex + 1, reload);
+    return this.loadPage(this.currentIndex + 1, fromFile);
   };
 
   export = async (): Promise<void> => {
@@ -161,36 +77,63 @@ export class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
-    this.saved();
   };
 
-  jsonify = (): string => {
+  saveFile = (): void => {
     this.savePage();
-    return JSON.stringify(this.pagesJson);
+    const fileURL = URL.createObjectURL(
+      new Blob([JSON.stringify(this.pagesJson)], {
+        type: "application/json",
+      })
+    );
+
+    const elt = document.createElement("a");
+    elt.style.display = "none";
+    elt.href = fileURL;
+    elt.download = "file.json";
+    document.body.appendChild(elt);
+    elt.click();
+    elt.parentElement.removeChild(elt);
+
+    URL.revokeObjectURL(fileURL);
+    this.canvas.modified = false;
   };
 
-  // It doesn't exactly splice _Pages_ (insert Page objects) as the name claims it does but whatever
-  // It accepts an array instead of rest parameters, for convenience when exposing this API
-  // pages is an array of pure objects
-  // @returns array of objects in the union of all the pages
-  // FIXME: Do I need to worry about concurrency and parellelism issues here (we use the pagesJson once by providing a default value for index and then once in the body)? It shouldn't be an issue because it should only be called by something that respects the locked property but idk
   splicePages = async (
-    index: number = this.pagesJson.length - 1,
+    start: number,
     deleteCount: number,
     pages: any[] = []
-  ): Promise<any[]> => {
-    await this.loadPage(index);
-
-    this.pagesJson.splice(index + 1, deleteCount, ...pages);
-
+  ): Promise<void> => {
+    await this.loadPage(start);
+    this.pagesJson.splice(start + 1, deleteCount, ...pages);
     for (const page of pages) {
-      await this.nextOrNewPage(false);
+      await this.nextOrNewPage(true);
     }
-
+    if (!this.canvas.modified && start === 0) {
+      this.pagesJson.shift();
+      await this.loadPage(0, true);
+      this.canvas.modified = true;
+    }
     this.updateState();
-    this.saved();
+  };
 
-    // TODO: this is the wrong type of objects to be put into history
-    return pages.flatMap((page) => page.objects);
+  openFile = async (files: FileList): Promise<void> => {
+    if (!files.length) return;
+    this.savePage();
+    for (const file of files) {
+      const asyncReader = new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.splicePages(
+            this.pagesJson.length - 1,
+            0,
+            JSON.parse(reader.result as string)
+          );
+          resolve();
+        };
+        reader.readAsText(file);
+      });
+      await asyncReader;
+    }
   };
 }
