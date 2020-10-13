@@ -128,16 +128,15 @@ export default class QBoard {
   }
 
   updateState = (): void => {
-    this.callback &&
-      this.callback({
-        currentPage: this.pages.currentIndex + 1,
-        totalPages: this.pages.pagesJson.length,
-        currentTool: this.currentTool,
-        currentStyle: this.currentStyle,
-        canUndo: Boolean(this.history.history.length),
-        canRedo: Boolean(this.history.redoStack.length),
-        keyMap: this.keyboard.keyMap,
-      });
+    this.callback?.({
+      currentPage: this.pages.currentIndex + 1,
+      totalPages: this.pages.pagesJson.length,
+      currentTool: this.currentTool,
+      currentStyle: this.currentStyle,
+      canUndo: Boolean(this.history.history.length),
+      canRedo: Boolean(this.history.redoStack.length),
+      keyMap: this.keyboard.keyMap,
+    });
   };
 
   switchTool = async (tool: Tool): Promise<void> => {

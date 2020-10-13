@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react",
-    "target": "ESNext",
+    "target": "ES2018",
     "moduleResolution": "Node"
   },
   "include": [

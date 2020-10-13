@@ -33,7 +33,7 @@ const Pagination = (props: {
   useEffect(() => navigate(), [value]);
 
   const onSubmit = (e) => {
-    e && e.preventDefault();
+    e?.preventDefault();
     navigate();
   };
 
