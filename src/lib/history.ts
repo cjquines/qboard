@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { Page } from "./page";
+import Page from "./page";
 import Pages from "./pages";
 
 interface HistoryItem {

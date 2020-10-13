@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { Page } from "./page";
+import Page from "./page";
 import { HistoryHandler } from "./history";
 
 export class ClipboardHandler {
