@@ -125,7 +125,7 @@ export default class KeyboardHandler {
   };
 
   reset = (): void => {
-    for (const key in this.keyMap) {
+    for (const key of Object.keys(this.keyMap)) {
       keyboardJS.unbind(key);
       keyboardJS.unbind(mirror(key));
     }
