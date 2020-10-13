@@ -102,7 +102,7 @@ export class KeyboardHandler {
   };
 
   bindAll = (): void => {
-    for (const key in this.keyMap) {
+    for (const [key] of Object.entries(this.keyMap)) {
       this.bind(key, this.keyMap[key]);
     }
     this.updateState();
