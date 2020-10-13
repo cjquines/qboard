@@ -59,8 +59,8 @@ export default class Pages {
     this.savePage();
     const ratio = 2;
     const content = [];
-    for (let i = 0; i < this.pagesJson.length; i++) {
-      await this.loadPage(i);
+    for (const page of this.pagesJson) {
+      await this.canvas.loadFromJSONAsync(page);
       content.push({
         svg: this.canvas.toSVG(),
         width: this.canvasWidth / ratio,
