@@ -1,13 +1,15 @@
 import { fabric } from "fabric";
 
-import { Page } from "./page";
-import { HistoryHandler } from "./history";
+import Page from "./page";
+import Pages from "./pages";
+import HistoryHandler from "./history";
 
 export class ClipboardHandler {
   clipboard: fabric.Object;
 
   constructor(
     public canvas: Page,
+    public pages: Pages,
     public history: HistoryHandler,
     public canvasWidth: number,
     public canvasHeight: number
@@ -43,61 +45,14 @@ export class ClipboardHandler {
 
   paste = async (): Promise<void> => {
     if (!this.clipboard) return;
-    this.clipboard.clone(async (clone) => {
-      await this.placeObject(clone);
-    });
+    return this.clipboard.clone((clone) =>
+      this.canvas.placeObject(clone).then(this.history.add)
+    );
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    await this.processFiles(e.clipboardData.files);
+    const imgs = await this.pages.processFiles(e.clipboardData.files, null);
+    await this.history.add(imgs);
     await this.paste();
-  };
-
-  processFiles = async (files: FileList, cursor?): Promise<void[]> => {
-    const promises = [...files]
-      .filter(({ type }) => type.includes("image"))
-      .map(
-        (file) =>
-          new Promise<void>((resolve) => {
-            const fileURL = URL.createObjectURL(file);
-            fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
-              resolve(this.placeObject(obj, cursor));
-            });
-          })
-      );
-    return Promise.all(promises);
-  };
-
-  placeObject = async (
-    obj: any,
-    cursor: any = this.canvas.cursor
-  ): Promise<void> => {
-    const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
-      cursor || {};
-    this.canvas.discardActiveObject();
-    const id = await this.canvas.getNextId();
-
-    obj.set({
-      id,
-      left: x,
-      top: y,
-      originX: "center",
-      originY: "center",
-    });
-    if (obj._objects) {
-      obj.canvas = this.canvas;
-      obj.forEachObject((object) => {
-        this.canvas.getNextId().then((id) => {
-          object.id = id;
-          this.canvas.add(object);
-        });
-      });
-      obj.setCoords();
-    } else {
-      this.canvas.add(obj);
-    }
-    this.canvas.setActiveObject(obj);
-    await this.history.add(obj._objects || [obj]);
-    this.canvas.requestRenderAll();
   };
 }
