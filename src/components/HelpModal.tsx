@@ -23,13 +23,13 @@ const HelpModal = (props: {
 
   const toggleHand = (): void => {
     setLeftHanded((leftHanded) => {
-      localStorage.setItem("leftHanded", leftHanded ? "false" : "true");
+      window.localStorage.setItem("leftHanded", leftHanded ? "false" : "true");
       return !leftHanded;
     });
   };
 
   useEffect(() => {
-    if (localStorage.getItem("leftHanded") === "true") {
+    if (window.localStorage.getItem("leftHanded") === "true") {
       setLeftHanded(true);
     }
   }, []);
