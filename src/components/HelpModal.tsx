@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
+
 import { Action } from "../lib/action";
 
 import Bindings from "./Bindings";
