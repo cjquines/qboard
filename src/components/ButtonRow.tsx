@@ -13,16 +13,14 @@ const ButtonRow = (props: {
 }) => {
   return (
     <div
-      className={`button-row ${props.cName} ${
-        props.outerButton && "button-row-hover"
-      }`}
+      className={`button-row ${props.outerButton ? "button-row-hover" : ""}`}
     >
       {props.outerButton}
       <div className="button-row-inner">
         {props.actions.map((action, i) => (
           <OverlayButton
             action={action}
-            className={props.className && props.className(action, i)}
+            className={props?.className(action, i)}
             callback={props.callback}
             key={action}
           />
