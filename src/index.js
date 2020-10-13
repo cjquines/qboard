@@ -14,7 +14,4 @@ const qboard = new QBoard(
   900
 );
 
-ReactDOM.render(
-  <Overlay qboard={qboard} />,
-  document.querySelector("#Overlay")
-);
+ReactDOM.render(<Overlay qboard={qboard} />);
