@@ -13,7 +13,9 @@ const ButtonRow = (props: {
 }) => {
   return (
     <div
-      className={`button-row ${props.outerButton ? "button-row-hover" : ""}`}
+      className={`button-row ${props.cName} ${
+        props.outerButton ? "button-row-hover" : ""
+      }`}
     >
       {props.outerButton}
       <div className="button-row-inner">
