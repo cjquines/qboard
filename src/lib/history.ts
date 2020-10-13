@@ -70,12 +70,12 @@ export class HistoryHandler {
   private move = async (
     from: HistoryItem[],
     to: HistoryItem[],
-    undo: boolean
+    isUndo: boolean
   ): Promise<void> => {
     this.locked = true;
     const last = from.pop();
     await this.pages.loadPage(last.page);
-    await this.canvas.apply(last.ids, undo ? last.oldObjects : last.newObjects);
+    await this.canvas.apply(last.ids, isUndo ? last.oldObjects : last.newObjects);
     to.push(last);
     this.locked = false;
     this.canvas.modified = true;
