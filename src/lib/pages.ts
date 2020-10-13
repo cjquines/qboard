@@ -59,6 +59,7 @@ export default class Pages {
     this.savePage();
     const ratio = 2;
     const content = [];
+    const currentindexcopy = this.currentIndex;
     for (const page of this.pagesJson) {
       await this.canvas.loadFromJSONAsync(page);
       content.push({
@@ -66,7 +67,7 @@ export default class Pages {
         width: this.canvasWidth / ratio,
       });
     }
-
+    
     const docDefinition = {
       pageSize: {
         width: this.canvasWidth / ratio,
@@ -77,6 +78,8 @@ export default class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
+    
+    await this.canvas.loadFromJSONAsync(this.pagesJson[currentindexcopy]);
   };
 
   saveFile = (): void => {
