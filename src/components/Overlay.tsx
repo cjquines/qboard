@@ -45,23 +45,26 @@ const Overlay = (props: { qboard: QBoard }) => {
 
   const toggleOpen = (): void => {
     setHelpModalOpen((helpModalOpen) => {
-      localStorage.setItem("helpModalOpen", helpModalOpen ? "false" : "true");
+      window.localStorage.setItem(
+        "helpModalOpen",
+        helpModalOpen ? "false" : "true"
+      );
       return !helpModalOpen;
     });
   };
 
   const toggleMobility = (): void => {
     setMobility((isMobile) => {
-      localStorage.setItem("isMobile", isMobile ? "false" : "true");
+      window.localStorage.setItem("isMobile", isMobile ? "false" : "true");
       return !isMobile;
     });
   };
 
   useEffect(() => {
-    if (localStorage.getItem("helpModalOpen") !== "false") {
+    if (window.localStorage.getItem("helpModalOpen") !== "false") {
       setHelpModalOpen(true);
     }
-    if (localStorage.getItem("isMobile") !== "false") {
+    if (window.localStorage.getItem("isMobile") !== "false") {
       setMobility(true);
     }
 

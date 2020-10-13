@@ -89,20 +89,20 @@ export default class KeyboardHandler {
       }
     );
 
-    if (!localStorage.getItem("keyMap")) {
+    if (!window.localStorage.getItem("keyMap")) {
       this.reset();
     } else {
-      this.keyMap = JSON.parse(localStorage.getItem("keyMap"));
+      this.keyMap = JSON.parse(window.localStorage.getItem("keyMap"));
       this.bindAll();
     }
   }
 
   save = (): void => {
-    localStorage.setItem("keyMap", JSON.stringify(this.keyMap));
+    window.localStorage.setItem("keyMap", JSON.stringify(this.keyMap));
   };
 
   bindAll = (): void => {
-    for (const [key] of Object.entries(this.keyMap)) {
+    for (const key of Object.keys(this.keyMap)) {
       this.bind(key, this.keyMap[key]);
     }
     this.updateState();
