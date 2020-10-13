@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-
 import { Action, actionName } from "../lib/action";
 import { KeyMap, mirror } from "../lib/keyboard";
 
