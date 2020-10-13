@@ -71,7 +71,7 @@ export const mirror = (key: string): string => {
   return mirrorMap[key] || key.slice(0, -1) + mirrorMap[key.slice(-1)];
 };
 
-export class KeyboardHandler {
+export default class KeyboardHandler {
   keyMap: any = {};
 
   constructor(
