@@ -1,6 +1,6 @@
 # qboard
 
-*The efficient digital whiteboard.*
+_The efficient digital whiteboard._
 
 **qboard** is a whiteboard app with efficient keyboard shortcuts, to make drawing feel as seamless as possible. In the spirit of Vim, it's possible to do everything that isn't drawing without moving your hands. It's hosted on [my website](https://cjquines.com/qboard/). Here's a [demo video](https://youtu.be/8NvXHukL8ic).
 
@@ -28,7 +28,7 @@ qboard is made for seamless lecturing. It's designed to be easy to use and nice 
 - By default, it has pages, rather than extending in different directions. It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
 - Pages are fixed at a 16:9 ratio, so when they're later saved to a PDF, it's in the same dimensions as a slideshow.
 
-There are *some* sense to the default keybindings:
+There are _some_ sense to the default keybindings:
 
 - The three keys I use the most are on F, D, and S. A is assigned to make sense with S, and Shift + F to make sense with F.
 - I tend to switch between colors and back while presenting, hence the E and R bindings.
@@ -45,7 +45,7 @@ It's build on the [nwb](https://github.com/insin/nwb) toolkit, which handles Rea
 
 We extend the Fabric canvas to a [Page class](src/lib/pages.ts) with some convenience functions. The Pages class stores pages in a JSON array; whenever we switch pages, we remove all the objects in the canvas and reload from memory.
 
-We also work with *two* canvas elements. The top canvas is a temporary one that renders lines, ellipses, and rectangles as they're being drawn, and after they're drawn, they're removed and added to the base canvas. The base canvas handles everything else: the move tool, free drawing, the eraser, and so on; the top canvas is hidden for these operations. This is for performance reasons, so the base canvas doesn't have to rerender every time the mouse moves on the top canvas.
+We also work with _two_ canvas elements. The top canvas is a temporary one that renders lines, ellipses, and rectangles as they're being drawn, and after they're drawn, they're removed and added to the base canvas. The base canvas handles everything else: the move tool, free drawing, the eraser, and so on; the top canvas is hidden for these operations. This is for performance reasons, so the base canvas doesn't have to rerender every time the mouse moves on the top canvas.
 
 The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mouse events and switching tools. Everything else is delegated to handlers, which are in individual files:
 
@@ -56,4 +56,4 @@ The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mo
 - [styles.ts](src/lib/styles.ts), which gives an interface for changing pen style.
 - [tools.ts](src/lib/tools.ts), which implements each non-free-drawing tool.
 
-Running `npm start` will start the development server. Run `npm run build` to bundle it. There's also a [Dockerfile](Dockerfile); build the image with `docker build -t qboard .`, then run with `docker run -d --name qboard qboard`. 
+Running `npm start` will start the development server. Run `npm run build` to bundle it. There's also a [Dockerfile](Dockerfile); build the image with `docker build -t qboard .`, then run with `docker run -d --name qboard qboard`.
