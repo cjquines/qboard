@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-export default class Page extends fabric.Canvas {
+export class Page extends fabric.Canvas {
   cursor: { x: number; y: number };
   latestId: number = 0;
   modified: boolean = false;
@@ -65,7 +65,7 @@ export default class Page extends fabric.Canvas {
     if (oldObjects.length) {
       this.remove(...oldObjects);
     }
-    if (newObjects && newObjects.length) {
+    if (newObjects?.length) {
       fabric.util.enlivenObjects(
         newObjects,
         (objects) => {

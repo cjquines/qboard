@@ -1,8 +1,8 @@
 import { fabric } from "fabric";
 
 import { Handlers, Tool, ToolHandler } from "./tools";
-import Page from "./page";
-import Pages from "./pages";
+import { Page } from "./page";
+import { Pages } from "./pages";
 import { HistoryHandler } from "./history";
 import { ClipboardHandler } from "./clipboard";
 import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
@@ -128,16 +128,15 @@ export default class QBoard {
   }
 
   updateState = (): void => {
-    this.callback &&
-      this.callback({
-        currentPage: this.pages.currentIndex + 1,
-        totalPages: this.pages.pagesJson.length,
-        currentTool: this.currentTool,
-        currentStyle: this.currentStyle,
-        canUndo: Boolean(this.history.history.length),
-        canRedo: Boolean(this.history.redoStack.length),
-        keyMap: this.keyboard.keyMap,
-      });
+    this.callback?.({
+      currentPage: this.pages.currentIndex + 1,
+      totalPages: this.pages.pagesJson.length,
+      currentTool: this.currentTool,
+      currentStyle: this.currentStyle,
+      canUndo: Boolean(this.history.history.length),
+      canRedo: Boolean(this.history.redoStack.length),
+      keyMap: this.keyboard.keyMap,
+    });
   };
 
   switchTool = async (tool: Tool): Promise<void> => {
