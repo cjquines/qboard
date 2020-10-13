@@ -210,12 +210,13 @@ export default class QBoard {
   dragLeave = (e: DragEvent): void =>
     this.dropArea.classList.remove("file-drop-active");
 
-  drop = async (iEvent: fabric.IEvent): Promise<void[]> => {
+  drop = async (iEvent: fabric.IEvent): Promise<void> => {
     iEvent.e.stopPropagation();
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
     this.dragLeave(iEvent.e as DragEvent);
-    return this.pages.processFiles((iEvent.e as DragEvent).dataTransfer.files);
+    const imgs = await this.pages.processFiles((iEvent.e as DragEvent).dataTransfer.files);
+    return this.history.add(imgs.flat());
   };
 
   pathCreated = async (e: any): Promise<void> => {
