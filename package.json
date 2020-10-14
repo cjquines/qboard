@@ -17,9 +17,9 @@
     "react-tooltip": "^4.2.10"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.11.5",
     "@types/fabric": "^3.6.8",
     "@types/react": "^16.9.52",
+    "@typescript-eslint/parser": "^4.4.1",
     "awesome-typescript-loader": "^5.2.1",
     "eslint": "^7.11.0",
     "eslint-config-airbnb": "^18.2.0",

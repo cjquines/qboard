@@ -1,4 +1,6 @@
 module.exports = {
+  parser: "@typescript-eslint/parser",
+
   extends: [
     "plugin:react/recommended",
     "eslint-config-airbnb",
