@@ -57,3 +57,5 @@ The main source is [qboard.ts](src/lib/qboard.ts), which handles listening to mo
 - [tools.ts](src/lib/tools.ts), which implements each non-free-drawing tool.
 
 Running `npm start` will start the development server. Run `npm run build` to bundle it. There's also a [Dockerfile](Dockerfile); build the image with `docker build -t qboard .`, then run with `docker run -d --name qboard qboard`.
+
+The FabricJS file is huge and it doesn't support tree shaking, so the qboard demo uses a [custom build](http://fabricjs.com/build/). It includes gestures, animation, free drawing, interaction, serialization, fabric.Rect, fabric.Ellipse, fabric.Image, fabric.Line, and window.fabric, which I think is the absolute minimum needed for it to work.
