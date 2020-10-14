@@ -1,18 +1,18 @@
 .modal {
-  position: absolute;
-  top: 0.5em;
-  right: 1em;
   bottom: 0.5em;
   left: 1em;
   outline: none;
+  position: absolute;
+  right: 1em;
+  top: 0.5em;
 
   p {
     margin: 0 0 0.5em 0;
   }
 
   a {
-    text-decoration: none;
     color: #4a91c2;
+    text-decoration: none;
 
     &:hover {
       color: #00c3ff;
@@ -25,9 +25,9 @@
   }
 
   button {
-    width: initial;
-    margin: 0 0.25em;
     background: #ddd;
+    margin: 0 0.25em;
+    width: initial;
 
     &:hover,
     &.active {
@@ -36,16 +36,16 @@
   }
 
   .close {
-    position: absolute;
-    top: 0;
-    right: -0.25em;
-    padding: 0;
-    color: #888;
     background: transparent;
+    color: #888;
+    padding: 0;
+    position: absolute;
+    right: -0.25em;
+    top: 0;
 
     &:hover {
-      color: #444;
       background: transparent;
+      color: #444;
     }
   }
 
@@ -55,25 +55,25 @@
 }
 
 .modal-overlay {
-  position: fixed;
-  top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
-  right: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
   bottom: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
   left: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
   overflow-y: auto;
+  position: fixed;
+  right: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
+  top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
 
   &.help-modal {
-    background: #f8f8f8;
+    --height: 29em;
 
     --width: 38em;
-    --height: 29em;
+    background: #f8f8f8;
   }
 
   &.binding-modal {
-    background: #ededed;
+    --height: 22.5em;
 
     --width: 36em;
-    --height: 22.5em;
+    background: #ededed;
   }
 }
 

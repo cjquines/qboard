@@ -1,8 +1,8 @@
 .context-menu {
-  position: absolute;
-  padding: 0.25em;
-  border-radius: 0.25em;
   background-color: #edeff0;
+  border-radius: 0.25em;
+  padding: 0.25em;
+  position: absolute;
 
   button {
     margin: 0 0.1em;
@@ -10,9 +10,9 @@
   }
 
   button.active {
+    background: none;
     border-bottom: 1px solid #262626;
     border-radius: 0;
-    background: none;
   }
 
   button.active,

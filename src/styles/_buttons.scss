@@ -1,18 +1,18 @@
 button {
-  font: inherit;
-  box-sizing: border-box;
-  width: 1.5em;
-  height: 1.5em;
-  padding: 0.15em 0.27em 0.4em;
-  cursor: pointer;
-  text-align: center;
-  vertical-align: baseline;
-  text-decoration: none;
-  border: none;
-  border-radius: 0.25em;
-  background-color: transparent;
   -moz-appearance: none;
   -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  border-radius: 0.25em;
+  box-sizing: border-box;
+  cursor: pointer;
+  font: inherit;
+  height: 1.5em;
+  padding: 0.15em 0.27em 0.4em;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: baseline;
+  width: 1.5em;
 
   &.active,
   &:hover {
@@ -40,10 +40,10 @@ button {
 }
 
 .__react_component_tooltip {
+  background-color: #aaa;
   font-size: 1em;
   padding: 0.25em 0.5em;
   transition: opacity 0.2s;
-  background-color: #aaa;
 
   &.show {
     opacity: 1;
@@ -54,13 +54,13 @@ button {
   position: relative;
 
   .button-row-inner {
-    position: relative;
-    top: 0;
-    left: 0;
+    background: #edeff0;
     display: flex;
     flex-direction: row;
+    left: 0;
     padding: 0.25em 0.25em 0.25em 0;
-    background: #edeff0;
+    position: relative;
+    top: 0;
   }
 
   &.vertical .button-row-inner {
@@ -70,10 +70,10 @@ button {
 
   &.button-row-hover {
     .button-row-inner {
+      display: none;
+      left: calc(50% + 0.8em);
       position: absolute;
       top: -0.25em;
-      left: calc(50% + 0.8em);
-      display: none;
     }
 
     &:hover .button-row-inner {

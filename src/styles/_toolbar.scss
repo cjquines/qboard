@@ -8,21 +8,21 @@
   }
 
   &.visibility-1 {
-    order: -1;
+    border-bottom-right-radius: 0;
     box-sizing: border-box;
-    width: 1.8em;
     height: 1.8em;
+    order: -1;
     padding: 0.1em;
     text-align: center;
-    border-bottom-right-radius: 0;
+    width: 1.8em;
 
     button:not(.active) {
       display: none;
     }
 
     button.active {
-      cursor: unset;
       background-color: transparent;
+      cursor: unset;
     }
   }
 }
