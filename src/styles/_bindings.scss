@@ -10,53 +10,53 @@
   }
 
   .key {
-    background: transparent;
-    border: 2px solid #bbb;
-    border-radius: 0.3em;
+    position: relative;
     box-sizing: content-box;
+    width: 4em;
     height: 4em;
     margin: 0.25em;
     padding: 0;
-    position: relative;
-    width: 4em;
+    border: 2px solid #bbb;
+    border-radius: 0.3em;
+    background: transparent;
 
     .letter {
-      color: #555;
       font-size: 0.9em;
-      left: 0.25em;
       position: absolute;
-      text-transform: capitalize;
       top: 0.25em;
+      left: 0.25em;
+      text-transform: capitalize;
+      color: #555;
     }
 
     .action {
-      bottom: 0.25em;
       font-size: 0.9em;
       font-weight: bold;
       position: absolute;
       right: 0.3em;
-      text-align: right;
+      bottom: 0.25em;
       width: 3.9em;
+      text-align: right;
     }
 
     i {
-      display: block;
       font-size: 1.1em;
+      display: block;
       margin-bottom: 0.1em;
     }
 
     // line icon
     i.fa-minus {
-      bottom: 1.1em;
       position: absolute;
       right: 0;
+      bottom: 1.1em;
     }
 
     // dotted and dashed icons
     svg {
-      bottom: 1.35em;
       position: absolute;
       right: 0;
+      bottom: 1.35em;
     }
 
     // halffill icon
@@ -67,8 +67,8 @@
     }
 
     .unassigned {
-      color: #555;
       font-weight: normal;
+      color: #555;
     }
   }
 
@@ -90,8 +90,8 @@
   }
 
   button {
-    margin: 0;
     position: relative;
+    margin: 0;
     text-align: left;
 
     span {
@@ -108,8 +108,8 @@
 
   // halffill icon
   button > div {
+    top: 0.1em;
     display: inline;
     margin-right: 1.25em !important;
-    top: 0.1em;
   }
 }

@@ -1,14 +1,14 @@
 .overlay {
-  left: 0;
-  opacity: 0.5;
   position: absolute;
   top: 0;
-  transition: opacity 0.2s;
+  left: 0;
   user-select: none;
+  transition: opacity 0.2s;
+  opacity: 0.5;
 
   &:hover {
-    opacity: 0.9;
     transition: opacity 0.2s;
+    opacity: 0.9;
   }
 
   &.visibility-2 {
@@ -27,8 +27,8 @@
 }
 
 .overlay > div {
-  background: #edeff0;
   padding: 0.25em;
+  background: #edeff0;
 }
 
 @import "pagination";

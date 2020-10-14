@@ -4,18 +4,18 @@
   }
 
   input {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    background: #f0f0f0;
-    border: none;
-    box-sizing: border-box;
     font: inherit;
+    box-sizing: border-box;
+    width: 0.6em;
     height: 1em;
     margin: 0;
     padding: 0;
-    vertical-align: baseline;
-    width: 0.6em;
     text-align: right;
+    vertical-align: baseline;
+    border: none;
+    background: #f0f0f0;
+    -moz-appearance: none;
+    -webkit-appearance: none;
   }
 
   &.visibility-2 {
