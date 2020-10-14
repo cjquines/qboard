@@ -21,7 +21,7 @@ export const AsyncReader = (file: File): Promise<FileReader> =>
 
 export default class Pages {
   pagesJson: any[] = [defaultPageJSON];
-  currentIndex: number = 0;
+  currentIndex = 0;
 
   constructor(
     public canvas: Page,
@@ -39,8 +39,8 @@ export default class Pages {
 
   loadPage = async (
     index: number,
-    fromFile: boolean = false,
-    force: boolean = false
+    fromFile = false,
+    force = false
   ): Promise<number> => {
     if (index === this.currentIndex && !force) return index;
     if (!fromFile) this.savePage();
@@ -50,7 +50,7 @@ export default class Pages {
     return index;
   };
 
-  newPage = async (fromFile: boolean = false): Promise<number> => {
+  newPage = async (fromFile = false): Promise<number> => {
     this.pagesJson.splice(this.currentIndex + 1, 0, defaultPageJSON);
     return this.loadPage(this.currentIndex + 1, fromFile);
   };
@@ -60,7 +60,7 @@ export default class Pages {
     return this.loadPage(this.currentIndex - 1);
   };
 
-  nextOrNewPage = async (fromFile: boolean = false): Promise<number> => {
+  nextOrNewPage = async (fromFile = false): Promise<number> => {
     if (this.currentIndex === this.pagesJson.length - 1) {
       return this.newPage(fromFile);
     }
@@ -127,7 +127,7 @@ export default class Pages {
     return true;
   };
 
-  insertPages = async (index: number, pages: any[]) => {
+  insertPages = async (index: number, pages: any[]): Promise<number> => {
     this.pagesJson.splice(index, 0, ...pages);
     return this.loadPage(index);
   };
@@ -142,7 +142,7 @@ export default class Pages {
   };
 
   private handleImage = async (file, cursor): Promise<any> =>
-    new Promise<any>((resolve) => {
+    new Promise<any[]>((resolve) => {
       const fileURL = window.URL.createObjectURL(file);
       fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
         resolve(this.canvas.placeObject(obj, cursor));
@@ -158,16 +158,18 @@ export default class Pages {
   };
 
   processFiles = async (files: FileList, cursor?): Promise<any[]> => {
-    let images = [];
-    await Promise.all([...files].map((file) => {
-      if (file.type.startsWith("image/")) {
-        const res = this.handleImage(file, cursor);
-        images.push(res);
-        return res;
-      } else if (file.type === "application/json") {
-        return this.handleJSON(file);
-      }
-    }));
+    const images = [];
+    await Promise.all(
+      [...files].map((file) => {
+        if (file.type.startsWith("image/")) {
+          const res = this.handleImage(file, cursor);
+          images.push(res);
+          return res;
+        } else if (file.type === "application/json") {
+          return this.handleJSON(file);
+        }
+      })
+    );
     return Promise.all(images);
   };
 }

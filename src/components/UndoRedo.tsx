@@ -10,7 +10,7 @@ const UndoRedo = (props: {
   canRedo: boolean;
   doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
-}) => {
+}): JSX.Element => {
   return (
     <div className={`undoredo visibility-${props.visibility}`}>
       <OverlayButton

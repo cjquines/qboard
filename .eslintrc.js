@@ -32,6 +32,12 @@ module.exports = {
     "@typescript-eslint/no-floating-promises": "error",
     // "@typescript-eslint/no-invalid-this": "error",
     "@typescript-eslint/no-namespace": "error",
+    "@typescript-eslint/no-shadow": [
+      "warn",
+      {
+        hoist: "all",
+      },
+    ],
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
     "@typescript-eslint/no-use-before-define": [
       "error",
@@ -61,23 +67,19 @@ module.exports = {
         allowEmptyCatch: true,
       },
     ],
+    "no-floating-promises": "off",
     "no-invalid-this": "off",
     "no-new-wrappers": "error",
     "no-param-reassign": "error",
     "no-redeclare": "error",
     "no-return-await": "off",
     "no-sequences": "error",
-    "no-shadow": [
-      "warn",
-      {
-        hoist: "all",
-      },
-    ],
+    "no-shadow": "off",
     "no-throw-literal": "error",
     "no-unsafe-finally": "error",
     "no-unused-labels": "error",
     "no-var": "warn",
-    "no-void": "error",
+    "no-void": "warn",
     "prefer-const": "warn",
     "prettier/prettier": [
       "error",

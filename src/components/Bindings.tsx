@@ -54,7 +54,7 @@ const Bindings = (props: {
   keyMap: KeyMap;
   modifier: string;
   leftHanded: boolean;
-}) => {
+}): JSX.Element => {
   const [bindingModalKeys, setBindingModalKeys]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
@@ -113,6 +113,7 @@ const Bindings = (props: {
             {!props.leftHanded && header}
             {(props.leftHanded ? letters.reverse() : letters).map((letter) => (
               <Key
+                key={letter}
                 letter={letter}
                 action={props.keyMap[getModified(letter)]}
                 callback={keyHandler}

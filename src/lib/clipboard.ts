@@ -18,7 +18,7 @@ export default class ClipboardHandler {
   }
 
   copy = async (): Promise<any> => {
-    const objects = this.canvas.getActiveObject();
+    const objects: fabric.Object = this.canvas.getActiveObject();
     if (!objects) return null;
     objects.clone((clone) => {
       this.clipboard = clone;

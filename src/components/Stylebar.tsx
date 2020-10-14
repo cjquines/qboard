@@ -14,7 +14,7 @@ const Stylebar = (props: {
   openFile: (files: FileList) => Promise<boolean>;
   visibility: Visibility;
   isMobile: boolean;
-}) => {
+}): JSX.Element => {
   const fileInputRef = useRef(null);
   const fileButton = <button className="inactive">{Icon.file}</button>;
   const fileActions = [Action.Open, Action.Save, Action.Export];

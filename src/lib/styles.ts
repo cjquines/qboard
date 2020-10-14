@@ -57,7 +57,7 @@ export default class StyleHandler {
       this.currentStyle.fill = fill;
     }
 
-    if (stroke !== null || fill != null) {
+    if (stroke !== null || fill !== null) {
       switch (this.currentStyle.fill) {
         case Fill.Transparent: {
           this.drawerOptions.fill = "transparent";

@@ -48,8 +48,8 @@ export default class QBoard {
   currentTool: Tool;
   tool: ToolHandler;
   currentObject: any;
-  isDown: boolean = false;
-  strict: boolean = false;
+  isDown = false;
+  strict = false;
   callback: (state: QBoardState) => any;
 
   constructor(
@@ -108,8 +108,8 @@ export default class QBoard {
       this.updateState
     );
 
-    this.switchTool(Tool.Move);
-    this.windowResize();
+    void this.switchTool(Tool.Move);
+    void this.windowResize();
 
     window.onresize = this.windowResize;
     window.onbeforeunload = () => this.baseCanvas.modified || null;
@@ -168,8 +168,8 @@ export default class QBoard {
   windowResize = async (): Promise<void> => {
     clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(() => {
-      this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
-      this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+      void this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+      void this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);
   };
 
@@ -201,7 +201,6 @@ export default class QBoard {
     await this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     await this.history.add([this.currentObject]);
-    console.log(this, this.currentObject);
   };
 
   dragEnter = (): void => this.dropArea.classList.add("file-drop-active");

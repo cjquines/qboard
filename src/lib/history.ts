@@ -14,7 +14,7 @@ export default class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
   selection: fabric.Object[];
-  locked: boolean = false;
+  locked = false;
 
   constructor(
     public canvas: Page,
@@ -22,18 +22,18 @@ export default class HistoryHandler {
     public updateState: () => void
   ) {}
 
-  add = async (objects: any[]): Promise<void> =>
+  add = async (objects: fabric.Object[]): Promise<void> =>
     objects.length && this.save(null, objects);
 
-  remove = async (objects: any[]): Promise<void> =>
+  remove = async (objects: fabric.Object[]): Promise<void> =>
     objects.length && this.save(objects, null);
 
-  store = async (objects: any[]): Promise<void> => {
+  store = async (objects: fabric.Object[]): Promise<void> => {
     if (this.locked) return;
     this.selection = await this.canvas.serialize(objects);
   };
 
-  modify = async (objects: any[]): Promise<void> =>
+  modify = async (objects: fabric.Object[]): Promise<void> =>
     this.save(this.selection, objects);
 
   save = async (
