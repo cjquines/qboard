@@ -165,7 +165,8 @@ export default class Pages {
           const res = this.handleImage(file, cursor);
           images.push(res);
           return res;
-        } else if (file.type === "application/json") {
+        }
+        if (file.type === "application/json") {
           return this.handleJSON(file);
         }
       })
