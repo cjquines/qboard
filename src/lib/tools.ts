@@ -9,8 +9,8 @@ const project = (
   x2: number,
   y2: number
 ): number[] => {
-  const x = x2 - ox,
-    y = y2 - oy;
+  const x = x2 - ox;
+  const y = y2 - oy;
   const side = vx * y - vy * x;
   const sq = vx * vx + vy * vy;
   return [
@@ -152,9 +152,7 @@ export class LineHandler implements ToolHandler {
     strict: boolean
   ): Promise<fabric.Line> => {
     if (strict) {
-      const rect = rectify(this.dirs, this.x, this.y, x2, y2);
-      x2 = rect[1];
-      y2 = rect[2];
+      [, x2, y2] = rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object.set({ x2, y2 }).setCoords();
     return new Promise<fabric.Line>((resolve) => {
@@ -198,9 +196,7 @@ export class RectangleHandler implements ToolHandler {
     strict: boolean
   ): Promise<fabric.Rect> => {
     if (strict) {
-      const rect = rectify(this.dirs, this.x, this.y, x2, y2);
-      x2 = rect[1];
-      y2 = rect[2];
+      [, x2, y2] = rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object
       .set({
@@ -252,9 +248,7 @@ export class EllipseHandler implements ToolHandler {
     strict: boolean
   ): Promise<fabric.Ellipse> => {
     if (strict) {
-      const rect = rectify(this.dirs, this.x, this.y, x2, y2);
-      x2 = rect[1];
-      y2 = rect[2];
+      [, x2, y2] = rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object
       .set({

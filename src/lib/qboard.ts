@@ -201,7 +201,6 @@ export default class QBoard {
     await this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     await this.history.add([this.currentObject]);
-    console.log(this, this.currentObject);
   };
 
   dragEnter = (): void => this.dropArea.classList.add("file-drop-active");

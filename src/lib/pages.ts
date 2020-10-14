@@ -9,7 +9,7 @@ const defaultPageJSON = {
   background: "white",
 };
 
-export const AsyncReader = (file: File): Promise<FileReader> =>
+const AsyncReader = (file: File): Promise<FileReader> =>
   new Promise<FileReader>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -90,6 +90,7 @@ export default class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
+
     await this.canvas.loadFromJSONAsync(this.pagesJson[currentindexcopy]);
   };
 
@@ -159,15 +160,17 @@ export default class Pages {
 
   processFiles = async (files: FileList, cursor?): Promise<any[]> => {
     let images = [];
-    await Promise.all([...files].map((file) => {
-      if (file.type.startsWith("image/")) {
-        const res = this.handleImage(file, cursor);
-        images.push(res);
-        return res;
-      } else if (file.type === "application/json") {
-        return this.handleJSON(file);
-      }
-    }));
+    await Promise.all(
+      [...files].map((file) => {
+        if (file.type.startsWith("image/")) {
+          const res = this.handleImage(file, cursor);
+          images.push(res);
+          return res;
+        } else if (file.type === "application/json") {
+          return this.handleJSON(file);
+        }
+      })
+    );
     return Promise.all(images);
   };
 }
