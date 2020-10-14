@@ -1,3 +1,40 @@
+.binding-modal {
+  .binding {
+    font-weight: bold;
+    text-transform: capitalize;
+  }
+
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
+    grid-gap: 0.25em;
+  }
+
+  button {
+    position: relative;
+    margin: 0;
+    text-align: left;
+
+    span {
+      position: absolute;
+      top: 0.1em;
+      left: 1.5em;
+    }
+  }
+
+  // dotted and dashed icons
+  svg {
+    height: 1em !important;
+  }
+
+  // halffill icon
+  button > div {
+    top: 0.1em;
+    display: inline;
+    margin-right: 1.25em !important;
+  }
+}
+
 .bindings {
   margin-bottom: 0.5em;
 
@@ -74,42 +111,5 @@
 
   button.key:hover {
     background: #ddd;
-  }
-}
-
-.binding-modal {
-  .binding {
-    font-weight: bold;
-    text-transform: capitalize;
-  }
-
-  .tools {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
-    grid-gap: 0.25em;
-  }
-
-  button {
-    position: relative;
-    margin: 0;
-    text-align: left;
-
-    span {
-      position: absolute;
-      top: 0.1em;
-      left: 1.5em;
-    }
-  }
-
-  // dotted and dashed icons
-  svg {
-    height: 1em !important;
-  }
-
-  // halffill icon
-  button > div {
-    top: 0.1em;
-    display: inline;
-    margin-right: 1.25em !important;
   }
 }
