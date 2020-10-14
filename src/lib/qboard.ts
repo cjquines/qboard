@@ -150,7 +150,7 @@ export default class QBoard {
     if (tool === Tool.Move || this.tool.isBrush) {
       await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
-      await this.tool?.setBrush(
+      await this.tool.setBrush?.(
         this.baseCanvas.freeDrawingBrush,
         this.drawerOptions
       );
@@ -202,11 +202,9 @@ export default class QBoard {
     await this.history.add([this.currentObject]);
   };
 
-  dragEnter = (): void =>
-    this.dropArea.classList.add("file-drop-active");
+  dragEnter = (): void => this.dropArea.classList.add("file-drop-active");
 
-  dragLeave = (): void =>
-    this.dropArea.classList.remove("file-drop-active");
+  dragLeave = (): void => this.dropArea.classList.remove("file-drop-active");
 
   drop = async (iEvent: fabric.IEvent): Promise<void> => {
     iEvent.e.stopPropagation();
