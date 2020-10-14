@@ -20,8 +20,11 @@
       padding: 0.15em 0.2em 0.4em;
     }
 
-    & > button, .file-actions, .other-actions,
-    .mobile-actions, .button-row:hover .button-row-inner {
+    & > button,
+    .file-actions,
+    .other-actions,
+    .mobile-actions,
+    .button-row:hover .button-row-inner {
       display: none;
     }
   }

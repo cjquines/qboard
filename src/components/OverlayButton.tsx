@@ -16,7 +16,7 @@ const OverlayButton = (props: {
         className={props.className || undefined}
         data-tip
         data-for={props.action}
-        onClick={(e) => props.callback(props.action)}
+        onClick={() => props.callback(props.action)}
       >
         {Icon[props.action]}
       </button>

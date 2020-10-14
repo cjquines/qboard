@@ -40,7 +40,7 @@ const HelpModal = (props: {
       overlayClassName="modal-overlay help-modal"
       isOpen={props.isOpen}
     >
-      <button className="close" onClick={(e) => props.toggleOpen()}>
+      <button className="close" onClick={() => props.toggleOpen()}>
         {Icon.close}
       </button>
       <p>
@@ -55,23 +55,23 @@ const HelpModal = (props: {
       <p>
         <button
           className={keyModifier === "" ? "active" : undefined}
-          onClick={(e) => setKeyModifier("")}
+          onClick={() => setKeyModifier("")}
         >
           unmodified
         </button>
         <button
           className={keyModifier === "shift" ? "active" : undefined}
-          onClick={(e) => setKeyModifier("shift")}
+          onClick={() => setKeyModifier("shift")}
         >
           with shift
         </button>
         <button
           className={keyModifier === "ctrl" ? "active" : undefined}
-          onClick={(e) => setKeyModifier("ctrl")}
+          onClick={() => setKeyModifier("ctrl")}
         >
           with ctrl
         </button>
-        <button onClick={(e) => toggleHand()}>
+        <button onClick={() => toggleHand()}>
           {leftHanded ? "make right-handed" : "make left-handed"}
         </button>
       </p>
@@ -84,12 +84,12 @@ const HelpModal = (props: {
       />
       <p>
         Click a key to change the binding.{" "}
-        <button onClick={(e) => props.reset()}>reset to default</button>
+        <button onClick={() => props.reset()}>reset to default</button>
       </p>
       <p style={{ color: "#666" }}>
         By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
         <a href="https://github.com/cjquines/qboard">Github</a>. Use{" "}
-        <a onClick={(e) => props.toggleMobility()} tabIndex={0}>
+        <a onClick={() => props.toggleMobility()} tabIndex={0}>
           {props.isMobile ? "desktop" : "mobile"} site
         </a>
         .

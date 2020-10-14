@@ -17,7 +17,8 @@
     &:hover {
       color: #00c3ff;
 
-      &[href], &[tabindex] {
+      &[href],
+      &[tabindex] {
         cursor: pointer;
       }
     }
@@ -28,7 +29,8 @@
     margin: 0 0.25em;
     background: #ddd;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       background: #bbb;
     }
   }
@@ -62,12 +64,14 @@
 
   &.help-modal {
     background: #f8f8f8;
+
     --width: 38em;
     --height: 29em;
   }
 
   &.binding-modal {
     background: #ededed;
+
     --width: 36em;
     --height: 22.5em;
   }

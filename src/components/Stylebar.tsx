@@ -26,7 +26,7 @@ const Stylebar = (props: {
 
   useEffect(() => {
     setIsFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener("fullscreenchange", (e) =>
+    document.addEventListener("fullscreenchange", () =>
       setIsFullscreen(Boolean(document.fullscreenElement))
     );
   }, []);
@@ -46,7 +46,7 @@ const Stylebar = (props: {
           if (action === Action.Open) {
             fileInputRef.current.click();
           } else {
-            props.doAction(action);
+            await props.doAction(action);
           }
         }}
         cName="file-actions"

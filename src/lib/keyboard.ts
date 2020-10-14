@@ -81,10 +81,10 @@ export default class KeyboardHandler {
   ) {
     keyboardJS.bind(
       "shift",
-      (e) => {
+      () => {
         this.setStrict(true);
       },
-      (e) => {
+      () => {
         this.setStrict(false);
       }
     );
@@ -118,8 +118,8 @@ export default class KeyboardHandler {
 
   bind = (key: string, action: Action): void => {
     this.keyMap[key] = action;
-    keyboardJS.bind(key, (e) => this.doAction(this.keyMap[key]));
-    keyboardJS.bind(mirror(key), (e) => this.doAction(this.keyMap[key]));
+    keyboardJS.bind(key, () => this.doAction(this.keyMap[key]));
+    keyboardJS.bind(mirror(key), () => this.doAction(this.keyMap[key]));
     this.updateState();
     this.save();
   };

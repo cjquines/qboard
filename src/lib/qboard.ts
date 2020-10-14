@@ -99,8 +99,7 @@ export default class QBoard {
       this.pages,
       this.history,
       this.clipboard,
-      this.style.set,
-      this.updateState
+      this.style.set
     );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,
@@ -151,7 +150,7 @@ export default class QBoard {
     if (tool === Tool.Move || this.tool.isBrush) {
       await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
-      await this.tool.setBrush(
+      await this.tool?.setBrush(
         this.baseCanvas.freeDrawingBrush,
         this.drawerOptions
       );
@@ -192,7 +191,7 @@ export default class QBoard {
     this.canvas.requestRenderAll();
   };
 
-  mouseUp = async (e: fabric.IEvent): Promise<void> => {
+  mouseUp = async (): Promise<void> => {
     if (!this.tool.draw) return;
 
     this.isDown = false;
@@ -203,17 +202,17 @@ export default class QBoard {
     await this.history.add([this.currentObject]);
   };
 
-  dragEnter = (e: DragEvent): void =>
+  dragEnter = (): void =>
     this.dropArea.classList.add("file-drop-active");
 
-  dragLeave = (e: DragEvent): void =>
+  dragLeave = (): void =>
     this.dropArea.classList.remove("file-drop-active");
 
   drop = async (iEvent: fabric.IEvent): Promise<void> => {
     iEvent.e.stopPropagation();
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
-    this.dragLeave(iEvent.e as DragEvent);
+    this.dragLeave();
     const imgs = await this.pages.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files
     );

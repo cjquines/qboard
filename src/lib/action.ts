@@ -88,8 +88,7 @@ export default class ActionHandler {
       dash: Dash | null,
       stroke: Stroke | null,
       fill: Fill | null
-    ) => void,
-    public updateState: () => void
+    ) => void
   ) {
     this.canvas = this.pages.canvas;
 

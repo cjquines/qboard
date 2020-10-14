@@ -16,7 +16,7 @@ const ContextMenu = (props: {
       e.preventDefault();
       setCoords((coords) => (coords ? null : [e.clientX, e.clientY]));
     });
-    document.addEventListener("click", (e) => setCoords(null));
+    document.addEventListener("click", () => setCoords(null));
   }, []);
 
   return coords ? (
