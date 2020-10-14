@@ -117,13 +117,10 @@ export default class Pages {
   overwritePages = async (
     pages: any[] = [defaultPageJSON]
   ): Promise<boolean> => {
-    const response =
-      !this.canvas.modified ||
-      this.equals(pages) ||
-      window.confirm(
-        "You have unsaved work. Are you sure you wish to continue?"
-      );
-    if (response !== true) return false;
+    const response = window.confirm(
+      "Your work will be overwritten. Are you sure you wish to continue?"
+    );
+    if (!response) return false;
 
     this.pagesJson = pages;
     await this.loadPage(0, true, true);
@@ -177,10 +174,4 @@ export default class Pages {
     await Promise.all([...images, ...json]);
     return Promise.all(images);
   };
-
-  equals = (pagesJson) =>
-    this.pagesJson.length === pagesJson.length &&
-    this.pagesJson.every(
-      (page, i) => JSON.stringify(pagesJson[i]) === JSON.stringify(page)
-    );
 }
