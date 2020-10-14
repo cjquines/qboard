@@ -14,19 +14,23 @@ button {
   -moz-appearance: none;
   -webkit-appearance: none;
 
-  &.active, &:hover {
-    background-color: #aaaaaa99;
-  }
-
-  &.inactive, &.disabled:hover {
-    background-color: transparent;
+  &.active,
+  &:hover {
+    background-color: #aaa9;
   }
 
   &.disabled {
     color: #26262699;
   }
 
-  &.active, &.inactive, &.disabled:hover {
+  &.inactive,
+  &.disabled:hover {
+    background-color: transparent;
+  }
+
+  &.active,
+  &.inactive,
+  &.disabled:hover {
     cursor: unset;
   }
 
