@@ -61,12 +61,13 @@ export default class QBoard {
   ) {
     this.baseCanvas = new Page(baseCanvasElement, {
       backgroundColor: "white",
-      selection: false,
       renderOnAddRemove: false,
+      selection: false,
+      targetFindTolerance: 15,
     });
     this.canvas = new Page(canvasElement, {
-      selection: false,
       renderOnAddRemove: false,
+      selection: false,
     });
     this.pages = new Pages(
       this.baseCanvas,
@@ -201,6 +202,7 @@ export default class QBoard {
     await this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     await this.history.add([this.currentObject]);
+    console.log(this, this.currentObject);
   };
 
   dragEnter = (e: DragEvent): void =>

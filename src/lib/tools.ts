@@ -141,7 +141,12 @@ export class LineHandler implements ToolHandler {
     this.y = y;
 
     return new Promise<fabric.Line>((resolve) => {
-      resolve(new fabric.Line([x, y, x2, y2], options));
+      resolve(
+        new fabric.Line([x, y, x2, y2], {
+          ...options,
+          perPixelTargetFind: true,
+        })
+      );
     });
   };
 
