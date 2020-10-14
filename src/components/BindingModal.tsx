@@ -25,7 +25,7 @@ const BindingModal = (props: {
       overlayClassName="modal-overlay binding-modal"
       isOpen={props.letter !== ""}
     >
-      <button className="close" onClick={(e) => props.close()}>
+      <button className="close" onClick={() => props.close()}>
         {Icon.close}
       </button>
       <p>
@@ -34,7 +34,7 @@ const BindingModal = (props: {
       <div className="tools">
         <button
           className={props.action === undefined ? "active" : undefined}
-          onClick={(e) => props.callback(null)}
+          onClick={() => props.callback(null)}
         >
           <span style={{ left: "0.25em" }}>none</span>
         </button>
@@ -44,7 +44,7 @@ const BindingModal = (props: {
               <button
                 key={action}
                 className={props.action === action ? "active" : undefined}
-                onClick={(e) => props.callback(action)}
+                onClick={() => props.callback(action)}
               >
                 {Icon[action]}
                 <span style={Icon[action] ? {} : { left: "0.25em" }}>

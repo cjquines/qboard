@@ -30,7 +30,6 @@ export default class HistoryHandler {
 
   store = async (objects: any[]): Promise<void> => {
     if (this.locked) return;
-    const ids = objects.map((object) => object.id);
     this.selection = await this.canvas.serialize(objects);
   };
 

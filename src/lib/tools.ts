@@ -68,11 +68,6 @@ export default interface ToolHandler {
 export class MoveHandler implements ToolHandler {
   tool: Tool = Tool.Move;
   isBrush: boolean = false;
-
-  setBrush = async (
-    brush: any,
-    options: fabric.IObjectOptions
-  ): Promise<void> => {};
 }
 
 export class PenHandler implements ToolHandler {

@@ -17,7 +17,8 @@
     &:hover {
       color: #00c3ff;
 
-      &[href], &[tabindex] {
+      &[href],
+      &[tabindex] {
         cursor: pointer;
       }
     }
@@ -28,7 +29,8 @@
     margin: 0 0.25em;
     width: initial;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       background: #bbb;
     }
   }
@@ -61,14 +63,16 @@
   top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
 
   &.help-modal {
-    --width: 38em;
     --height: 29em;
+
+    --width: 38em;
     background: #f8f8f8;
   }
 
   &.binding-modal {
-    --width: 36em;
     --height: 22.5em;
+
+    --width: 36em;
     background: #ededed;
   }
 }

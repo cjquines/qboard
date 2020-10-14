@@ -5,17 +5,18 @@
   position: absolute;
 
   button {
-    opacity: 0.5;
     margin: 0 0.1em;
+    opacity: 0.5;
   }
 
   button.active {
     background: none;
-    border-radius: 0;
     border-bottom: 1px solid #262626;
+    border-radius: 0;
   }
 
-  button.active, button:hover {
+  button.active,
+  button:hover {
     opacity: 1;
   }
 

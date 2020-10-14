@@ -34,7 +34,7 @@ const Key = (props: {
   leftHanded: boolean;
 }) => {
   return (
-    <button className="key" onClick={(e) => props.callback(props.letter)}>
+    <button className="key" onClick={() => props.callback(props.letter)}>
       <div className="action">
         {props.action && Icon[props.action]}
         <span className={props.action ? undefined : "unassigned"}>
