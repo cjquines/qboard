@@ -32,7 +32,7 @@ const dashMap = [
   [5, 10],
 ];
 
-export class StyleHandler {
+export default class StyleHandler {
   constructor(
     public currentStyle: Style,
     public drawerOptions: fabric.IObjectOptions,

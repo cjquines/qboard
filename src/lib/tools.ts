@@ -43,7 +43,7 @@ export const enum Tool {
   Ellipse,
 }
 
-export interface ToolHandler {
+export default interface ToolHandler {
   tool: Tool;
   isBrush: boolean;
 

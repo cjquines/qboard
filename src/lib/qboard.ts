@@ -1,13 +1,13 @@
 import { fabric } from "fabric";
 
-import { Handlers, Tool, ToolHandler } from "./tools";
+import ToolHandler, { Handlers, Tool } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
 import HistoryHandler from "./history";
 import ClipboardHandler from "./clipboard";
-import { Dash, Fill, Stroke, Style, StyleHandler } from "./styles";
-import KeyboardHandler from "./keyboard";
+import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
+import KeyboardHandler from "./keyboard";
 
 export interface QBoardState {
   currentPage: number;
@@ -26,8 +26,8 @@ export default class QBoard {
   history: HistoryHandler;
   clipboard: ClipboardHandler;
   style: StyleHandler;
-  keyboard: KeyboardHandler;
   action: ActionHandler;
+  keyboard: KeyboardHandler;
 
   handlers: ToolHandler[] = Handlers;
   currentStyle: Style = {

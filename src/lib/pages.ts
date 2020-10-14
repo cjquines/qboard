@@ -90,7 +90,6 @@ export default class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
-
     await this.canvas.loadFromJSONAsync(this.pagesJson[currentindexcopy]);
   };
 
@@ -128,21 +127,15 @@ export default class Pages {
     return true;
   };
 
-  insertPages = async (
-    index: number = this.currentIndex + 1,
-    pages: any[] = []
-  ) => {
+  insertPages = async (index: number, pages: any[]) => {
     this.pagesJson.splice(index, 0, ...pages);
     return this.loadPage(index);
   };
 
   openFile = async (files: FileList): Promise<boolean> => {
     if (!files.length) return;
-    const file = files[0];
-
     this.savePage();
-    const asyncReader = AsyncReader(file);
-
+    const asyncReader = AsyncReader(files[0]);
     return this.overwritePages(
       JSON.parse((await asyncReader).result.toString())
     );
@@ -159,19 +152,22 @@ export default class Pages {
   private handleJSON = async (file): Promise<number> => {
     const asyncReader = AsyncReader(file);
     return this.insertPages(
-      undefined,
+      this.currentIndex + 1,
       JSON.parse((await asyncReader).result.toString())
     );
   };
 
   processFiles = async (files: FileList, cursor?): Promise<any[]> => {
-    const images = [...files]
-      .filter(({ type }) => type.startsWith("image/"))
-      .map((file) => this.handleImage(file, cursor));
-    const json = [...files]
-      .filter(({ type }) => type === "application/json")
-      .map(this.handleJSON);
-    await Promise.all([...images, ...json]);
+    let images = [];
+    await Promise.all([...files].map((file) => {
+      if (file.type.startsWith("image/")) {
+        const res = this.handleImage(file, cursor);
+        images.push(res);
+        return res;
+      } else if (file.type === "application/json") {
+        return this.handleJSON(file);
+      }
+    }));
     return Promise.all(images);
   };
 }

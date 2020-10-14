@@ -70,16 +70,13 @@ export default class Page extends fabric.Canvas {
       this.remove(...oldObjects);
     }
     if (newObjects?.length) {
-      fabric.util.enlivenObjects(
-        newObjects,
-        (objects) => {
-          objects.forEach((object: any, i) => {
-            object.id = ids[i];
-          });
-          this.add(...objects);
-        },
-        "fabric"
-      );
+      const addObjects = (objects) => {
+        objects.forEach((object: any, i) => {
+          object.id = ids[i];
+        });
+        this.add(...objects);
+      };
+      fabric.util.enlivenObjects(newObjects, addObjects, "fabric");
     }
     this.requestRenderAll();
   };
