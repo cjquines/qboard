@@ -53,9 +53,6 @@ module.exports = {
     "template-curly-spacing": 0, // Prettier.
     "arrow-parens": 0, // Does not work with Flow generic types
     "consistent-return": 0, // Flow.
-    // Prefer new line before return
-    // http://eslint.org/docs/rules/newline-before-return
-    "newline-before-return": "error",
     "no-use-before-define": [
       "error",
       { functions: false, classes: false, variables: true },
@@ -69,6 +66,7 @@ module.exports = {
     "import/first": 0,
     "no-restricted-globals": 1,
     "no-useless-escape": 1,
+    "lines-between-class-members": "off",
     // was not working when used with flow prop types
     "no-unused-vars": 1,
     "react/no-unused-prop-types": 1,
