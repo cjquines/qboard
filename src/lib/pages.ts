@@ -2,13 +2,22 @@ import pdfMake from "pdfmake/build/pdfmake.min";
 import { fabric } from "fabric";
 
 import Page from "./page";
-import AsyncReader from "./asyncReader";
 
 const defaultPageJSON = {
   version: "3.6.3",
   objects: [],
   background: "white",
 };
+
+export const AsyncReader = (file: File): Promise<FileReader> =>
+  new Promise<FileReader>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader);
+    };
+    reader.onerror = reject;
+    reader.readAsText(file);
+  });
 
 export default class Pages {
   pagesJson: any[] = [defaultPageJSON];
