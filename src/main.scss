@@ -1,4 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+$sizes:
+  760px 19px,
+  720px 18px,
+  680px 17px,
+  640px 16px,
+  600px 15px,
+  560px 14px,
+  520px 13px,
+  400px 12px,
+  360px 11px,
+  330px 10px,
+  300px 9px;
 
 @media all and (min-width: 760px) {
   body {
@@ -6,69 +19,11 @@
   }
 }
 
-@media all and (max-width: 760px) {
-  body {
-    font-size: 19px;
-  }
-}
-
-@media all and (max-width: 720px) {
-  body {
-    font-size: 18px;
-  }
-}
-
-@media all and (max-width: 680px) {
-  body {
-    font-size: 17px;
-  }
-}
-
-@media all and (max-width: 640px) {
-  body {
-    font-size: 16px;
-  }
-}
-
-@media all and (max-width: 600px) {
-  body {
-    font-size: 15px;
-  }
-}
-
-@media all and (max-width: 560px) {
-  body {
-    font-size: 14px;
-  }
-}
-
-@media all and (max-width: 520px) {
-  body {
-    font-size: 13px;
-  }
-}
-
-@media all and (max-width: 400px) {
-  body {
-    font-size: 12px;
-  }
-}
-
-@media all and (max-width: 360px) {
-  body {
-    font-size: 11px;
-  }
-}
-
-@media all and (max-width: 330px) {
-  body {
-    font-size: 10px;
-  }
-}
-
-@media all and (max-width: 300px) {
-  body {
-    font-size: 9px;
+@each $width, $size in $sizes {
+  @media all and (max-width: $width) {
+    body {
+      font-size: $size;
+    }
   }
 }
 
