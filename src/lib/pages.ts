@@ -133,16 +133,29 @@ export default class Pages {
     return this.loadPage(index);
   };
 
-  openFile = async (files: FileList): Promise<boolean> => {
-    if (!files.length) return;
+  acceptFile = async (files: FileList, cursor?): Promise<any> => {
+    if (!files.length) return [];
+    const [file] = files;
+
+    if (file.type.startsWith("image/")) {
+      return this.handleImage(file, cursor);
+    }
+
+    if (file.type === "application/json") {
+      await this.openFile(file);
+      return [];
+    }
+  };
+
+  openFile = async (file: File): Promise<boolean> => {
     this.savePage();
-    const asyncReader = AsyncReader(files[0]);
+    const asyncReader = AsyncReader(file);
     return this.overwritePages(
       JSON.parse((await asyncReader).result.toString())
     );
   };
 
-  private handleImage = async (file, cursor): Promise<any> =>
+  private handleImage = async (file: File, cursor): Promise<any> =>
     new Promise<any[]>((resolve) => {
       const fileURL = window.URL.createObjectURL(file);
       fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
@@ -150,7 +163,7 @@ export default class Pages {
       });
     });
 
-  private handleJSON = async (file): Promise<number> => {
+  private handleJSON = async (file: File): Promise<number> => {
     const asyncReader = AsyncReader(file);
     return this.insertPages(
       this.currentIndex + 1,

@@ -20,7 +20,7 @@ export const enum Visibility {
 }
 
 const Overlay = (props: { qboard: QBoard }): JSX.Element => {
-  const qboard = props.qboard;
+  const { qboard } = props;
 
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
   const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
@@ -100,7 +100,9 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
         <Stylebar
           currentStyle={state.currentStyle}
           doAction={qboard.action.doAction}
-          openFile={qboard.pages.openFile}
+          acceptFile={async (file) =>
+            qboard.history.add(await qboard.pages.acceptFile(file))
+          }
           visibility={visibility}
           isMobile={isMobile}
         />
