@@ -112,6 +112,7 @@ export default class ActionHandler {
         this.canvas.requestRenderAll();
       },
       selectAll: () => {
+        this.canvas.discardActiveObject();
         this.canvas.setActiveObject(
           new fabric.ActiveSelection(this.canvas.getObjects(), {
             canvas: this.canvas,
