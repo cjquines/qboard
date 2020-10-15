@@ -11,7 +11,7 @@ import StyleMenu from "./StyleMenu";
 const Stylebar = (props: {
   currentStyle: Style;
   doAction: (action: Action) => Promise<void>;
-  openFile: (files: FileList) => Promise<boolean>;
+  acceptFile: (files: FileList) => Promise<void>;
   visibility: Visibility;
   isMobile: boolean;
 }): JSX.Element => {
@@ -34,8 +34,8 @@ const Stylebar = (props: {
   return (
     <div className={`stylebar visibility-${props.visibility}`}>
       <input
-        accept=".json"
-        onChange={(e) => props.openFile(e.target.files)}
+        accept=""
+        onChange={(e) => props.acceptFile(e.target.files)}
         multiple={false}
         ref={fileInputRef}
         type="file"
