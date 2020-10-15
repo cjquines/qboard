@@ -75,10 +75,12 @@ export default class Page extends fabric.Canvas {
           object.id = ids[i];
         });
         this.add(...objects);
+        this.requestRenderAll();
       };
       fabric.util.enlivenObjects(newObjects, addObjects, "fabric");
+    } else {
+      this.requestRenderAll();
     }
-    this.requestRenderAll();
   };
 
   loadFromJSONAsync = async (json: unknown): Promise<void> =>
