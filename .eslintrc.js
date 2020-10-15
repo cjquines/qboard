@@ -70,7 +70,7 @@ module.exports = {
     "no-floating-promises": "off",
     "no-invalid-this": "off",
     "no-new-wrappers": "error",
-    "no-param-reassign": "error",
+    "no-param-reassign": "warn",
     "no-redeclare": "error",
     "no-return-await": "off",
     "no-sequences": "error",
@@ -81,6 +81,7 @@ module.exports = {
     "no-var": "warn",
     "no-void": "warn",
     "prefer-const": "warn",
+    "prefer-destructuring": "warn",
     "prettier/prettier": [
       "error",
       {
