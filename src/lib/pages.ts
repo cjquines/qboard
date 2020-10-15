@@ -9,7 +9,7 @@ const defaultPageJSON = {
   background: "white",
 };
 
-export const AsyncReader = (file: File): Promise<FileReader> =>
+const AsyncReader = (file: File): Promise<FileReader> =>
   new Promise<FileReader>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -90,6 +90,7 @@ export default class Pages {
     };
 
     pdfMake.createPdf(docDefinition).download();
+
     await this.canvas.loadFromJSONAsync(this.pagesJson[currentindexcopy]);
   };
 

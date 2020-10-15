@@ -68,7 +68,7 @@ export default class StyleHandler {
           break;
         }
         case Fill.HalfSolid: {
-          this.drawerOptions.fill = this.currentStyle.stroke + "11";
+          this.drawerOptions.fill = `${this.currentStyle.stroke}11`;
           break;
         }
       }
