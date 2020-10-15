@@ -2,6 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake.min";
 import { fabric } from "fabric";
 
 import Page from "./page";
+import { HistoryCommand } from "./history";
 
 const defaultPageJSON = {
   version: "3.6.3",
@@ -18,6 +19,11 @@ const AsyncReader = (file: File): Promise<FileReader> =>
     reader.onerror = reject;
     reader.readAsText(file);
   });
+
+export type FileHandlerResponse = {
+  action: "none" | "image" | "json";
+  history?: HistoryCommand;
+};
 
 export default class Pages {
   pagesJson: any[] = [defaultPageJSON];
@@ -133,17 +139,26 @@ export default class Pages {
     return this.loadPage(index);
   };
 
-  acceptFile = async (files: FileList, cursor?): Promise<any> => {
-    if (!files.length) return [];
+  acceptFile = async (
+    files: FileList,
+    cursor?
+  ): Promise<FileHandlerResponse> => {
+    if (!files.length) return { action: "none" };
     const [file] = files;
 
     if (file.type.startsWith("image/")) {
-      return this.handleImage(file, cursor);
+      return {
+        action: "image",
+        history: { add: await this.handleImage(file, cursor) },
+      };
     }
 
     if (file.type === "application/json") {
       await this.openFile(file);
-      return [];
+      return {
+        action: "json",
+        history: { clear: [true] },
+      };
     }
   };
 

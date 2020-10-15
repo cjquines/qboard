@@ -101,7 +101,9 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
           currentStyle={state.currentStyle}
           doAction={qboard.action.doAction}
           acceptFile={async (file) =>
-            qboard.history.add(await qboard.pages.acceptFile(file))
+            qboard.history.execute(
+              (await qboard.pages.acceptFile(file)).history
+            )
           }
           visibility={visibility}
           isMobile={isMobile}
