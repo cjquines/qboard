@@ -8,13 +8,13 @@ import StyleMenu from "./StyleMenu";
 const ContextMenu = (props: {
   currentStyle: Style;
   doAction: (action: Action) => Promise<void>;
-}) => {
-  const [coords, setCoords] = useState<[Number, Number] | null>(null);
+}): JSX.Element => {
+  const [coords, setCoords] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     document.addEventListener("contextmenu", (e: MouseEvent) => {
       e.preventDefault();
-      setCoords((coords) => (coords ? null : [e.clientX, e.clientY]));
+      setCoords((oldCoords) => (oldCoords ? null : [e.clientX, e.clientY]));
     });
     document.addEventListener("click", () => setCoords(null));
   }, []);

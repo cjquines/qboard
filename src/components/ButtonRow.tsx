@@ -10,7 +10,7 @@ const ButtonRow = (props: {
   className?: (action: Action, i?: number) => null | string;
   cName?: string;
   outerButton?: boolean | ReactNode;
-}) => {
+}): JSX.Element => {
   return (
     <div
       className={`button-row ${props.cName} ${

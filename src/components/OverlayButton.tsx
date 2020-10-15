@@ -9,7 +9,7 @@ const OverlayButton = (props: {
   action: Action;
   callback: (action: Action) => Promise<void>;
   className?: string;
-}) => {
+}): JSX.Element => {
   return (
     <>
       <button

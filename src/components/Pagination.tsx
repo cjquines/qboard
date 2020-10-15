@@ -11,30 +11,30 @@ const Pagination = (props: {
   totalPages: number;
   doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
-}) => {
+}): JSX.Element => {
   const [value, setValue] = useState(0);
   const [width, setWidth] = useState("0.6em");
 
   useEffect(() => {
     setValue(props.currentPage);
-    setWidth(0.6 * props.currentPage.toString().length + "em");
+    setWidth(`${0.6 * props.currentPage.toString().length}em`);
   }, [props]);
 
-  const navigate = () => {
+  const navigate = async () => {
     if (!value) return;
     const page = Number(value);
     if (!page || page > props.totalPages) {
       setValue(props.currentPage);
     } else {
-      props.loadPage(page - 1);
+      await props.loadPage(page - 1);
     }
   };
 
-  useEffect(() => navigate(), [value]);
+  useEffect(() => void navigate(), [value]);
 
-  const onSubmit = (e) => {
+  const onSubmit: (e) => Promise<void> = (e) => {
     e?.preventDefault();
-    navigate();
+    return navigate();
   };
 
   const onChange = (e) => setValue(e.target.value);

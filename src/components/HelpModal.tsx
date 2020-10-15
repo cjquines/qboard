@@ -2,29 +2,43 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 
 import { Action } from "../lib/action";
+import { KeyMap } from "../lib/keyboard";
 
 import Bindings from "./Bindings";
 import Icon from "./Icon";
 
 Modal.setAppElement("#Overlay");
 
-const HelpModal = (props: {
+const HelpModal = ({
+  bind,
+  isMobile,
+  isOpen,
+  keyMap,
+  reset,
+  toggleMobility,
+  toggleOpen,
+  unbind,
+}: {
   bind: (key: string, action: Action) => void;
   unbind: (key: string) => void;
   reset: () => void;
-  keyMap: any;
+  keyMap: KeyMap;
   isOpen: boolean;
   toggleOpen: () => void;
   isMobile: boolean;
   toggleMobility: () => void;
-}) => {
+}): JSX.Element => {
   const [keyModifier, setKeyModifier] = useState("");
   const [leftHanded, setLeftHanded] = useState(false);
 
   const toggleHand = (): void => {
-    setLeftHanded((leftHanded) => {
-      window.localStorage.setItem("leftHanded", leftHanded ? "false" : "true");
-      return !leftHanded;
+    setLeftHanded((wasLeftHanded: boolean) => {
+      window.localStorage.setItem(
+        "leftHanded",
+        wasLeftHanded ? "false" : "true"
+      );
+
+      return !wasLeftHanded;
     });
   };
 
@@ -38,9 +52,9 @@ const HelpModal = (props: {
     <Modal
       className="modal"
       overlayClassName="modal-overlay help-modal"
-      isOpen={props.isOpen}
+      isOpen={isOpen}
     >
-      <button className="close" onClick={() => props.toggleOpen()}>
+      <button className="close" onClick={() => toggleOpen()}>
         {Icon.close}
       </button>
       <p>
@@ -76,21 +90,21 @@ const HelpModal = (props: {
         </button>
       </p>
       <Bindings
-        bind={props.bind}
-        unbind={props.unbind}
-        keyMap={props.keyMap}
+        bind={bind}
+        unbind={unbind}
+        keyMap={keyMap}
         modifier={keyModifier}
         leftHanded={leftHanded}
       />
       <p>
         Click a key to change the binding.{" "}
-        <button onClick={() => props.reset()}>reset to default</button>
+        <button onClick={() => reset()}>reset to default</button>
       </p>
       <p style={{ color: "#666" }}>
         By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
         <a href="https://github.com/cjquines/qboard">Github</a>. Use{" "}
-        <a onClick={() => props.toggleMobility()} tabIndex={0}>
-          {props.isMobile ? "desktop" : "mobile"} site
+        <a onClick={() => toggleMobility()} tabIndex={0}>
+          {isMobile ? "desktop" : "mobile"} site
         </a>
         .
       </p>

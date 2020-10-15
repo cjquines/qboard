@@ -67,12 +67,12 @@ export default interface ToolHandler {
 
 export class MoveHandler implements ToolHandler {
   tool: Tool = Tool.Move;
-  isBrush: boolean = false;
+  isBrush = false;
 }
 
 export class PenHandler implements ToolHandler {
   tool: Tool = Tool.Pen;
-  isBrush: boolean = true;
+  isBrush = true;
 
   setBrush = async (
     brush: any,
@@ -86,7 +86,7 @@ export class PenHandler implements ToolHandler {
 
 export class EraserHandler implements ToolHandler {
   tool: Tool = Tool.Eraser;
-  isBrush: boolean = true;
+  isBrush = true;
 
   setBrush = async (
     brush: any,
@@ -100,7 +100,7 @@ export class EraserHandler implements ToolHandler {
 
 export class LaserHandler implements ToolHandler {
   tool: Tool = Tool.Laser;
-  isBrush: boolean = true;
+  isBrush = true;
 
   setBrush = async (
     brush: any,
@@ -114,7 +114,7 @@ export class LaserHandler implements ToolHandler {
 
 export class LineHandler implements ToolHandler {
   tool: Tool = Tool.Line;
-  isBrush: boolean = false;
+  isBrush = false;
   x: number;
   y: number;
 
@@ -151,10 +151,11 @@ export class LineHandler implements ToolHandler {
     y2: number,
     strict: boolean
   ): Promise<fabric.Line> => {
+    let [x, y] = [x2, y2];
     if (strict) {
-      [, x2, y2] = rectify(this.dirs, this.x, this.y, x2, y2);
+      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
     }
-    object.set({ x2, y2 }).setCoords();
+    object.set({ x2: x, y2: y }).setCoords();
     return new Promise<fabric.Line>((resolve) => {
       resolve(object);
     });
@@ -163,7 +164,7 @@ export class LineHandler implements ToolHandler {
 
 export class RectangleHandler implements ToolHandler {
   tool: Tool = Tool.Rectangle;
-  isBrush: boolean = false;
+  isBrush = false;
   x: number;
   y: number;
 
@@ -195,15 +196,16 @@ export class RectangleHandler implements ToolHandler {
     y2: number,
     strict: boolean
   ): Promise<fabric.Rect> => {
+    let [x, y] = [x2, y2];
     if (strict) {
-      [, x2, y2] = rectify(this.dirs, this.x, this.y, x2, y2);
+      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object
       .set({
-        originX: this.x > x2 ? "right" : "left",
-        originY: this.y > y2 ? "bottom" : "top",
-        width: Math.abs(this.x - x2),
-        height: Math.abs(this.y - y2),
+        originX: this.x > x ? "right" : "left",
+        originY: this.y > y ? "bottom" : "top",
+        width: Math.abs(this.x - x),
+        height: Math.abs(this.y - y),
       })
       .setCoords();
 
@@ -215,7 +217,7 @@ export class RectangleHandler implements ToolHandler {
 
 export class EllipseHandler implements ToolHandler {
   tool: Tool = Tool.Ellipse;
-  isBrush: boolean = false;
+  isBrush = false;
   x: number;
   y: number;
 
@@ -247,15 +249,17 @@ export class EllipseHandler implements ToolHandler {
     y2: number,
     strict: boolean
   ): Promise<fabric.Ellipse> => {
+    let [x, y] = [x2, y2];
+
     if (strict) {
-      [, x2, y2] = rectify(this.dirs, this.x, this.y, x2, y2);
+      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object
       .set({
-        originX: this.x > x2 ? "right" : "left",
-        originY: this.y > y2 ? "bottom" : "top",
-        rx: Math.abs(x2 - object.left) / 2,
-        ry: Math.abs(y2 - object.top) / 2,
+        originX: this.x > x ? "right" : "left",
+        originY: this.y > y ? "bottom" : "top",
+        rx: Math.abs(x - object.left) / 2,
+        ry: Math.abs(y - object.top) / 2,
       })
       .setCoords();
 

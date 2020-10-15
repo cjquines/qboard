@@ -72,7 +72,7 @@ export const mirror = (key: string): string => {
 };
 
 export default class KeyboardHandler {
-  keyMap: any = {};
+  keyMap: KeyMap = {};
 
   constructor(
     public doAction: (action: Action) => Promise<void>,
@@ -103,7 +103,7 @@ export default class KeyboardHandler {
 
   bindAll = (): void => {
     for (const [key, value] of Object.entries(this.keyMap)) {
-      this.bind(key, value as Action);
+      this.bind(key, value);
     }
     this.updateState();
   };

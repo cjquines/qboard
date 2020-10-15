@@ -19,7 +19,7 @@ export const enum Visibility {
   Full,
 }
 
-const Overlay = (props: { qboard: QBoard }) => {
+const Overlay = (props: { qboard: QBoard }): JSX.Element => {
   const qboard = props.qboard;
 
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
@@ -44,19 +44,16 @@ const Overlay = (props: { qboard: QBoard }) => {
   });
 
   const toggleOpen = (): void => {
-    setHelpModalOpen((helpModalOpen) => {
-      window.localStorage.setItem(
-        "helpModalOpen",
-        helpModalOpen ? "false" : "true"
-      );
-      return !helpModalOpen;
+    setHelpModalOpen((wasOpen) => {
+      window.localStorage.setItem("helpModalOpen", wasOpen ? "false" : "true");
+      return !wasOpen;
     });
   };
 
   const toggleMobility = (): void => {
-    setMobility((isMobile) => {
-      window.localStorage.setItem("isMobile", isMobile ? "false" : "true");
-      return !isMobile;
+    setMobility((wasMobile) => {
+      window.localStorage.setItem("isMobile", wasMobile ? "false" : "true");
+      return !wasMobile;
     });
   };
 
@@ -72,7 +69,7 @@ const Overlay = (props: { qboard: QBoard }) => {
     qboard.updateState();
 
     keyboardJS.bind("tab", () => {
-      setVisibility((visibility) => (visibility + 2) % 3);
+      setVisibility((currentVisibility) => (currentVisibility + 2) % 3);
     });
 
     keyboardJS.bind("1", () => toggleOpen());

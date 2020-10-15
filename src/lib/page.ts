@@ -4,8 +4,8 @@ export default class Page extends fabric.Canvas {
   cursor: { x: number; y: number };
   canvasWidth: number;
   canvasHeight: number;
-  latestId: number = 0;
-  modified: boolean = false;
+  latestId = 0;
+  modified = false;
 
   fitToWindow = async (
     canvasWidth: number,
@@ -50,7 +50,7 @@ export default class Page extends fabric.Canvas {
     }
     // single element case
     const id = ids[0];
-    for (let object of this.getObjects()) {
+    for (const object of this.getObjects()) {
       if ((object as any).id === id) {
         return [object];
       }
@@ -81,14 +81,14 @@ export default class Page extends fabric.Canvas {
     this.requestRenderAll();
   };
 
-  loadFromJSONAsync = async (json: any) =>
+  loadFromJSONAsync = async (json: unknown): Promise<void> =>
     new Promise<void>((resolve) => {
       super.loadFromJSON(json, () => {
         resolve();
       });
     });
 
-  placeObject = async (obj: any, cursor: any = this.cursor): Promise<any> => {
+  placeObject = async (obj: any, cursor: any = this.cursor): Promise<any[]> => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
     this.discardActiveObject();
@@ -103,12 +103,12 @@ export default class Page extends fabric.Canvas {
     });
     if (obj._objects) {
       obj.canvas = this;
-      obj.forEachObject((object) => {
+      obj.forEachObject((object) =>
         this.getNextId().then((id) => {
           object.id = id;
           this.add(object);
-        });
-      });
+        })
+      );
       obj.setCoords();
     } else {
       this.add(obj);

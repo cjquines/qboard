@@ -18,7 +18,7 @@ const BindingModal = (props: {
   action: Action | null;
   close: () => void;
   callback: (action: Action | null) => void;
-}) => {
+}): Modal => {
   return (
     <Modal
       className="modal"
