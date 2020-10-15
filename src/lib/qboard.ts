@@ -10,6 +10,7 @@ import ActionHandler from "./action";
 import KeyboardHandler from "./keyboard";
 
 export interface QBoardState {
+  dragActive: boolean;
   currentPage: number;
   totalPages: number;
   currentTool: Tool;
@@ -48,6 +49,7 @@ export default class QBoard {
   currentTool: Tool;
   tool: ToolHandler;
   currentObject: any;
+  dragActive = false;
   isDown = false;
   strict = false;
   callback: (state: QBoardState) => any;
@@ -55,7 +57,6 @@ export default class QBoard {
   constructor(
     public canvasElement: HTMLCanvasElement,
     public baseCanvasElement: HTMLCanvasElement,
-    public dropArea: HTMLElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -118,8 +119,8 @@ export default class QBoard {
     this.canvas.on("mouse:move", this.mouseMove);
     this.canvas.on("mouse:up", this.mouseUp);
 
-    this.dropArea.ondragenter = this.dragEnter;
-    this.dropArea.ondragleave = this.dragLeave;
+    this.baseCanvas.on("dragenter", () => this.setDragActive(true));
+    this.baseCanvas.on("dragleave", () => this.setDragActive(false));
     this.baseCanvas.on("drop", this.drop);
 
     this.baseCanvas.on("path:created", this.pathCreated);
@@ -130,6 +131,7 @@ export default class QBoard {
 
   updateState = (): void => {
     this?.callback?.({
+      dragActive: this.dragActive,
       currentPage: this.pages.currentIndex + 1,
       totalPages: this.pages.pagesJson.length,
       currentTool: this.currentTool,
@@ -203,15 +205,16 @@ export default class QBoard {
     await this.history.add([this.currentObject]);
   };
 
-  dragEnter = (): void => this.dropArea.classList.add("file-drop-active");
-
-  dragLeave = (): void => this.dropArea.classList.remove("file-drop-active");
+  setDragActive = (state: boolean): void => {
+    this.dragActive = state;
+    this.updateState();
+  };
 
   drop = async (iEvent: fabric.IEvent): Promise<void> => {
     iEvent.e.stopPropagation();
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
-    this.dragLeave();
+    this.setDragActive(false);
     const imgs = await this.pages.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files
     );
