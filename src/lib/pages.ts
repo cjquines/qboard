@@ -170,7 +170,7 @@ export default class Pages {
     );
   };
 
-  private handleImage = async (file: File, cursor): Promise<any> =>
+  private handleImage = async (file: File, cursor): Promise<any[]> =>
     new Promise<any[]>((resolve) => {
       const fileURL = window.URL.createObjectURL(file);
       fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
@@ -186,20 +186,20 @@ export default class Pages {
     );
   };
 
-  processFiles = async (files: FileList, cursor?): Promise<any[]> => {
+  processFiles = async (files: FileList, cursor?): Promise<HistoryCommand> => {
     const images = [];
     await Promise.all(
-      [...files].map((file) => {
+      [...files].map(async (file) => {
         if (file.type.startsWith("image/")) {
-          const res = this.handleImage(file, cursor);
-          images.push(res);
-          return res;
+          images.push(await this.handleImage(file, cursor));
         }
         if (file.type === "application/json") {
           return this.handleJSON(file);
         }
       })
     );
-    return Promise.all(images);
+    return {
+      add: images.flat(),
+    };
   };
 }
