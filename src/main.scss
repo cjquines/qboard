@@ -1,7 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
 
-$sizes:
-  760px 19px,
+@media all and (min-width: 760px) {
+  body {
+    font-size: 20px;
+  }
+}
+
+$font-sizes: 760px 19px,
   720px 18px,
   680px 17px,
   640px 16px,
@@ -13,13 +18,7 @@ $sizes:
   330px 10px,
   300px 9px;
 
-@media all and (min-width: 760px) {
-  body {
-    font-size: 20px;
-  }
-}
-
-@each $width, $size in $sizes {
+@each $width, $size in $font-sizes {
   @media all and (max-width: $width) {
     body {
       font-size: $size;
