@@ -215,7 +215,11 @@ export default class QBoard {
     const imgs = await this.pages.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files
     );
-    return this.history.add(imgs.flat());
+    const historyCommand = await this.pages.processFiles(
+      (iEvent.e as DragEvent).dataTransfer.files,
+      null
+    );
+    await this.history.execute(historyCommand);
   };
 
   pathCreated = async (e: any): Promise<void> => {

@@ -10,6 +10,12 @@ interface HistoryItem {
   page: number;
 }
 
+export type HistoryCommand = {
+  add?: any[];
+  remove?: any[];
+  clear?: [clearRedo: boolean];
+};
+
 export default class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
@@ -22,11 +28,26 @@ export default class HistoryHandler {
     public updateState: () => void
   ) {}
 
+  execute = async (command: HistoryCommand): Promise<void[]> => {
+    if (command.clear) this.clear(command.clear[0]);
+    const actions: Promise<void>[] = [
+      this.add(command.add),
+      this.remove(command.remove),
+    ];
+    return Promise.all(actions);
+  };
+
   add = async (objects: fabric.Object[]): Promise<void> =>
-    objects.length && this.save(null, objects);
+    objects?.length && this.save(null, objects);
 
   remove = async (objects: fabric.Object[]): Promise<void> =>
-    objects.length && this.save(objects, null);
+    objects?.length && this.save(objects, null);
+
+  clear = (clearRedo = false): void => {
+    this.history = [];
+    if (clearRedo) this.redoStack = [];
+    this.updateState();
+  };
 
   store = async (objects: fabric.Object[]): Promise<void> => {
     if (this.locked) return;
