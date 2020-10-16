@@ -1,28 +1,11 @@
 import pdfMake from "pdfmake/build/pdfmake.min";
-import { fabric } from "fabric";
 
 import Page from "./page";
-import { HistoryCommand } from "./history";
 
 const defaultPageJSON = {
   version: "3.6.3",
   objects: [],
   background: "white",
-};
-
-const AsyncReader = (file: File): Promise<FileReader> =>
-  new Promise<FileReader>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader);
-    };
-    reader.onerror = reject;
-    reader.readAsText(file);
-  });
-
-export type FileHandlerResponse = {
-  action: "none" | "image" | "json";
-  history?: HistoryCommand;
 };
 
 export default class Pages {
@@ -137,69 +120,5 @@ export default class Pages {
   insertPages = async (index: number, pages: any[]): Promise<number> => {
     this.pagesJson.splice(index, 0, ...pages);
     return this.loadPage(index);
-  };
-
-  acceptFile = async (
-    files: FileList,
-    cursor?
-  ): Promise<FileHandlerResponse> => {
-    if (!files.length) return { action: "none" };
-    const [file] = files;
-
-    if (file.type.startsWith("image/")) {
-      return {
-        action: "image",
-        history: { add: await this.handleImage(file, cursor) },
-      };
-    }
-
-    if (file.type === "application/json") {
-      await this.openFile(file);
-      return {
-        action: "json",
-        history: { clear: [true] },
-      };
-    }
-  };
-
-  openFile = async (file: File): Promise<boolean> => {
-    this.savePage();
-    const asyncReader = AsyncReader(file);
-    return this.overwritePages(
-      JSON.parse((await asyncReader).result.toString())
-    );
-  };
-
-  private handleImage = async (file: File, cursor): Promise<any[]> =>
-    new Promise<any[]>((resolve) => {
-      const fileURL = window.URL.createObjectURL(file);
-      fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
-        resolve(this.canvas.placeObject(obj, cursor));
-      });
-    });
-
-  private handleJSON = async (file: File): Promise<number> => {
-    const asyncReader = AsyncReader(file);
-    return this.insertPages(
-      this.currentIndex + 1,
-      JSON.parse((await asyncReader).result.toString())
-    );
-  };
-
-  processFiles = async (files: FileList, cursor?): Promise<HistoryCommand> => {
-    const images = [];
-    await Promise.all(
-      [...files].map(async (file) => {
-        if (file.type.startsWith("image/")) {
-          images.push(await this.handleImage(file, cursor));
-        }
-        if (file.type === "application/json") {
-          return this.handleJSON(file);
-        }
-      })
-    );
-    return {
-      add: images.flat(),
-    };
   };
 }

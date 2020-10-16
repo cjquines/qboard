@@ -8,6 +8,7 @@ import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler from "./keyboard";
+import FileHandler from "./files";
 
 export interface QBoardState {
   currentPage: number;
@@ -23,6 +24,7 @@ export default class QBoard {
   baseCanvas: Page;
   canvas: Page;
   pages: Pages;
+  files: FileHandler;
   history: HistoryHandler;
   clipboard: ClipboardHandler;
   style: StyleHandler;
@@ -75,7 +77,7 @@ export default class QBoard {
       this.canvasHeight,
       this.updateState
     );
-
+    this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
@@ -84,6 +86,7 @@ export default class QBoard {
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
       this.pages,
+      this.files,
       this.history,
       this.canvasWidth,
       this.canvasHeight
@@ -98,6 +101,7 @@ export default class QBoard {
       this.switchTool,
       this.currentStyle,
       this.pages,
+      this.files,
       this.history,
       this.clipboard,
       this.style.set
@@ -212,10 +216,8 @@ export default class QBoard {
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
     this.dragLeave();
-    const imgs = await this.pages.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files
-    );
-    const historyCommand = await this.pages.processFiles(
+
+    const historyCommand = await this.files.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files,
       null
     );

@@ -2,6 +2,7 @@ import { fabric } from "fabric";
 
 import Page from "./page";
 import Pages from "./pages";
+import FileHandler from "./files";
 import HistoryHandler from "./history";
 
 export default class ClipboardHandler {
@@ -10,6 +11,7 @@ export default class ClipboardHandler {
   constructor(
     public canvas: Page,
     public pages: Pages,
+    public files: FileHandler,
     public history: HistoryHandler,
     public canvasWidth: number,
     public canvasHeight: number
@@ -51,7 +53,7 @@ export default class ClipboardHandler {
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    const historyCommand = await this.pages.processFiles(
+    const historyCommand = await this.files.processFiles(
       e.clipboardData.files,
       null
     );
