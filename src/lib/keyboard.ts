@@ -5,6 +5,7 @@ import { Action } from "./action";
 export type KeyMap = {
   [key: string]: Action;
 };
+
 export type MirrorMap = {
   [key: string]: string;
 };

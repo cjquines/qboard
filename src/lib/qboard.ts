@@ -1,13 +1,13 @@
 import { fabric } from "fabric";
 
 import ToolHandler, { Handlers, Tool } from "./tools";
-import Page from "./page";
+import Page, { ObjectId } from "./page";
 import Pages from "./pages";
 import HistoryHandler from "./history";
 import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
-import KeyboardHandler from "./keyboard";
+import KeyboardHandler, { KeyMap } from "./keyboard";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -17,7 +17,7 @@ export interface QBoardState {
   currentStyle: Style;
   canUndo: boolean;
   canRedo: boolean;
-  keyMap: any;
+  keyMap: KeyMap;
 }
 
 export default class QBoard {
@@ -45,14 +45,14 @@ export default class QBoard {
     strokeUniform: true,
   };
 
-  resizeCooldown: any;
+  resizeCooldown: NodeJS.Timeout;
   currentTool: Tool;
   tool: ToolHandler;
-  currentObject: any;
+  currentObject: fabric.Object;
   dragActive = false;
   isDown = false;
   strict = false;
-  callback: (state: QBoardState) => any;
+  callback: (state: QBoardState) => void;
 
   constructor(
     public canvasElement: HTMLCanvasElement,
@@ -92,7 +92,7 @@ export default class QBoard {
     this.style = new StyleHandler(
       this.currentStyle,
       this.drawerOptions,
-      this.baseCanvas.freeDrawingBrush,
+      this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
       this.updateState
     );
     this.action = new ActionHandler(
@@ -154,7 +154,7 @@ export default class QBoard {
       await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
       await this.tool.setBrush?.(
-        this.baseCanvas.freeDrawingBrush,
+        this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
         this.drawerOptions
       );
     } else {
@@ -169,9 +169,9 @@ export default class QBoard {
 
   windowResize = async (): Promise<void> => {
     clearTimeout(this.resizeCooldown);
-    this.resizeCooldown = setTimeout(() => {
-      void this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
-      void this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+    this.resizeCooldown = setTimeout(async () => {
+      await this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+      await this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);
   };
 
@@ -181,7 +181,7 @@ export default class QBoard {
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
-    this.currentObject.id = await this.baseCanvas.getNextId();
+    (this.currentObject as ObjectId).id = await this.baseCanvas.getNextId();
     await this.canvas.add(this.currentObject);
     this.canvas.requestRenderAll();
   };
@@ -215,12 +215,8 @@ export default class QBoard {
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
     this.setDragActive(false);
-    const imgs = await this.pages.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files
-    );
     const historyCommand = await this.pages.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files,
-      null
+      (iEvent.e as DragEvent).dataTransfer.files
     );
     await this.history.execute(historyCommand);
   };

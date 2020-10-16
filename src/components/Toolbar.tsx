@@ -6,11 +6,7 @@ import { Action } from "../lib/action";
 import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";
 
-const Toolbar = ({
-  currentTool,
-  doAction,
-  visibility,
-}: {
+const Toolbar = (props: {
   currentTool: Tool;
   doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
@@ -26,12 +22,12 @@ const Toolbar = ({
   ];
 
   return (
-    <div className={`toolbar visibility-${visibility}`}>
+    <div className={`toolbar visibility-${props.visibility}`}>
       {tools.map((tool, index) => (
         <OverlayButton
           action={tool}
-          callback={doAction}
-          className={index === currentTool ? "active" : undefined}
+          callback={props.doAction}
+          className={index === props.currentTool ? "active" : undefined}
           key={tool}
         />
       ))}

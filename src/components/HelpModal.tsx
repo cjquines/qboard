@@ -9,16 +9,7 @@ import Icon from "./Icon";
 
 Modal.setAppElement("#Overlay");
 
-const HelpModal = ({
-  bind,
-  isMobile,
-  isOpen,
-  keyMap,
-  reset,
-  toggleMobility,
-  toggleOpen,
-  unbind,
-}: {
+const HelpModal = (props: {
   bind: (key: string, action: Action) => void;
   unbind: (key: string) => void;
   reset: () => void;
@@ -52,9 +43,9 @@ const HelpModal = ({
     <Modal
       className="modal"
       overlayClassName="modal-overlay help-modal"
-      isOpen={isOpen}
+      isOpen={props.isOpen}
     >
-      <button className="close" onClick={() => toggleOpen()}>
+      <button className="close" onClick={() => props.toggleOpen()}>
         {Icon.close}
       </button>
       <p>
@@ -90,21 +81,21 @@ const HelpModal = ({
         </button>
       </p>
       <Bindings
-        bind={bind}
-        unbind={unbind}
-        keyMap={keyMap}
+        bind={props.bind}
+        unbind={props.unbind}
+        keyMap={props.keyMap}
         modifier={keyModifier}
         leftHanded={leftHanded}
       />
       <p>
         Click a key to change the binding.{" "}
-        <button onClick={() => reset()}>reset to default</button>
+        <button onClick={() => props.reset()}>reset to default</button>
       </p>
       <p style={{ color: "#666" }}>
         By <a href="https://cjquines.com/">CJ Quines</a>. View on{" "}
         <a href="https://github.com/cjquines/qboard">Github</a>. Use{" "}
-        <a onClick={() => toggleMobility()} tabIndex={0}>
-          {isMobile ? "desktop" : "mobile"} site
+        <a onClick={() => props.toggleMobility()} tabIndex={0}>
+          {props.isMobile ? "desktop" : "mobile"} site
         </a>
         .
       </p>

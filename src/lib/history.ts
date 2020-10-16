@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import Page from "./page";
+import Page, { ObjectId } from "./page";
 import Pages from "./pages";
 
 interface HistoryItem {
@@ -11,9 +11,9 @@ interface HistoryItem {
 }
 
 export type HistoryCommand = {
-  add?: any[];
-  remove?: any[];
-  clear?: [clearRedo: boolean];
+  add?: fabric.Object[];
+  remove?: fabric.Object[];
+  clear?: [boolean];
 };
 
 export default class HistoryHandler {
@@ -58,13 +58,13 @@ export default class HistoryHandler {
     this.save(this.selection, objects);
 
   save = async (
-    oldObjects: any[] | null,
-    newObjects: any[] | null
+    oldObjects: fabric.Object[] | null,
+    newObjects: fabric.Object[] | null
   ): Promise<void> => {
     if (this.locked) return;
     const basis = newObjects || oldObjects;
     this.history.push({
-      ids: basis.map((object) => object.id),
+      ids: basis.map((object: ObjectId) => object.id),
       oldObjects: newObjects
         ? oldObjects
         : await this.canvas.serialize(oldObjects),

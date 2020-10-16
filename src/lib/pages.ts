@@ -4,11 +4,11 @@ import { fabric } from "fabric";
 import Page from "./page";
 import { HistoryCommand } from "./history";
 
-const defaultPageJSON = {
+const defaultPageJSON = ({
   version: "3.6.3",
   objects: [],
   background: "white",
-};
+} as unknown) as string;
 
 const AsyncReader = (file: File): Promise<FileReader> =>
   new Promise<FileReader>((resolve, reject) => {
@@ -26,7 +26,7 @@ export type FileHandlerResponse = {
 };
 
 export default class Pages {
-  pagesJson: any[] = [defaultPageJSON];
+  pagesJson: string[] = [defaultPageJSON];
   currentIndex = 0;
 
   constructor(
@@ -121,7 +121,7 @@ export default class Pages {
   };
 
   overwritePages = async (
-    pages: any[] = [defaultPageJSON]
+    pages: string[] = [defaultPageJSON]
   ): Promise<boolean> => {
     const response = window.confirm(
       "Your work will be overwritten. Are you sure you wish to continue?"
@@ -134,22 +134,19 @@ export default class Pages {
     return true;
   };
 
-  insertPages = async (index: number, pages: any[]): Promise<number> => {
+  insertPages = async (index: number, pages: string[]): Promise<number> => {
     this.pagesJson.splice(index, 0, ...pages);
     return this.loadPage(index);
   };
 
-  acceptFile = async (
-    files: FileList,
-    cursor?
-  ): Promise<FileHandlerResponse> => {
+  acceptFile = async (files: FileList): Promise<FileHandlerResponse> => {
     if (!files.length) return { action: "none" };
     const [file] = files;
 
     if (file.type.startsWith("image/")) {
       return {
         action: "image",
-        history: { add: await this.handleImage(file, cursor) },
+        history: { add: await this.handleImage(file) },
       };
     }
 
@@ -170,11 +167,13 @@ export default class Pages {
     );
   };
 
-  private handleImage = async (file: File, cursor): Promise<any[]> =>
-    new Promise<any[]>((resolve) => {
+  private handleImage = async (file: File): Promise<fabric.Object[]> =>
+    new Promise<fabric.Object[]>((resolve) => {
       const fileURL = window.URL.createObjectURL(file);
       fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
-        resolve(this.canvas.placeObject(obj, cursor));
+        resolve(
+          this.canvas.placeObject((obj as unknown) as fabric.ActiveSelection)
+        );
       });
     });
 
@@ -186,12 +185,12 @@ export default class Pages {
     );
   };
 
-  processFiles = async (files: FileList, cursor?): Promise<HistoryCommand> => {
+  processFiles = async (files: FileList): Promise<HistoryCommand> => {
     const images = [];
     await Promise.all(
       [...files].map(async (file) => {
         if (file.type.startsWith("image/")) {
-          images.push(await this.handleImage(file, cursor));
+          images.push(await this.handleImage(file));
         }
         if (file.type === "application/json") {
           return this.handleJSON(file);
