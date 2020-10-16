@@ -28,26 +28,26 @@ export class JSONReader {
     // V0
     if (Array.isArray(object)) return object;
 
-    const { version, data } = object;
+    const { "qboard-version": version, pages } = object;
     switch (version) {
       case 1:
-        return data;
+        return pages;
       default:
-        return data;
+        return pages;
     }
   }
 }
 
 export class JSONWriter {
   private readonly sourceJSON: {
-    version: number;
+    "qboard-version": number;
     pages: any[];
   };
   private stringified: string;
 
   constructor(pagesJSON: any[]) {
     this.sourceJSON = {
-      version: 1,
+      "qboard-version": 1,
       pages: pagesJSON,
     };
   }
