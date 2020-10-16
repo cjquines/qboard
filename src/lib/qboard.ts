@@ -220,7 +220,7 @@ export default class QBoard {
     this.updateCursor(iEvent);
     this.setDragActive(false);
 
-    const historyCommand = await this.pages.processFiles(
+    const historyCommand = await this.files.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files
     );
     await this.history.execute(historyCommand);

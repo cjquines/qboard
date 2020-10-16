@@ -1,7 +1,7 @@
 import pdfMake from "pdfmake/build/pdfmake.min";
 
 import Page from "./page";
-import {JSONWriter} from "./files";
+import { JSONWriter } from "./files";
 
 const defaultPageJSON = {
   version: "3.6.3",

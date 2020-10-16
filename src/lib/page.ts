@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import { Image } from "fabric/fabric-impl";
 
 export interface ObjectId extends fabric.Object {
   id: number;
@@ -97,7 +98,7 @@ export default class Page extends fabric.Canvas {
     });
 
   placeObject = async (
-    obj: fabric.ActiveSelection,
+    obj: any,
     cursor = this.cursor
   ): Promise<fabric.Object[]> => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =

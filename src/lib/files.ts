@@ -114,8 +114,8 @@ export default class FileHandler {
     );
   };
 
-  private handleImage = async (file: File, cursor): Promise<any[]> =>
-    new Promise<any[]>((resolve) => {
+  private handleImage = async (file: File, cursor): Promise<fabric.Object[]> =>
+    new Promise<fabric.Object[]>((resolve) => {
       const fileURL = window.URL.createObjectURL(file);
       fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
         resolve(this.pages.canvas.placeObject(obj, cursor));
