@@ -123,6 +123,7 @@ export default class Pages {
 
   insertPages = async (index: number, pages: PageJSON[]): Promise<number> => {
     this.pagesJSON.splice(index, 0, ...pages);
+    this.canvas.modified = true;
     return this.loadPage(index);
   };
 }
