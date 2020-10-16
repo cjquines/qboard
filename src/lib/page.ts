@@ -1,5 +1,9 @@
 import { fabric } from "fabric";
 
+export interface ObjectId extends fabric.Object {
+  id: number;
+}
+
 export default class Page extends fabric.Canvas {
   cursor: { x: number; y: number };
   canvasWidth: number;
@@ -46,12 +50,14 @@ export default class Page extends fabric.Canvas {
   getObjectByIds = (ids: number[]): fabric.Object[] => {
     // multiple element case; kind of inefficient
     if (ids.length > 1) {
-      return this.getObjects().filter((object: any) => ids.includes(object.id));
+      return this.getObjects().filter((object: ObjectId) =>
+        ids.includes(object.id)
+      );
     }
     // single element case
-    const id = ids[0];
+    const [id] = ids;
     for (const object of this.getObjects()) {
-      if ((object as any).id === id) {
+      if ((object as ObjectId).id === id) {
         return [object];
       }
     }
@@ -71,7 +77,7 @@ export default class Page extends fabric.Canvas {
     }
     if (newObjects?.length) {
       const addObjects = (objects) => {
-        objects.forEach((object: any, i) => {
+        objects.forEach((object: ObjectId, i) => {
           object.id = ids[i];
         });
         this.add(...objects);
@@ -90,7 +96,10 @@ export default class Page extends fabric.Canvas {
       });
     });
 
-  placeObject = async (obj: any, cursor: any = this.cursor): Promise<any[]> => {
+  placeObject = async (
+    obj: fabric.ActiveSelection,
+    cursor = this.cursor
+  ): Promise<fabric.Object[]> => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
     this.discardActiveObject();
@@ -102,12 +111,12 @@ export default class Page extends fabric.Canvas {
       top: y,
       originX: "center",
       originY: "center",
-    });
+    } as Partial<fabric.ActiveSelection>);
     if (obj._objects) {
       obj.canvas = this;
       obj.forEachObject((object) =>
         this.getNextId().then((id) => {
-          object.id = id;
+          (object as ObjectId).id = id;
           this.add(object);
         })
       );

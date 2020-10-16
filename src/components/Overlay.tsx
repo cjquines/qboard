@@ -30,6 +30,7 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
     QBoardState,
     React.Dispatch<React.SetStateAction<QBoardState>>
   ] = useState<QBoardState>({
+    dragActive: false,
     currentPage: 0,
     totalPages: 0,
     currentTool: Tool.Move,
@@ -78,6 +79,7 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
 
   return (
     <>
+      <div className={`drop-area ${state.dragActive ? "active" : ""}`}></div>
       <div className={`overlay visibility-${visibility}`}>
         <Pagination
           loadPage={qboard.pages.loadPage}

@@ -30,7 +30,6 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-empty-interface": "warn",
     "@typescript-eslint/no-floating-promises": "error",
-    // "@typescript-eslint/no-invalid-this": "error",
     "@typescript-eslint/no-namespace": "error",
     "@typescript-eslint/no-shadow": [
       "warn",
@@ -109,6 +108,9 @@ module.exports = {
       tagNamePreference: {
         returns: "return",
       },
+    },
+    react: {
+      version: "detect",
     },
   },
 };

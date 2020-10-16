@@ -31,6 +31,19 @@
   padding: 0.25em;
 }
 
+.drop-area {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;
+
+  &.active {
+    background: #526e88;
+  }
+}
+
 @import "pagination";
 @import "undoredo";
 @import "toolbar";

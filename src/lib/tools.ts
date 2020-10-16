@@ -62,7 +62,10 @@ export default interface ToolHandler {
     strict: boolean
   ) => Promise<fabric.Object>;
 
-  setBrush?: (brush: any, options: fabric.IObjectOptions) => Promise<void>;
+  setBrush?: (
+    brush: fabric.BaseBrush,
+    options: fabric.IObjectOptions
+  ) => Promise<void>;
 }
 
 export class MoveHandler implements ToolHandler {
@@ -75,7 +78,7 @@ export class PenHandler implements ToolHandler {
   isBrush = true;
 
   setBrush = async (
-    brush: any,
+    brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
   ): Promise<void> => {
     brush.color = options.stroke;
@@ -89,7 +92,7 @@ export class EraserHandler implements ToolHandler {
   isBrush = true;
 
   setBrush = async (
-    brush: any,
+    brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
   ): Promise<void> => {
     brush.color = "#ff005455";
@@ -103,7 +106,7 @@ export class LaserHandler implements ToolHandler {
   isBrush = true;
 
   setBrush = async (
-    brush: any,
+    brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
   ): Promise<void> => {
     brush.color = "#f23523";

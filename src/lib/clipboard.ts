@@ -9,17 +9,17 @@ export default class ClipboardHandler {
   clipboard: fabric.Object;
 
   constructor(
-    public canvas: Page,
-    public pages: Pages,
-    public files: FileHandler,
-    public history: HistoryHandler,
-    public canvasWidth: number,
-    public canvasHeight: number
+      public canvas: Page,
+      public pages: Pages,
+      public files: FileHandler,
+      public history: HistoryHandler,
+      public canvasWidth: number,
+      public canvasHeight: number
   ) {
     window.addEventListener("paste", this.pasteExternal);
   }
 
-  copy = async (): Promise<any> => {
+  copy = async (): Promise<fabric.Object> => {
     const objects: fabric.Object = this.canvas.getActiveObject();
     if (!objects) return null;
     objects.clone((clone) => {
@@ -29,7 +29,7 @@ export default class ClipboardHandler {
   };
 
   cut = async (): Promise<boolean> => {
-    const objects = await this.copy();
+    const objects = (await this.copy()) as fabric.ActiveSelection;
     if (!objects) return false;
     this.canvas.discardActiveObject();
     if (objects.type === "activeSelection") {
@@ -48,14 +48,14 @@ export default class ClipboardHandler {
   paste = async (): Promise<void> => {
     if (!this.clipboard) return;
     return this.clipboard.clone((clone) =>
-      this.canvas.placeObject(clone).then(this.history.add)
+        this.canvas.placeObject(clone).then(this.history.add)
     );
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
     const historyCommand = await this.files.processFiles(
-      e.clipboardData.files,
-      null
+        e.clipboardData.files,
+        null
     );
     await this.history.execute(historyCommand);
     await this.paste();

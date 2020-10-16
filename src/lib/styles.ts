@@ -36,7 +36,7 @@ export default class StyleHandler {
   constructor(
     public currentStyle: Style,
     public drawerOptions: fabric.IObjectOptions,
-    public freeDrawingBrush: any,
+    public freeDrawingBrush: fabric.BaseBrush,
     public updateState: () => void
   ) {}
 
