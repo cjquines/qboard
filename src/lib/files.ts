@@ -39,9 +39,18 @@ export class JSONReader {
 }
 
 export class JSONWriter {
+  private readonly sourceJSON: {
+    version: number;
+    pages: any[];
+  };
   private stringified: string;
 
-  constructor(private sourceJSON: any[]) {}
+  constructor(pagesJSON: any[]) {
+    this.sourceJSON = {
+      version: 1,
+      pages: pagesJSON,
+    };
+  }
 
   toString = (): string => {
     if (this.stringified) return this.stringified;
