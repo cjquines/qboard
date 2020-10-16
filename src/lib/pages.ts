@@ -110,9 +110,12 @@ export default class Pages {
   overwritePages = async (
     pages: PageJSON[] = [defaultPageJSON]
   ): Promise<boolean> => {
-    const response = window.confirm(
-      "Your work will be overwritten. Are you sure you wish to continue?"
-    );
+    const response =
+      !this.canvas.modified ||
+      this.pagesJSON.every((page) => page.objects.length === 0) ||
+      window.confirm(
+        "Your work will be overwritten. Are you sure you wish to continue?"
+      );
     if (!response) return false;
 
     this.pagesJSON = pages;
