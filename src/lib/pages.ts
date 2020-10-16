@@ -11,7 +11,7 @@ export type PageJSON = {
 };
 
 const defaultPageJSON = {
-  version: "3.6.3",
+  version: "4.2.0",
   objects: [],
   background: "white",
 };
