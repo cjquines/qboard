@@ -38,6 +38,27 @@ export class JSONReader {
   }
 }
 
+export class JSONWriter {
+  private stringified: string;
+
+  constructor(private sourceJSON: any[]) {}
+
+  toString = (): string => {
+    if (this.stringified) return this.stringified;
+    this.stringified = JSON.stringify(this.sourceJSON);
+    return this.stringified;
+  };
+
+  toBlob = (): Blob =>
+    new Blob([this.toString()], { type: "application/json" });
+
+  toURL = (): [url: string, revoke: () => void] => {
+    const url = URL.createObjectURL({});
+    const revoke = () => URL.revokeObjectURL(url);
+    return [url, revoke];
+  };
+}
+
 export type FileHandlerResponse = {
   action: "none" | "image" | "json";
   history?: HistoryCommand;

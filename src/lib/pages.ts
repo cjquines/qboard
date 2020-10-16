@@ -1,6 +1,7 @@
 import pdfMake from "pdfmake/build/pdfmake.min";
 
 import Page from "./page";
+import {JSONWriter} from "./files";
 
 const defaultPageJSON = {
   version: "3.6.3",
@@ -85,11 +86,7 @@ export default class Pages {
 
   saveFile = (): void => {
     this.savePage();
-    const fileURL = URL.createObjectURL(
-      new Blob([JSON.stringify(this.pagesJson)], {
-        type: "application/json",
-      })
-    );
+    const [fileURL, revokeURL] = new JSONWriter(this.pagesJson).toURL();
 
     const elt = document.createElement("a");
     elt.style.display = "none";
@@ -99,7 +96,7 @@ export default class Pages {
     elt.click();
     elt.parentElement.removeChild(elt);
 
-    URL.revokeObjectURL(fileURL);
+    revokeURL();
     this.canvas.modified = false;
   };
 
