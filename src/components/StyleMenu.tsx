@@ -9,7 +9,7 @@ import ButtonRow from "./ButtonRow";
 const DashStyle = (props: {
   dashStyle: Dash;
   callback: (action: Action) => Promise<void>;
-  inContext: Boolean;
+  inContext: boolean;
 }) => {
   const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
   const button = (
@@ -90,7 +90,7 @@ const FillStyle = (props: {
 const StyleMenu = (props: {
   currentStyle: Style;
   doAction: (action: Action) => Promise<void>;
-  inContext?: Boolean;
+  inContext?: boolean;
 }) => {
   return (
     <>
