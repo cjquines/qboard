@@ -53,10 +53,7 @@ export default class ClipboardHandler {
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    const historyCommand = await this.files.processFiles(
-      e.clipboardData.files,
-      null
-    );
+    const historyCommand = await this.files.processFiles(e.clipboardData.files);
     await this.history.execute(historyCommand);
     await this.paste();
   };

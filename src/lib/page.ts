@@ -1,5 +1,4 @@
 import { fabric } from "fabric";
-import { Image } from "fabric/fabric-impl";
 
 export interface ObjectId extends fabric.Object {
   id: number;
