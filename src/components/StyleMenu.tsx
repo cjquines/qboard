@@ -31,8 +31,8 @@ const DashStyle = (props: {
 const StrokeStyle = (props: {
   strokeStyle: string;
   callback: (action: Action) => Promise<void>;
-  inContext: Boolean;
-}) => {
+  inContext: boolean;
+}): JSX.Element => {
   const strokes = [
     Action.Black,
     Action.Blue,
@@ -68,8 +68,8 @@ const StrokeStyle = (props: {
 const FillStyle = (props: {
   fillStyle: Fill;
   callback: (action: Action) => Promise<void>;
-  inContext: Boolean;
-}) => {
+  inContext: boolean;
+}): JSX.Element => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
   const button = (
     <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
@@ -91,7 +91,7 @@ const StyleMenu = (props: {
   currentStyle: Style;
   doAction: (action: Action) => Promise<void>;
   inContext?: boolean;
-}) => {
+}): JSX.Element => {
   return (
     <>
       <DashStyle
