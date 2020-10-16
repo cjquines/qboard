@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 
 import { HistoryCommand } from "./history";
-import Pages from "./pages";
+import Pages, { PageJSON } from "./pages";
 
 export class AsyncReader extends Promise<FileReader> {
   constructor(file: File) {
@@ -21,7 +21,7 @@ export class AsyncReader extends Promise<FileReader> {
 // manages version compatibility with old document formats
 // change the signature and usages to accommodate new data; this will fill in sample data for missing fields
 export class JSONReader {
-  static async read(reader: AsyncReader): Promise<any[]> {
+  static async read(reader: AsyncReader): Promise<PageJSON[]> {
     const json = (await reader).result.toString();
     const object = JSON.parse(json);
 
@@ -41,11 +41,11 @@ export class JSONReader {
 export class JSONWriter {
   private readonly sourceJSON: {
     "qboard-version": number;
-    pages: any[];
+    pages: PageJSON[];
   };
   private stringified: string;
 
-  constructor(pagesJSON: any[]) {
+  constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
       "qboard-version": 1,
       pages: pagesJSON,

@@ -137,7 +137,7 @@ export default class QBoard {
     this?.callback?.({
       dragActive: this.dragActive,
       currentPage: this.pages.currentIndex + 1,
-      totalPages: this.pages.pagesJson.length,
+      totalPages: this.pages.pagesJSON.length,
       currentTool: this.currentTool,
       currentStyle: this.currentStyle,
       canUndo: Boolean(this.history.history.length),
