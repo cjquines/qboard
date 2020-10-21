@@ -53,7 +53,7 @@ export class JSONWriter {
   }
 
   toString = (): string => {
-    if (this.stringified) return this.stringified;
+    if (this.stringified !== undefined) return this.stringified;
     this.stringified = JSON.stringify(this.sourceJSON);
     return this.stringified;
   };
