@@ -25,9 +25,6 @@ export class JSONReader {
     const json = (await reader).result.toString();
     const object = JSON.parse(json);
 
-    // V0
-    if (Array.isArray(object)) return object;
-
     const { "qboard-version": version, pages } = object;
     switch (version) {
       case 1:
