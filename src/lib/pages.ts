@@ -10,7 +10,7 @@ export type PageJSON = {
   background: string;
 };
 
-const defaultPageJSON = {
+const defaultPageJSON: PageJSON = {
   version: "4.2.0",
   objects: [],
   background: "white",
