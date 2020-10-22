@@ -2,6 +2,7 @@ import { fabric } from "fabric";
 
 import { Tool } from "./tools";
 import Pages from "./pages";
+import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
@@ -82,6 +83,7 @@ export default class ActionHandler {
     public switchTool: (tool: Tool) => Promise<void>,
     public currentStyle: Style,
     public pages: Pages,
+    public files: FileHandler,
     public history: HistoryHandler,
     public clipboard: ClipboardHandler,
     public setStyle: (
@@ -100,7 +102,7 @@ export default class ActionHandler {
       undo: history.undo,
       redo: history.redo,
 
-      open: pages.openFile,
+      open: files.openFile,
       save: pages.saveFile,
       export: pages.export,
       cut: clipboard.cut,

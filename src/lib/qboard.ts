@@ -3,6 +3,7 @@ import { fabric } from "fabric";
 import ToolHandler, { Handlers, Tool } from "./tools";
 import Page, { ObjectId } from "./page";
 import Pages from "./pages";
+import FileHandler from "./files";
 import HistoryHandler from "./history";
 import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
@@ -24,6 +25,7 @@ export default class QBoard {
   baseCanvas: Page;
   canvas: Page;
   pages: Pages;
+  files: FileHandler;
   history: HistoryHandler;
   clipboard: ClipboardHandler;
   style: StyleHandler;
@@ -76,7 +78,7 @@ export default class QBoard {
       this.canvasHeight,
       this.updateState
     );
-
+    this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
@@ -85,6 +87,7 @@ export default class QBoard {
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
       this.pages,
+      this.files,
       this.history,
       this.canvasWidth,
       this.canvasHeight
@@ -99,6 +102,7 @@ export default class QBoard {
       this.switchTool,
       this.currentStyle,
       this.pages,
+      this.files,
       this.history,
       this.clipboard,
       this.style.set
@@ -133,7 +137,7 @@ export default class QBoard {
     this?.callback?.({
       dragActive: this.dragActive,
       currentPage: this.pages.currentIndex + 1,
-      totalPages: this.pages.pagesJson.length,
+      totalPages: this.pages.pagesJSON.length,
       currentTool: this.currentTool,
       currentStyle: this.currentStyle,
       canUndo: Boolean(this.history.history.length),
@@ -215,7 +219,8 @@ export default class QBoard {
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
     this.setDragActive(false);
-    const historyCommand = await this.pages.processFiles(
+
+    const historyCommand = await this.files.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files
     );
     await this.history.execute(historyCommand);

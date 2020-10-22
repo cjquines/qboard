@@ -97,7 +97,7 @@ export default class Page extends fabric.Canvas {
     });
 
   placeObject = async (
-    obj: fabric.ActiveSelection,
+    obj: any,
     cursor = this.cursor
   ): Promise<fabric.Object[]> => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
