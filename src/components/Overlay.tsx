@@ -79,7 +79,7 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
 
   return (
     <>
-      <div className={`drop-area ${state.dragActive ? "active" : ""}`}></div>
+      <div className={`drop-area ${state.dragActive ? "active" : ""}`} />
       <div className={`overlay visibility-${visibility}`}>
         <Pagination
           loadPage={qboard.pages.loadPage}
