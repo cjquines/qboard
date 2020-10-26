@@ -10,8 +10,8 @@ export type PageJSON = {
   background: string;
 };
 
-const defaultPageJSON = {
-  version: "3.6.3",
+const defaultPageJSON: PageJSON = {
+  version: "4.2.0",
   objects: [],
   background: "white",
 };
@@ -68,7 +68,7 @@ export default class Pages {
     this.savePage();
     const ratio = 2;
     const content = [];
-    const currentindexcopy = this.currentIndex;
+    const currentIndexCopy = this.currentIndex;
     for (const page of this.pagesJSON) {
       await this.canvas.loadFromJSONAsync(page);
       content.push({
@@ -88,7 +88,7 @@ export default class Pages {
 
     pdfMake.createPdf(docDefinition).download();
 
-    await this.canvas.loadFromJSONAsync(this.pagesJSON[currentindexcopy]);
+    await this.canvas.loadFromJSONAsync(this.pagesJSON[currentIndexCopy]);
   };
 
   saveFile = (): void => {
@@ -110,9 +110,12 @@ export default class Pages {
   overwritePages = async (
     pages: PageJSON[] = [defaultPageJSON]
   ): Promise<boolean> => {
-    const response = window.confirm(
-      "Your work will be overwritten. Are you sure you wish to continue?"
-    );
+    const response =
+      !this.canvas.modified ||
+      this.pagesJSON.every((page) => page.objects.length === 0) ||
+      window.confirm(
+        "Your work will be overwritten. Are you sure you wish to continue?"
+      );
     if (!response) return false;
 
     this.pagesJSON = pages;

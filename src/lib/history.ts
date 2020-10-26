@@ -95,10 +95,7 @@ export default class HistoryHandler {
     this.locked = true;
     const last = from.pop();
     await this.pages.loadPage(last.page);
-    await this.canvas.apply(
-      last.ids,
-      isUndo ? last.oldObjects : last.newObjects
-    );
+    this.canvas.apply(last.ids, isUndo ? last.oldObjects : last.newObjects);
     to.push(last);
     this.locked = false;
     this.canvas.modified = true;

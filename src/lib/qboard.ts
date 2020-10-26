@@ -140,8 +140,8 @@ export default class QBoard {
       totalPages: this.pages.pagesJSON.length,
       currentTool: this.currentTool,
       currentStyle: this.currentStyle,
-      canUndo: Boolean(this.history.history.length),
-      canRedo: Boolean(this.history.redoStack.length),
+      canUndo: this.history.history.length > 0,
+      canRedo: this.history.redoStack.length > 0,
       keyMap: this.keyboard.keyMap,
     });
   };
@@ -232,7 +232,7 @@ export default class QBoard {
       await this.history.add([e.path]);
     } else if (this.currentTool === Tool.Eraser) {
       const path = fabric.util.object.clone(e.path);
-      await this.baseCanvas.remove(e.path);
+      this.baseCanvas.remove(e.path);
       const objects = this.baseCanvas
         .getObjects()
         .filter((object) => object.intersectsWithObject(path));
@@ -241,7 +241,7 @@ export default class QBoard {
       await this.history.remove(objects);
     } else if (this.currentTool === Tool.Laser) {
       setTimeout(async () => {
-        await this.baseCanvas.remove(e.path);
+        this.baseCanvas.remove(e.path);
         this.baseCanvas.requestRenderAll();
       }, 1000);
     }

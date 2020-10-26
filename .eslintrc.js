@@ -27,6 +27,7 @@ module.exports = {
   plugins: ["react", "prettier", "@typescript-eslint", "import"],
   rules: {
     "@typescript-eslint/adjacent-overload-signatures": "error",
+    "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-empty-interface": "warn",
     "@typescript-eslint/no-floating-promises": "error",
