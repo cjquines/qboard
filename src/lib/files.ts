@@ -3,27 +3,33 @@ import { fabric } from "fabric";
 import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
 
-export class AsyncReader extends Promise<FileReader> {
-  constructor(file: File) {
-    if (file instanceof File)
-      super((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          resolve(reader);
-        };
-        reader.onerror = reject;
-        reader.readAsText(file);
-      });
-    else super(file);
-  }
+export class AsyncReader {
+  static readAsText = (file: File): Promise<string | ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+
+  static readAsDataURL = (file: File): Promise<string | ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 }
 
 // manages version compatibility with old document formats
 // change the signature and usages to accommodate new data; this will fill in sample data for missing fields
 export class JSONReader {
-  static async read(reader: AsyncReader): Promise<PageJSON[]> {
-    const json = (await reader).result.toString();
-    const object = JSON.parse(json);
+  static async read(json: Promise<string | ArrayBuffer>): Promise<PageJSON[]> {
+    const object = JSON.parse((await json).toString());
 
     const { "qboard-version": version, pages } = object;
     switch (version) {
@@ -116,20 +122,21 @@ export default class FileHandler {
   openFile = async (file: File): Promise<boolean> => {
     this.pages.savePage();
     return this.pages.overwritePages(
-      await JSONReader.read(new AsyncReader(file))
+      await JSONReader.read(AsyncReader.readAsText(file))
     );
   };
 
   private handleImage = async (file: File, cursor): Promise<fabric.Object[]> =>
-    new Promise<fabric.Object[]>((resolve) => {
-      const fileURL = window.URL.createObjectURL(file);
-      fabric.Image.fromURL(fileURL, (obj: fabric.Image) => {
-        resolve(this.pages.canvas.placeObject(obj, cursor));
-      });
-    });
+    new Promise<fabric.Object[]>((resolve) =>
+      AsyncReader.readAsDataURL(file).then((result) =>
+        fabric.Image.fromURL(result.toString(), (obj: fabric.Image) => {
+          resolve(this.pages.canvas.placeObject(obj, cursor));
+        })
+      )
+    );
 
   private handleJSON = async (file: File): Promise<number> => {
-    const pages = await JSONReader.read(new AsyncReader(file));
+    const pages = await JSONReader.read(AsyncReader.readAsText(file));
     return this.pages.insertPages(this.pages.currentIndex + 1, pages);
   };
 }
