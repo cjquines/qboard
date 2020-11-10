@@ -111,6 +111,9 @@ export default class FileHandler {
         history: { clear: [true] },
       };
     }
+
+    // unsupported file
+    return { action: "none" };
   };
 
   openFile = async (file: File): Promise<boolean> => {
