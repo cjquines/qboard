@@ -5,7 +5,5 @@
     "target": "ES2019",
     "moduleResolution": "Node"
   },
-  "include": [
-    "./src/**/*"
-  ]
+  "include": ["./src/**/*"]
 }
