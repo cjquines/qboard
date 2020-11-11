@@ -43,7 +43,10 @@
   "bugs": {
     "url": "https://github.com/cjquines/qboard/issues"
   },
-  "author": "cjquines",
+  "author": {
+    "name": "cjquines",
+    "url": "https://cjquines.com"
+  },
   "contributors": [
     {
       "name": "Avi Mehra",
