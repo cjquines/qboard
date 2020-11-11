@@ -30,3 +30,4 @@ jobs:
           prettier: true
           prettier_extensions: html,json,md,vue,yaml,yml # Only run on extensions not part of ESLint config
           stylelint: true
+          stylelint_extensions: css,scss,sass
