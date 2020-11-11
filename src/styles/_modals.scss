@@ -29,9 +29,12 @@
     margin: 0 0.25em;
     width: initial;
 
-    &:hover,
     &.active {
-      background: #bbb;
+      background: #c4c4c4;
+    }
+
+    &:hover {
+      background: #b0b0b0;
     }
   }
 

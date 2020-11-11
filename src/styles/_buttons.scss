@@ -14,9 +14,12 @@ button {
   vertical-align: baseline;
   width: 1.5em;
 
-  &.active,
+  &.active {
+    background-color: #aaa8;
+  }
+
   &:hover {
-    background-color: #aaa9;
+    background-color: #aaad;
   }
 
   &.disabled {
