@@ -29,9 +29,9 @@ There are also keybindings with Shift and Ctrl, which you can view in-app.
 Other neat things you can do:
 
 - Hit the save button to save to a PDF.
-The export button exports to a JSON file, which you can later open and edit.
+  The export button exports to a JSON file, which you can later open and edit.
 - Hit Ctrl+V to paste images from the system clipboard.
-You can also drag images to the board.
+  You can also drag images to the board.
 - Right-clicking to bring up a context menu to change the style.
 
 ## Design principles
@@ -42,21 +42,21 @@ It should also be easy to share what you've written afterward as a PDF.
 This guides some of its principles:
 
 - It should be possible to do everything that isn't drawing just with keys.
-Ideally, only with the keys on one half of the keyboard, to make presentations flow smoothly.
-You shouldn't need to move your mouse all the way to the left to change tools, or to move your hand to the right to switch to the pen tool.
+  Ideally, only with the keys on one half of the keyboard, to make presentations flow smoothly.
+  You shouldn't need to move your mouse all the way to the left to change tools, or to move your hand to the right to switch to the pen tool.
 - By default, it has pages, rather than extending in different directions.
-It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
+  It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
 - Pages are fixed at a 16:9 ratio, so when they're later saved to a PDF, it's in the same dimensions as a slideshow.
 
 There are _some_ sense to the default keybindings:
 
 - The three keys I use the most are on F, D, and S.
-A is assigned to make sense with S, and Shift + F to make sense with F.
+  A is assigned to make sense with S, and Shift + F to make sense with F.
 - I tend to switch between colors and back while presenting, hence the E and R bindings.
 - Imitating vim, X is like delete, which both cuts and erases.
 - Ellipse and Rectangle start with E and R, while V is Move in Photoshop too.
 - Q, A, and Z control stroke style, and W, S, and X control fill style.
-They form a column, going from "least" to "most".
+  They form a column, going from "least" to "most".
 - The Ctrl keybindings are pretty universal, except maybe D, for Duplicate.
 
 Although initially designed for giving lectures, the whiteboard controls are pretty good.
