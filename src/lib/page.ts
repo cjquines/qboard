@@ -4,8 +4,10 @@ export interface ObjectId extends fabric.Object {
   id: number;
 }
 
+export type Cursor = { x: number; y: number };
+
 export default class Page extends fabric.Canvas {
-  cursor: { x: number; y: number };
+  cursor: Cursor;
   canvasWidth: number;
   canvasHeight: number;
   latestId = 0;
@@ -65,9 +67,7 @@ export default class Page extends fabric.Canvas {
   };
 
   serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
-    return objects.map((object) =>
-      (this as any)._toObject(object, "toObject", ["strokeUniform"])
-    );
+    return objects.map((object) => object.toObject(["strokeUniform"]));
   };
 
   apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
@@ -98,7 +98,7 @@ export default class Page extends fabric.Canvas {
 
   placeObject = async (
     obj: any,
-    cursor = this.cursor
+    cursor: Cursor = this.cursor
   ): Promise<fabric.Object[]> => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
@@ -115,8 +115,8 @@ export default class Page extends fabric.Canvas {
     if (obj._objects) {
       obj.canvas = this;
       obj.forEachObject((object) =>
-        this.getNextId().then((id) => {
-          (object as ObjectId).id = id;
+        this.getNextId().then((id_) => {
+          (object as ObjectId).id = id_;
           this.add(object);
         })
       );

@@ -29,9 +29,12 @@
     margin: 0 0.25em;
     width: initial;
 
-    &:hover,
     &.active {
-      background: #bbb;
+      background: #c4c4c4;
+    }
+
+    &:hover {
+      background: #b0b0b0;
     }
   }
 
@@ -63,7 +66,7 @@
   top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
 
   &.help-modal {
-    --height: 29em;
+    --height: 29.5em;
 
     --width: 38em;
     background: #f8f8f8;

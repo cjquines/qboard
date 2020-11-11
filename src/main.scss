@@ -1,35 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
 
-@media all and (min-width: 760px) {
-  body {
-    font-size: 20px;
-  }
-}
-
-$font-sizes: 760px 19px,
-  720px 18px,
-  680px 17px,
-  640px 16px,
-  600px 15px,
-  560px 14px,
-  520px 13px,
-  400px 12px,
-  360px 11px,
-  330px 10px,
-  300px 9px;
-
-@each $width, $size in $font-sizes {
-  @media all and (max-width: $width) {
-    body {
-      font-size: $size;
-    }
-  }
-}
-
 body {
   background-color: #262626;
   color: #262626;
-  font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Verdana", sans-serif;
+  font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
+    "Verdana", sans-serif;
+  font-size: 12px;
+  font-size: clamp(9px, 2.4vw, 20px);
   margin: 0;
   padding: 0;
 }

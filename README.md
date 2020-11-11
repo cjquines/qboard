@@ -16,8 +16,8 @@ X is Cut when there's something selected, and Eraser when nothing is selected. T
 
 There are also keybindings with Shift and Ctrl, which you can view in-app. Other neat things you can do:
 
-- Hit the save button to save to a PDF.
-- Hit Ctrl+V to paste images from the system clipboard.
+- Hit the save button to save to a PDF. The export button exports to a JSON file, which you can later open and edit.
+- Hit Ctrl+V to paste images from the system clipboard. You can also drag images to the board.
 - Right-clicking to bring up a context menu to change the style.
 
 ## Design principles

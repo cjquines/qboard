@@ -186,7 +186,7 @@ export default class QBoard {
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
     (this.currentObject as ObjectId).id = await this.baseCanvas.getNextId();
-    await this.canvas.add(this.currentObject);
+    this.canvas.add(this.currentObject);
     this.canvas.requestRenderAll();
   };
 
@@ -202,9 +202,9 @@ export default class QBoard {
     if (!this.tool.draw) return;
 
     this.isDown = false;
-    await this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
+    this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
     this.baseCanvas.requestRenderAll();
-    await this.canvas.remove(this.currentObject);
+    this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     await this.history.add([this.currentObject]);
   };
