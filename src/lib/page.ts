@@ -115,8 +115,8 @@ export default class Page extends fabric.Canvas {
     if (obj._objects) {
       obj.canvas = this;
       obj.forEachObject((object) =>
-        this.getNextId().then((id) => {
-          (object as ObjectId).id = id;
+        this.getNextId().then((id_) => {
+          (object as ObjectId).id = id_;
           this.add(object);
         })
       );

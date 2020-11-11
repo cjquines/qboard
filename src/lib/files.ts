@@ -65,7 +65,7 @@ export class JSONWriter {
   toBlob = (): Blob =>
     new Blob([this.toString()], { type: "application/json" });
 
-  toURL = (): [url: string, revoke: () => void] => {
+  toURL = (): [string, () => void] => {
     const url = window.URL.createObjectURL(this.toBlob());
     const revoke = () => window.URL.revokeObjectURL(url);
     return [url, revoke];
