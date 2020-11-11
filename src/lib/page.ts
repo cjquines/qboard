@@ -4,8 +4,10 @@ export interface ObjectId extends fabric.Object {
   id: number;
 }
 
+export type Cursor = { x: number; y: number };
+
 export default class Page extends fabric.Canvas {
-  cursor: { x: number; y: number };
+  cursor: Cursor;
   canvasWidth: number;
   canvasHeight: number;
   latestId = 0;
@@ -98,7 +100,7 @@ export default class Page extends fabric.Canvas {
 
   placeObject = async (
     obj: any,
-    cursor = this.cursor
+    cursor: Cursor = this.cursor
   ): Promise<fabric.Object[]> => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
