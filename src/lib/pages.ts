@@ -16,6 +16,14 @@ const defaultPageJSON: PageJSON = {
   background: "white",
 };
 
+const timeString = (): string => {
+  const offset = new Date().getTimezoneOffset() * 60000;
+  return new Date(Date.now() - offset)
+    .toISOString()
+    .slice(0, -8)
+    .replace(/\D/g, "-");
+};
+
 export default class Pages {
   pagesJSON: PageJSON[] = [defaultPageJSON];
   currentIndex = 0;
@@ -86,7 +94,7 @@ export default class Pages {
       content,
     };
 
-    pdfMake.createPdf(docDefinition).download();
+    pdfMake.createPdf(docDefinition).download(`qboard-${timeString()}.pdf`);
 
     await this.canvas.loadFromJSONAsync(this.pagesJSON[currentIndexCopy]);
   };
@@ -98,7 +106,7 @@ export default class Pages {
     const elt = document.createElement("a");
     elt.style.display = "none";
     elt.href = fileURL;
-    elt.download = "file.json";
+    elt.download = `qboard-${timeString()}.json`;
     document.body.appendChild(elt);
     elt.click();
     elt.parentElement.removeChild(elt);
