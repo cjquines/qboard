@@ -67,9 +67,7 @@ export default class Page extends fabric.Canvas {
   };
 
   serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
-    return objects.map((object) =>
-      (this as any)._toObject(object, "toObject", ["strokeUniform"])
-    );
+    return objects.map((object) => object.toObject(["strokeUniform"]));
   };
 
   apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
