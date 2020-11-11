@@ -28,7 +28,7 @@ export default class HistoryHandler {
     public updateState: () => void
   ) {}
 
-  execute = async (command: HistoryCommand): Promise<void[]> => {
+  execute = async (command: HistoryCommand = {}): Promise<void[]> => {
     if (command.clear) this.clear(command.clear[0]);
     const actions: Promise<void>[] = [
       this.add(command.add),
