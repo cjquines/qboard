@@ -6,7 +6,6 @@
     "moduleResolution": "Node"
   },
   "include": [
-    "./src/**/*",
-    "./.eslintrc.js"
+    "./src/**/*"
   ]
 }

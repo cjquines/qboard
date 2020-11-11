@@ -16,7 +16,7 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "tsconfig.json",
+    project: "./tsconfig.json",
     ecmaVersion: 2019,
     sourceType: "module",
     jsx: true,
@@ -114,4 +114,5 @@ module.exports = {
       version: "detect",
     },
   },
+  ignorePatterns: ["nwb.config.js", ".eslintrc.js"],
 };
