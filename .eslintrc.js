@@ -14,6 +14,7 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
   ],
+  ignorePatterns: ["nwb.config.js", ".eslintrc.js"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.json",
@@ -114,5 +115,4 @@ module.exports = {
       version: "detect",
     },
   },
-  ignorePatterns: ["nwb.config.js", ".eslintrc.js"],
 };
