@@ -88,6 +88,7 @@ module.exports = {
     "no-void": "warn",
     "prefer-const": "warn",
     "prefer-destructuring": "warn",
+    "prefer-template": "warn",
     "prettier/prettier": [
       "error",
       {
