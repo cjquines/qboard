@@ -1,6 +1,7 @@
 module.exports = {
   type: "react-app",
   webpack: {
+    publicPath: "",
     config(config) {
       config.entry = "./src/index.js";
       config.resolve.extensions = [".ts", ".tsx", ".js", ".jsx"];
