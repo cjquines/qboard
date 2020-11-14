@@ -95,13 +95,7 @@ export default class Pages {
 
   saveFile = (): void => {
     this.savePage();
-    const [fileURL, revokeURL] = new JSONWriter(this.pagesJSON).toURL();
-
-    new FileUI().download(
-      `qboard-${FileUI.timeString()}.json`,
-      fileURL,
-      revokeURL
-    );
+    new JSONWriter(this.pagesJSON).download();
     this.canvas.modified = false;
   };
 

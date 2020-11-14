@@ -73,6 +73,16 @@ export class JSONWriter {
     const revoke = () => window.URL.revokeObjectURL(url);
     return [url, revoke];
   };
+
+  download = (): void => {
+    const [fileURL, revokeURL] = this.toURL();
+
+    new FileUI().download(
+      `qboard-${FileUI.timeString()}.json`,
+      fileURL,
+      revokeURL
+    );
+  };
 }
 
 export class FileUI {
