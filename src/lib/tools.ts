@@ -226,7 +226,7 @@ export class EllipseHandler implements ToolHandler {
     this.x = x;
     this.y = y;
 
-    return new fabric.Ellipse({ left: x, top: y, rx: x2, ry: y2, ...options });
+    return new fabric.Ellipse({ ...options, left: x, top: y, rx: x2, ry: y2 });
   };
 
   resize = (
