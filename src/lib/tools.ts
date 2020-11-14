@@ -1,37 +1,39 @@
 import { fabric } from "fabric";
 
-// projects the point x2, y2 to the vector with origin ox, oy and direction vx, vy. returns the square distance and the coordinates of the projection.
-const project = (
-  ox: number,
-  oy: number,
-  vx: number,
-  vy: number,
-  x2: number,
-  y2: number
-): number[] => {
-  const x = x2 - ox;
-  const y = y2 - oy;
-  const side = vx * y - vy * x;
-  const sq = vx * vx + vy * vy;
-  return [
-    Math.abs(side) / sq,
-    ox + x + (vy * side) / sq,
-    oy + y - (vx * side) / sq,
-  ];
-};
+class Behaviors {
+  // given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
+  static rectify = (
+    dirs: number[][],
+    x: number,
+    y: number,
+    x2: number,
+    y2: number
+  ): number[] => {
+    return dirs
+      .map((d) => Behaviors.project(x, y, d[0], d[1], x2, y2))
+      .reduce((acc, cur) => (acc[0] < cur[0] ? acc : cur));
+  };
 
-// given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
-const rectify = (
-  dirs: number[][],
-  x: number,
-  y: number,
-  x2: number,
-  y2: number
-): number[] => {
-  return dirs
-    .map((d) => project(x, y, d[0], d[1], x2, y2))
-    .reduce((acc, cur) => (acc[0] < cur[0] ? acc : cur));
-};
+  // projects the point x2, y2 to the vector with origin ox, oy and direction vx, vy. returns the square distance and the coordinates of the projection.
+  private static project = (
+    ox: number,
+    oy: number,
+    vx: number,
+    vy: number,
+    x2: number,
+    y2: number
+  ): number[] => {
+    const x = x2 - ox;
+    const y = y2 - oy;
+    const side = vx * y - vy * x;
+    const sq = vx * vx + vy * vy;
+    return [
+      Math.abs(side) / sq,
+      ox + x + (vy * side) / sq,
+      oy + y - (vx * side) / sq,
+    ];
+  };
+}
 
 export const enum Tool {
   Move,
@@ -156,7 +158,7 @@ export class LineHandler implements ToolHandler {
   ): Promise<fabric.Line> => {
     let [x, y] = [x2, y2];
     if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
+      [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object.set({ x2: x, y2: y }).setCoords();
     return new Promise<fabric.Line>((resolve) => {
@@ -201,7 +203,7 @@ export class RectangleHandler implements ToolHandler {
   ): Promise<fabric.Rect> => {
     let [x, y] = [x2, y2];
     if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
+      [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object
       .set({
@@ -255,7 +257,7 @@ export class EllipseHandler implements ToolHandler {
     let [x, y] = [x2, y2];
 
     if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
+      [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object
       .set({
