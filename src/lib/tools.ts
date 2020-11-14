@@ -266,9 +266,7 @@ export class EllipseHandler implements ToolHandler {
       })
       .setCoords();
 
-    return new Promise<fabric.Ellipse>((resolve) => {
-      resolve(object);
-    });
+    return object;
   };
 }
 
