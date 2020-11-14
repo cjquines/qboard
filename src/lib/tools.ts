@@ -140,13 +140,9 @@ export class LineHandler implements ToolHandler {
     this.x = x;
     this.y = y;
 
-    return new Promise<fabric.Line>((resolve) => {
-      resolve(
-        new fabric.Line([x, y, x2, y2], {
-          ...options,
-          perPixelTargetFind: true,
-        })
-      );
+    return new fabric.Line([x, y, x2, y2], {
+      ...options,
+      perPixelTargetFind: true,
     });
   };
 
@@ -161,9 +157,7 @@ export class LineHandler implements ToolHandler {
       [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
     }
     object.set({ x2: x, y2: y }).setCoords();
-    return new Promise<fabric.Line>((resolve) => {
-      resolve(object);
-    });
+    return object;
   };
 }
 
@@ -188,10 +182,12 @@ export class RectangleHandler implements ToolHandler {
     this.x = x;
     this.y = y;
 
-    return new Promise<fabric.Rect>((resolve) => {
-      resolve(
-        new fabric.Rect({ left: x, top: y, width: x2, height: y2, ...options })
-      );
+    return new fabric.Rect({
+      left: x,
+      top: y,
+      width: x2,
+      height: y2,
+      ...options,
     });
   };
 
@@ -214,9 +210,7 @@ export class RectangleHandler implements ToolHandler {
       })
       .setCoords();
 
-    return new Promise<fabric.Rect>((resolve) => {
-      resolve(object);
-    });
+    return object;
   };
 }
 
@@ -241,11 +235,7 @@ export class EllipseHandler implements ToolHandler {
     this.x = x;
     this.y = y;
 
-    return new Promise<fabric.Ellipse>((resolve) => {
-      resolve(
-        new fabric.Ellipse({ left: x, top: y, rx: x2, ry: y2, ...options })
-      );
-    });
+    return new fabric.Ellipse({ left: x, top: y, rx: x2, ry: y2, ...options });
   };
 
   resize = async (
