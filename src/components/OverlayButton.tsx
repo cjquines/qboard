@@ -13,7 +13,7 @@ const OverlayButton = (props: {
   return (
     <>
       <button
-        className={props.className || undefined}
+        className={props.className }
         data-tip
         data-for={props.action}
         onClick={() => props.callback(props.action)}
