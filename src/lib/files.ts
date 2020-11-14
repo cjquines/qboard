@@ -75,6 +75,28 @@ export class JSONWriter {
   };
 }
 
+export class FileUI {
+  static timeString = (): string => {
+    const offset = new Date().getTimezoneOffset() * 60000;
+    return new Date(Date.now() - offset)
+      .toISOString()
+      .slice(0, -8)
+      .replace(/\D/g, "-");
+  };
+
+  download = (name: string, fileURL: string, revokeURL = (): void => {}) => {
+    const elt = document.createElement("a");
+    elt.style.display = "none";
+    elt.href = fileURL;
+    elt.download = name;
+    document.body.appendChild(elt);
+    elt.click();
+    elt.parentElement.removeChild(elt);
+
+    revokeURL();
+  };
+}
+
 export type FileHandlerResponse = {
   action: "none" | "image" | "json";
   history?: HistoryCommand;
