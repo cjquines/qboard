@@ -35,6 +35,7 @@ export class JSONReader {
     const { "qboard-version": version, pages } = object;
     switch (version) {
       case 1:
+      case 2:
         return pages;
       default:
         return pages;
@@ -52,7 +53,7 @@ export class JSONWriter {
 
   constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
-      "qboard-version": 1,
+      "qboard-version": 2,
       pages: pagesJSON,
       "exported-date": new Date(), // this date is only parsed once per new JSONWriter()
     };
