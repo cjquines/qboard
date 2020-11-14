@@ -87,11 +87,14 @@ export class JSONWriter {
 
 export class FileUI {
   static timeString = (): string => {
-    const offset = new Date().getTimezoneOffset() * 60000;
-    return new Date(Date.now() - offset)
-      .toISOString()
-      .slice(0, -8)
-      .replace(/\D/g, "-");
+    const date = new Date();
+    return [
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+    ].join("-");
   };
 
   download = (name: string, fileURL: string, revokeURL = (): void => {}) => {
