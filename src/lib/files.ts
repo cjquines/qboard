@@ -46,6 +46,7 @@ export class JSONWriter {
   private readonly sourceJSON: {
     "qboard-version": number;
     pages: PageJSON[];
+    "exported-date": Date;
   };
   private stringified: string;
 
@@ -53,6 +54,7 @@ export class JSONWriter {
     this.sourceJSON = {
       "qboard-version": 1,
       pages: pagesJSON,
+      "exported-date": new Date(), // this date is only parsed once per new JSONWriter()
     };
   }
 
