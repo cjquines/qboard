@@ -35,50 +35,50 @@ class Behaviors {
   };
 }
 
-export const enum Tool {
-  Move,
-  Pen,
-  Eraser,
-  Laser,
-  Line,
-  Rectangle,
-  Ellipse,
-}
-
-export default interface ToolHandler {
-  tool: Tool;
+export class ToolHandler {
   isBrush: boolean;
-
-  draw?: (
+  readonly isDrawing: boolean;
+  readonly requiresBase: boolean;
+  draw: (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
   ) => fabric.Object | Promise<fabric.Object>;
-
-  resize?: (
+  resize: (
     object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
   ) => fabric.Object | Promise<fabric.Object>;
+  private active: boolean;
 
-  setBrush?: (
+  constructor(protected baseCanvas, protected history, protected clipboard) {}
+
+  setBrush: (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
-  ) => void | Promise<void>;
+  ) => void | Promise<void> = () => {};
+
+  pathCreated: (e: any) => void | Promise<void> = () => {};
+  activate: () => boolean | Promise<boolean> = () => (this.active = true);
+  deactivate: () => void = () => (this.active = false);
+  isActive = () => this.active;
 }
 
-export class MoveHandler implements ToolHandler {
-  tool: Tool = Tool.Move;
+export class MoveHandler extends ToolHandler {
   isBrush = false;
+  requiresBase = true;
 }
 
-export class PenHandler implements ToolHandler {
-  tool: Tool = Tool.Pen;
+export class PenHandler extends ToolHandler {
   isBrush = true;
 
+  pathCreated = async (e: any) => {
+    e.path.id = await this.baseCanvas.getNextId();
+    return this.history.add([e.path]);
+  };
   setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
@@ -86,21 +86,38 @@ export class PenHandler implements ToolHandler {
   };
 }
 
-export class EraserHandler implements ToolHandler {
-  tool: Tool = Tool.Eraser;
+export class EraserHandler extends ToolHandler {
   isBrush = true;
+
+  pathCreated = async (e: any) => {
+    const path = fabric.util.object.clone(e.path);
+    this.baseCanvas.remove(e.path);
+    const objects = this.baseCanvas
+      .getObjects()
+      .filter((object) => object.intersectsWithObject(path));
+    if (!objects.length) return;
+    this.baseCanvas.remove(...objects);
+    await this.history.remove(objects);
+  };
 
   setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
   };
+
+  activate = async () => (await this.clipboard.cut()) && super.activate();
 }
 
-export class LaserHandler implements ToolHandler {
-  tool: Tool = Tool.Laser;
+export class LaserHandler extends ToolHandler {
   isBrush = true;
 
+  pathCreated = (e: any) => {
+    setTimeout(async () => {
+      this.baseCanvas.remove(e.path);
+      this.baseCanvas.requestRenderAll();
+    }, 1000);
+  };
   setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
@@ -108,8 +125,7 @@ export class LaserHandler implements ToolHandler {
   };
 }
 
-export class LineHandler implements ToolHandler {
-  tool: Tool = Tool.Line;
+export class LineHandler extends ToolHandler {
   isBrush = false;
   x: number;
   y: number;
@@ -152,8 +168,7 @@ export class LineHandler implements ToolHandler {
   };
 }
 
-export class RectangleHandler implements ToolHandler {
-  tool: Tool = Tool.Rectangle;
+export class RectangleHandler extends ToolHandler {
   isBrush = false;
   x: number;
   y: number;
@@ -205,8 +220,7 @@ export class RectangleHandler implements ToolHandler {
   };
 }
 
-export class EllipseHandler implements ToolHandler {
-  tool: Tool = Tool.Ellipse;
+export class EllipseHandler extends ToolHandler {
   isBrush = false;
   x: number;
   y: number;
@@ -253,12 +267,14 @@ export class EllipseHandler implements ToolHandler {
   };
 }
 
-export const Handlers = [
-  new MoveHandler(),
-  new PenHandler(),
-  new EraserHandler(),
-  new LaserHandler(),
-  new LineHandler(),
-  new RectangleHandler(),
-  new EllipseHandler(),
-];
+export default class Handlers {
+  static from = (baseCanvas, history, clipboard) => ({
+    Move: new MoveHandler(baseCanvas, history, clipboard),
+    Pen: new PenHandler(baseCanvas, history, clipboard),
+    Eraser: new EraserHandler(baseCanvas, history, clipboard),
+    Laser: new LaserHandler(baseCanvas, history, clipboard),
+    Line: new LineHandler(baseCanvas, history, clipboard),
+    Rectangle: new RectangleHandler(baseCanvas, history, clipboard),
+    Ellipse: new EllipseHandler(baseCanvas, history, clipboard),
+  });
+}

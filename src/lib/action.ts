@@ -1,11 +1,12 @@
 import { fabric } from "fabric";
 
-import { Tool } from "./tools";
+import Handlers, { ToolHandler } from "./tools";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
+import Page from "./page";
 
 export enum Action {
   PreviousPage = "previousPage",
@@ -80,8 +81,9 @@ export default class ActionHandler {
   actionMap: unknown;
 
   constructor(
-    public switchTool: (tool: Tool) => Promise<void>,
+    public switchTool: (tool: ToolHandler) => Promise<void>,
     public currentStyle: Style,
+    private baseCanvas: Page,
     public pages: Pages,
     public files: FileHandler,
     public history: HistoryHandler,
@@ -93,7 +95,7 @@ export default class ActionHandler {
     ) => void
   ) {
     this.canvas = this.pages.canvas;
-
+    const handlers = Handlers.from(baseCanvas, history, clipboard);
     this.actionMap = {
       previousPage: pages.previousPage,
       nextPage: pages.nextOrNewPage,
@@ -124,13 +126,13 @@ export default class ActionHandler {
       },
       duplicate: () => this.clipboard.copy().then(() => this.clipboard.paste()),
 
-      move: () => this.switchTool(Tool.Move),
-      pen: () => this.switchTool(Tool.Pen),
-      eraser: () => this.switchTool(Tool.Eraser),
-      laser: () => this.switchTool(Tool.Laser),
-      line: () => this.switchTool(Tool.Line),
-      ellipse: () => this.switchTool(Tool.Ellipse),
-      rectangle: () => this.switchTool(Tool.Rectangle),
+      move: () => this.switchTool(handlers.Move),
+      pen: () => this.switchTool(handlers.Pen),
+      eraser: () => this.switchTool(handlers.Eraser),
+      laser: () => this.switchTool(handlers.Laser),
+      line: () => this.switchTool(handlers.Line),
+      ellipse: () => this.switchTool(handlers.Ellipse),
+      rectangle: () => this.switchTool(handlers.Rectangle),
 
       dotted: () => this.setDash(Dash.Dotted),
       dashed: () => this.setDash(Dash.Dashed),
