@@ -88,7 +88,7 @@ export default class Pages {
 
     pdfMake
       .createPdf(docDefinition)
-      .download(`qboard-${FileUI.timeString()}.pdf`);
+      .download(`qboard-${FileUI.timeStringNow()}.pdf`);
 
     await this.canvas.loadFromJSONAsync(this.pagesJSON[currentIndexCopy]);
   };

@@ -78,7 +78,7 @@ export class JSONWriter {
     const [fileURL, revokeURL] = this.toURL();
 
     new FileUI().download(
-      `qboard-${FileUI.timeString()}.json`,
+      `qboard-${FileUI.timeStringNow()}.json`,
       fileURL,
       revokeURL
     );
@@ -86,8 +86,7 @@ export class JSONWriter {
 }
 
 export class FileUI {
-  static timeString = (): string => {
-    const date = new Date();
+  static timeString = (date): string => {
     return [
       date.getFullYear(),
       date.getMonth(),
@@ -96,6 +95,7 @@ export class FileUI {
       date.getMinutes(),
     ].join("-");
   };
+  static timeStringNow = (): string => FileUI.timeString(new Date());
 
   download = (name: string, fileURL: string, revokeURL = (): void => {}) => {
     const elt = document.createElement("a");
