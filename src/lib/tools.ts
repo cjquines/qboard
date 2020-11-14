@@ -55,19 +55,19 @@ export default interface ToolHandler {
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ) => Promise<fabric.Object>;
+  ) => fabric.Object | Promise<fabric.Object>;
 
   resize?: (
     object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
-  ) => Promise<fabric.Object>;
+  ) => fabric.Object | Promise<fabric.Object>;
 
   setBrush?: (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
-  ) => Promise<void>;
+  ) => void | Promise<void>;
 }
 
 export class MoveHandler implements ToolHandler {
@@ -79,10 +79,7 @@ export class PenHandler implements ToolHandler {
   tool: Tool = Tool.Pen;
   isBrush = true;
 
-  setBrush = async (
-    brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
-  ): Promise<void> => {
+  setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
     brush.width = options.strokeWidth;
@@ -93,10 +90,7 @@ export class EraserHandler implements ToolHandler {
   tool: Tool = Tool.Eraser;
   isBrush = true;
 
-  setBrush = async (
-    brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
-  ): Promise<void> => {
+  setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
@@ -107,10 +101,7 @@ export class LaserHandler implements ToolHandler {
   tool: Tool = Tool.Laser;
   isBrush = true;
 
-  setBrush = async (
-    brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
-  ): Promise<void> => {
+  setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
     brush.width = options.strokeWidth;
@@ -130,13 +121,13 @@ export class LineHandler implements ToolHandler {
     [-1, 1],
   ];
 
-  draw = async (
+  draw = (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ): Promise<fabric.Line> => {
+  ): fabric.Line => {
     this.x = x;
     this.y = y;
 
@@ -146,12 +137,12 @@ export class LineHandler implements ToolHandler {
     });
   };
 
-  resize = async (
+  resize = (
     object: fabric.Line,
     x2: number,
     y2: number,
     strict: boolean
-  ): Promise<fabric.Line> => {
+  ): fabric.Line => {
     let [x, y] = [x2, y2];
     if (strict) {
       [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
@@ -172,13 +163,13 @@ export class RectangleHandler implements ToolHandler {
     [-1, 1],
   ];
 
-  draw = async (
+  draw = (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ): Promise<fabric.Rect> => {
+  ): fabric.Rect => {
     this.x = x;
     this.y = y;
 
@@ -191,12 +182,12 @@ export class RectangleHandler implements ToolHandler {
     });
   };
 
-  resize = async (
+  resize = (
     object: fabric.Rect,
     x2: number,
     y2: number,
     strict: boolean
-  ): Promise<fabric.Rect> => {
+  ): fabric.Rect => {
     let [x, y] = [x2, y2];
     if (strict) {
       [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
@@ -225,25 +216,25 @@ export class EllipseHandler implements ToolHandler {
     [-1, 1],
   ];
 
-  draw = async (
+  draw = (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ): Promise<fabric.Ellipse> => {
+  ): fabric.Ellipse => {
     this.x = x;
     this.y = y;
 
     return new fabric.Ellipse({ left: x, top: y, rx: x2, ry: y2, ...options });
   };
 
-  resize = async (
+  resize = (
     object: fabric.Ellipse,
     x2: number,
     y2: number,
     strict: boolean
-  ): Promise<fabric.Ellipse> => {
+  ): fabric.Ellipse => {
     let [x, y] = [x2, y2];
 
     if (strict) {
