@@ -3,12 +3,13 @@ import { fabric } from "fabric";
 import ToolHandler, { Handlers, Tool } from "./tools";
 import Page, { ObjectId } from "./page";
 import Pages from "./pages";
-import FileHandler from "./files";
+import FileHandler, { JSONReader } from "./files";
 import HistoryHandler from "./history";
 import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
+import Network from "./network";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -62,6 +63,8 @@ export default class QBoard {
     public canvasWidth: number,
     public canvasHeight: number
   ) {
+    const queryParams = new URLSearchParams(window.location.search);
+
     this.baseCanvas = new Page(baseCanvasElement, {
       backgroundColor: "white",
       renderOnAddRemove: false,
@@ -78,6 +81,12 @@ export default class QBoard {
       this.canvasHeight,
       this.updateState
     );
+
+    if (queryParams.get("json") !== null)
+      Network.loadJSON(queryParams.get("json"))
+        .then(JSONReader.read)
+        .then(this.pages.overwritePages);
+
     this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
       this.baseCanvas,
