@@ -15,10 +15,11 @@ export class ResourceNotFoundError extends HTTPError {
 }
 
 export default class Network {
-  static async loadJSON(filePath): Promise<string> {
-    const xhr = await Network.fetch(filePath, (xhr) =>
-      xhr.overrideMimeType("application/json")
-    );
+  static async loadJSON(filePath): Promise<any> {
+    const xhr = await Network.fetch(filePath, (xhr) => {
+      xhr.overrideMimeType("application/json");
+      xhr.responseType = "json";
+    });
     return xhr.response;
   }
 
