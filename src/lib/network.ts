@@ -24,7 +24,7 @@ export default class Network {
 
   static async fetch(
     url,
-    prerequest?: (xhr: XMLHttpRequest) => void,
+    prerequest: (xhr: XMLHttpRequest) => void = () => {},
     method = "GET",
     body = null,
     resolveCondition: Predicate<number> = (status) =>
@@ -32,6 +32,7 @@ export default class Network {
   ): Promise<XMLHttpRequest> {
     const xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
+    prerequest(xhr);
     xhr.send(body);
 
     return new Promise((resolve, reject) => {
