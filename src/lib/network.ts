@@ -1,8 +1,16 @@
+import CustomError from "./error";
+
 type Predicate<T> = (T) => boolean;
 
-export class HTTPError extends Error {
+export class HTTPError extends CustomError {
   constructor(public code: number = 400, message = "HTTP Error") {
     super(message);
+  }
+}
+
+export class ResourceNotFoundError extends HTTPError {
+  constructor(public code: number = 404, message = "Resource not found") {
+    super(code, message);
   }
 }
 
@@ -30,7 +38,7 @@ export default class Network {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           if (resolveCondition(xhr.status)) resolve(xhr);
-          else throw new HTTPError(xhr.status, xhr.statusText);
+          else reject(new ResourceNotFoundError(xhr.status, xhr.statusText));
         }
       };
     });
