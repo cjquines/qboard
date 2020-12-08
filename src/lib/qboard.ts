@@ -85,7 +85,8 @@ export default class QBoard {
     if (queryParams.get("json") !== null)
       Network.loadJSON(queryParams.get("json"))
         .then(JSONReader.readParsed)
-        .then(this.pages.overwritePages);
+        .then(this.pages.overwritePages)
+        .catch(console.error);
 
     this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
