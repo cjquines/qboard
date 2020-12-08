@@ -1,15 +1,15 @@
-import CustomError from "./error";
+import { ErrorWithCode } from "./error";
 
 type Predicate<T> = (T) => boolean;
 
-export class HTTPError extends CustomError {
-  constructor(public code: number = 400, message = "HTTP Error") {
-    super(message);
+export class HTTPError extends ErrorWithCode {
+  constructor(code = 400, message = "HTTP Error") {
+    super(code, message);
   }
 }
 
 export class ResourceNotFoundException extends HTTPError {
-  constructor(public code: number = 404, message = "Resource not found") {
+  constructor(code = 404, message = "Resource not found") {
     super(code, message);
   }
 }
