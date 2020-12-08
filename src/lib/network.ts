@@ -8,7 +8,7 @@ export class HTTPError extends CustomError {
   }
 }
 
-export class ResourceNotFoundError extends HTTPError {
+export class ResourceNotFoundException extends HTTPError {
   constructor(public code: number = 404, message = "Resource not found") {
     super(code, message);
   }
@@ -40,7 +40,8 @@ export default class Network {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           if (resolveCondition(xhr.status)) resolve(xhr);
-          else reject(new ResourceNotFoundError(xhr.status, xhr.statusText));
+          else
+            reject(new ResourceNotFoundException(xhr.status, xhr.statusText));
         }
       };
     });
