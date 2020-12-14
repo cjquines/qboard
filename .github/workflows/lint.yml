@@ -1,0 +1,33 @@
+name: Lint
+
+on: push
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1.6.0
+        with:
+          github_token: ${{ secrets.github_token }}
+          auto_fix: true
+          # Enable linters
+          eslint: true
+          eslint_extensions: js,jsx,ts,tsx
+          prettier: true
+          prettier_extensions: html,json,md,vue,yaml,yml # Only run on extensions not part of ESLint config
+          stylelint: true
+          stylelint_extensions: css,scss,sass

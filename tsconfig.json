@@ -5,8 +5,5 @@
     "target": "ES2019",
     "moduleResolution": "Node"
   },
-  "include": [
-    "./src/**/*",
-    "./.eslintrc.js"
-  ]
+  "include": ["./src/**/*"]
 }
