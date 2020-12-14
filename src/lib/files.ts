@@ -70,6 +70,20 @@ export class JSONWriter {
     const revoke = () => window.URL.revokeObjectURL(url);
     return [url, revoke];
   };
+
+  download = (filename = "qboard-file") => {
+    const [fileURL, revokeURL] = this.toURL();
+
+    const elt = document.createElement("a");
+    elt.style.display = "none";
+    elt.href = fileURL;
+    elt.download = filename;
+    document.body.appendChild(elt);
+    elt.click();
+    elt.remove();
+
+    revokeURL();
+  };
 }
 
 export type FileHandlerResponse = {
