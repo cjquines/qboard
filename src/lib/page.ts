@@ -70,13 +70,13 @@ export default class Page extends fabric.Canvas {
     const selection = this.getActiveObjects();
     const reselect =
       selection.length > 1 && objects.some((obj) => selection.includes(obj));
-    reselect && this.discardActiveObject();
-    const res = objects.map((object) => object.toObject(["strokeUniform"]));
-    reselect &&
+    if (reselect) {
+      this.discardActiveObject();
       this.setActiveObject(
         new fabric.ActiveSelection(selection, { canvas: this })
       );
-    return res;
+    }
+    return objects.map((object) => object.toObject(["strokeUniform"]));
   };
 
   apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
