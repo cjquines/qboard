@@ -247,7 +247,8 @@ export default class QBoard {
     }
   };
 
-  selectionCreated = (e: any): Promise<void> => this.history.store(e.selected);
+  selectionCreated = (e: any): Promise<void> =>
+    !this.history.locked && this.history.store(e.selected);
 
   objectModified = async (e: any): Promise<void> =>
     this.history.modify(e.target._objects || [e.target]);

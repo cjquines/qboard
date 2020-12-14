@@ -67,7 +67,16 @@ export default class Page extends fabric.Canvas {
   };
 
   serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
-    return objects.map((object) => object.toObject(["strokeUniform"]));
+    const selection = this.getActiveObjects();
+    const reselect =
+      selection.length > 1 && objects.some((obj) => selection.includes(obj));
+    reselect && this.discardActiveObject();
+    const res = objects.map((object) => object.toObject(["strokeUniform"]));
+    reselect &&
+      this.setActiveObject(
+        new fabric.ActiveSelection(selection, { canvas: this })
+      );
+    return res;
   };
 
   apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
