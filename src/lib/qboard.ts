@@ -253,7 +253,7 @@ export default class QBoard {
   objectModified = async (e: any): Promise<void> => {
     this.history.modify(e.target._objects || [e.target]);
     this.history.store(e.target._objects || [e.target]);
-  }
+  };
 
   updateCursor = (e: fabric.IEvent): void => {
     const { x, y } = this.baseCanvas.getPointer(e.e);
