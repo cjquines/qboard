@@ -14,9 +14,15 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
   ],
+  ignorePatterns: [
+    "dist/**/*",
+    "node_modules/**/*",
+    "nwb.config.js",
+    ".eslintrc.js",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "tsconfig.json",
+    project: "./tsconfig.json",
     ecmaVersion: 2019,
     sourceType: "module",
     jsx: true,
@@ -82,6 +88,7 @@ module.exports = {
     "no-void": "warn",
     "prefer-const": "warn",
     "prefer-destructuring": "warn",
+    "prefer-template": "warn",
     "prettier/prettier": [
       "error",
       {
