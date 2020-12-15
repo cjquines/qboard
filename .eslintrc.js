@@ -36,7 +36,7 @@ module.exports = {
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/no-empty-function": "error",
     "@typescript-eslint/no-empty-interface": "warn",
-    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-floating-promises": ["error", { ignoreVoid: true }],
     "@typescript-eslint/no-namespace": "error",
     "@typescript-eslint/no-shadow": [
       "warn",
@@ -85,7 +85,6 @@ module.exports = {
     "no-unsafe-finally": "error",
     "no-unused-labels": "error",
     "no-var": "warn",
-    "no-void": "warn",
     "prefer-const": "warn",
     "prefer-destructuring": "warn",
     "prefer-template": "warn",
