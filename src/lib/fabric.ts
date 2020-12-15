@@ -11,7 +11,7 @@ export type FabricIEvent = fabric.IEvent & {
 // don't know whether this is fabric.Path
 type PathType = FabricObject & {
   id: number;
-}
+};
 
 export type PathEvent = FabricIEvent & {
   path: PathType;
