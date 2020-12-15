@@ -222,7 +222,7 @@ export default class QBoard {
   drop: FabricHandler = async (iEvent) => {
     iEvent.e.stopPropagation();
     iEvent.e.preventDefault();
-    this.updateCursor(iEvent);
+    await this.updateCursor(iEvent);
     this.setDragActive(false);
 
     const historyCommand = await this.files.processFiles(
