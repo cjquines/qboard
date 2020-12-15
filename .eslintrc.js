@@ -59,7 +59,7 @@ module.exports = {
     eqeqeq: ["warn", "always"],
     "import/no-deprecated": "warn",
     "import/no-extraneous-dependencies": "error",
-    "import/no-unassigned-import": "warn",
+    "import/no-unassigned-import": ["warn", { allow: ["**/*.scss"] }],
     "import/no-unresolved": "off",
     "import/prefer-default-export": "error",
     "no-cond-assign": "error",
