@@ -9,6 +9,11 @@ import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
+import { FabricIEvent, PathEvent } from "./fabric";
+
+type Async<T = void> = T | Promise<T>;
+
+type FabricHandler = (e: FabricIEvent) => Async;
 
 export interface QBoardState {
   dragActive: boolean;
@@ -179,7 +184,7 @@ export default class QBoard {
     }, 100);
   };
 
-  mouseDown = async (e: fabric.IEvent): Promise<void> => {
+  mouseDown: FabricHandler = async (e) => {
     if (!this.tool.draw) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
@@ -190,7 +195,7 @@ export default class QBoard {
     this.canvas.requestRenderAll();
   };
 
-  mouseMove = async (e: fabric.IEvent): Promise<void> => {
+  mouseMove: FabricHandler = async (e) => {
     if (!(this.tool.draw && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
@@ -198,7 +203,7 @@ export default class QBoard {
     this.canvas.requestRenderAll();
   };
 
-  mouseUp = async (): Promise<void> => {
+  mouseUp: FabricHandler = async () => {
     if (!this.tool.draw) return;
 
     this.isDown = false;
@@ -214,7 +219,7 @@ export default class QBoard {
     this.updateState();
   };
 
-  drop = async (iEvent: fabric.IEvent): Promise<void> => {
+  drop: FabricHandler = async (iEvent) => {
     iEvent.e.stopPropagation();
     iEvent.e.preventDefault();
     this.updateCursor(iEvent);
@@ -226,7 +231,7 @@ export default class QBoard {
     await this.history.execute(historyCommand);
   };
 
-  pathCreated = async (e: any): Promise<void> => {
+  pathCreated: FabricHandler = async (e: PathEvent) => {
     if (this.currentTool === Tool.Pen) {
       e.path.id = await this.baseCanvas.getNextId();
       await this.history.add([e.path]);
@@ -247,16 +252,16 @@ export default class QBoard {
     }
   };
 
-  selectionCreated = (e: any): Promise<void> =>
+  selectionCreated: FabricHandler = (e) =>
     !this.history.locked && this.history.store(e.selected);
 
-  objectModified = async (e: any): Promise<void> => {
+  objectModified: FabricHandler = async (e) => {
     await this.history.modify(e.target._objects || [e.target]);
     await this.history.store(e.target._objects || [e.target]);
   };
 
-  updateCursor = (e: fabric.IEvent): void => {
-    const { x, y } = this.baseCanvas.getPointer(e.e);
+  updateCursor: FabricHandler = (iEvent) => {
+    const { x, y } = this.baseCanvas.getPointer(iEvent.e);
     this.baseCanvas.cursor = { x, y };
   };
 }
