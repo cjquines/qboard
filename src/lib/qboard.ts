@@ -257,10 +257,13 @@ export default class QBoard {
     }
   };
 
-  selectionCreated = (e: any): Promise<void> => this.history.store(e.selected);
+  selectionCreated = (e: any): Promise<void> =>
+    !this.history.locked && this.history.store(e.selected);
 
-  objectModified = async (e: any): Promise<void> =>
-    this.history.modify(e.target._objects || [e.target]);
+  objectModified = async (e: any): Promise<void> => {
+    await this.history.modify(e.target._objects || [e.target]);
+    await this.history.store(e.target._objects || [e.target]);
+  };
 
   updateCursor = (e: fabric.IEvent): void => {
     const { x, y } = this.baseCanvas.getPointer(e.e);

@@ -51,7 +51,9 @@ export default class HistoryHandler {
 
   store = async (objects: fabric.Object[]): Promise<void> => {
     if (this.locked) return;
+    this.locked = true;
     this.selection = await this.canvas.serialize(objects);
+    this.locked = false;
   };
 
   modify = async (objects: fabric.Object[]): Promise<void> =>
@@ -63,6 +65,7 @@ export default class HistoryHandler {
   ): Promise<void> => {
     if (this.locked) return;
     const basis = newObjects || oldObjects;
+    this.locked = true;
     this.history.push({
       ids: basis.map((object: ObjectId) => object.id),
       oldObjects: newObjects
@@ -71,6 +74,7 @@ export default class HistoryHandler {
       newObjects: newObjects && (await this.canvas.serialize(newObjects)),
       page: this.pages.currentIndex,
     });
+    this.locked = false;
     this.redoStack = [];
     this.canvas.modified = true;
     this.updateState();
