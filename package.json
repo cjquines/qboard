@@ -26,7 +26,10 @@
   },
   "devDependencies": {
     "@types/fabric": "^3.6.8",
+    "@types/keyboardjs": "^2.5.0",
+    "@types/pdfmake": "^0.1.16",
     "@types/react": "^16.9.52",
+    "@types/react-modal": "^3.10.6",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",
     "awesome-typescript-loader": "^5.2.1",
