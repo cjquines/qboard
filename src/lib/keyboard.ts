@@ -90,10 +90,11 @@ export default class KeyboardHandler {
       }
     );
 
-    if (window.localStorage.getItem("keyMap") === null) {
+    const keyMap = window.localStorage.getItem("keyMap");
+    if (keyMap === null) {
       this.reset();
     } else {
-      this.keyMap = JSON.parse(window.localStorage.getItem("keyMap"));
+      this.keyMap = JSON.parse(keyMap);
       this.bindAll();
     }
   }
