@@ -8,3 +8,7 @@ export type GuaranteedIObjectOptions = fabric.IObjectOptions & {
   strokeDashArray: number[];
   strokeUniform: boolean;
 };
+
+export interface ObjectId extends fabric.Object {
+  id: number;
+}

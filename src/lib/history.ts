@@ -1,7 +1,8 @@
 import { fabric } from "fabric";
 
-import Page, { ObjectId } from "./page";
+import Page from "./page";
 import Pages from "./pages";
+import { ObjectId } from "../types/fabric";
 
 interface HistoryItem {
   ids: number[];

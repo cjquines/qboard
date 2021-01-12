@@ -1,8 +1,5 @@
 import { fabric } from "fabric";
-
-export interface ObjectId extends fabric.Object {
-  id: number;
-}
+import { ObjectId } from "../types/fabric";
 
 export type Cursor = { x: number; y: number };
 
