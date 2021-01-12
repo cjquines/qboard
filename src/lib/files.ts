@@ -110,7 +110,7 @@ export default class FileHandler {
     files: FileList,
     cursor?: Cursor
   ): Promise<HistoryCommand> => {
-    const images = [];
+    const images: fabric.Object[][] = [];
     await Promise.all(
       [...files].map(async (file) => {
         if (file.type.startsWith("image/")) {
