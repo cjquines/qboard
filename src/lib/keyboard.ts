@@ -90,7 +90,7 @@ export default class KeyboardHandler {
       }
     );
 
-    if (!window.localStorage.getItem("keyMap")) {
+    if (window.localStorage.getItem("keyMap") === null) {
       this.reset();
     } else {
       this.keyMap = JSON.parse(window.localStorage.getItem("keyMap"));
