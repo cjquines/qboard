@@ -262,8 +262,8 @@ export class EllipseHandler implements ToolHandler {
       .set({
         originX: this.x > x ? "right" : "left",
         originY: this.y > y ? "bottom" : "top",
-        rx: Math.abs(x - object.left) / 2,
-        ry: Math.abs(y - object.top) / 2,
+        rx: Math.abs(x - (object.left || 0)) / 2,
+        ry: Math.abs(y - (object.top || 0)) / 2,
       })
       .setCoords();
 
