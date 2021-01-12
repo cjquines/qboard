@@ -35,7 +35,7 @@ const Stylebar = (props: {
     <div className={`stylebar visibility-${props.visibility}`}>
       <input
         accept=""
-        onChange={(e) => props.acceptFile(e.target.files)}
+        onChange={(e) => props.acceptFile(e.target.files!)}
         multiple={false}
         ref={fileInputRef}
         type="file"
