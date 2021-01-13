@@ -52,14 +52,14 @@ export default class QBoard {
     strokeUniform: true,
   };
 
-  resizeCooldown: NodeJS.Timeout;
-  currentTool: Tool;
-  tool: ToolHandler;
-  currentObject: fabric.Object;
+  resizeCooldown: NodeJS.Timeout | undefined;
+  currentTool!: Tool;
+  tool!: ToolHandler;
+  currentObject: fabric.Object | undefined;
   dragActive = false;
   isDown = false;
   strict = false;
-  callback: (state: QBoardState) => void;
+  callback: ((state: QBoardState) => void) | undefined;
 
   constructor(
     public canvasElement: HTMLCanvasElement,
@@ -177,7 +177,7 @@ export default class QBoard {
   };
 
   windowResize = (): void => {
-    clearTimeout(this.resizeCooldown);
+    if (this.resizeCooldown !== undefined) clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(() => {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
       this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
