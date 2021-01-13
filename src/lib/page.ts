@@ -8,8 +8,11 @@ export type Cursor = { x: number; y: number };
 
 export default class Page extends fabric.Canvas {
   cursor: Cursor | undefined;
-  canvasWidth: number | undefined;
-  canvasHeight: number | undefined;
+
+  // assert not undefined because fitToWindow, which is called at init, sets these
+  canvasWidth!: number;
+  canvasHeight!: number;
+
   latestId = 0;
   modified = false;
 
