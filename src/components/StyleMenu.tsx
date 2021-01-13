@@ -19,9 +19,9 @@ const DashStyle = (props: {
   return (
     <ButtonRow
       actions={dashes}
-      className={(action, i) =>
-        props.inContext && props.dashStyle === i && "active"
-      }
+      className={(action, i) => {
+        if (props.inContext && props.dashStyle === i) return "active";
+      }}
       callback={props.callback}
       outerButton={!props.inContext && button}
     />
@@ -56,9 +56,10 @@ const StrokeStyle = (props: {
   return (
     <ButtonRow
       actions={strokes}
-      className={(action, i) =>
-        props.inContext && props.strokeStyle === strokeMap[i] && "active"
-      }
+      className={(action, i) => {
+        if (props.inContext && props.strokeStyle === strokeMap[i])
+          return "active";
+      }}
       callback={props.callback}
       outerButton={!props.inContext && button}
     />
@@ -78,9 +79,9 @@ const FillStyle = (props: {
   return (
     <ButtonRow
       actions={fills}
-      className={(action, i) =>
-        props.inContext && props.fillStyle === i && "active"
-      }
+      className={(action, i) => {
+        if (props.inContext && props.fillStyle === i) return "active";
+      }}
       callback={props.callback}
       outerButton={!props.inContext && button}
     />
