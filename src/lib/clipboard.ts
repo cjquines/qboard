@@ -6,7 +6,7 @@ import FileHandler from "./files";
 import HistoryHandler from "./history";
 
 export default class ClipboardHandler {
-  clipboard: fabric.Object;
+  clipboard: fabric.Object | undefined;
 
   constructor(
     public canvas: Page,
@@ -46,7 +46,8 @@ export default class ClipboardHandler {
   };
 
   paste = (): void => {
-    if (!this.clipboard) return;
+    if (this.clipboard === undefined) return;
+
     return this.clipboard.clone((clone) =>
       this.history.add(this.canvas.placeObject(clone))
     );
