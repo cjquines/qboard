@@ -7,7 +7,7 @@ export interface ObjectId extends fabric.Object {
 export type Cursor = { x: number; y: number };
 
 export default class Page extends fabric.Canvas {
-  cursor: Cursor;
+  cursor: Cursor | undefined;
   canvasWidth: number;
   canvasHeight: number;
   latestId = 0;
@@ -91,10 +91,8 @@ export default class Page extends fabric.Canvas {
 
   placeObject<T extends fabric.Object>(
     obj: T,
-    cursor: Cursor = this.cursor
+    { x = this.canvasWidth / 2, y = this.canvasHeight / 2 }: Partial<Cursor> = this.cursor ?? {}
   ): T {
-    const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
-      cursor || {};
     this.discardActiveObject();
     const id = this.getNextId();
 
