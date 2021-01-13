@@ -59,7 +59,9 @@ const Bindings = (props: {
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState<string>("");
-  const [bindingModalAction, setBindingModalAction] = useState(undefined);
+  const [bindingModalAction, setBindingModalAction] = useState<Action | null>(
+    null
+  );
 
   const rows = [
     {
