@@ -19,7 +19,7 @@ export default class ClipboardHandler {
     document.addEventListener("paste", this.pasteExternal);
   }
 
-  copy = (): fabric.Object => {
+  copy = (): fabric.Object | null => {
     const objects: fabric.Object = this.canvas.getActiveObject();
     if (!objects) return null;
     objects.clone((clone) => {
