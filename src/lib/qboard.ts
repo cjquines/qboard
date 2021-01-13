@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 
 import ToolHandler, { Handlers, Tool } from "./tools";
-import Page, { ObjectId } from "./page";
+import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
 import HistoryHandler from "./history";
@@ -9,6 +9,8 @@ import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
+import { HTMLChildElement } from "../types/html";
+import { GuaranteedIObjectOptions, ObjectId } from "../types/fabric";
 import { FabricIEvent, PathEvent } from "./fabric";
 
 type Async<T = void> = T | Promise<T>;
@@ -43,7 +45,7 @@ export default class QBoard {
     stroke: Stroke.Black,
     fill: Fill.Transparent,
   };
-  drawerOptions: fabric.IObjectOptions = {
+  readonly drawerOptions: GuaranteedIObjectOptions = {
     fill: "transparent",
     stroke: "#000000",
     strokeWidth: 4,
@@ -62,8 +64,8 @@ export default class QBoard {
   callback: ((state: QBoardState) => void) | undefined;
 
   constructor(
-    public canvasElement: HTMLCanvasElement,
-    public baseCanvasElement: HTMLCanvasElement,
+    public canvasElement: HTMLCanvasElement & HTMLChildElement,
+    public baseCanvasElement: HTMLCanvasElement & HTMLChildElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -199,7 +201,10 @@ export default class QBoard {
     if (!(this.tool.draw && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
-    await this.tool.resize(this.currentObject, x, y, this.strict);
+
+    if (this.currentObject !== undefined)
+      await this.tool.resize?.(this.currentObject, x, y, this.strict);
+
     this.canvas.requestRenderAll();
   };
 
@@ -226,7 +231,7 @@ export default class QBoard {
     this.setDragActive(false);
 
     const historyCommand = await this.files.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files
+      (iEvent.e as DragEvent).dataTransfer!.files
     );
     this.history.execute(historyCommand);
   };
@@ -252,8 +257,10 @@ export default class QBoard {
     }
   };
 
-  selectionCreated: FabricHandler = (e) =>
-    !this.history.locked && this.history.store(e.selected);
+  selectionCreated: FabricHandler = (e) => {
+    if (this.history.locked) return;
+    return this.history.store(e.selected);
+  };
 
   objectModified: FabricHandler = (e) => {
     this.history.modify(e.target._objects || [e.target]);
