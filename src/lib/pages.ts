@@ -3,6 +3,7 @@ import { fabric } from "fabric";
 
 import Page from "./page";
 import { JSONWriter } from "./files";
+import { AssertType } from "../types/assert";
 
 export type PageJSON = {
   version: string;
