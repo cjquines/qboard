@@ -16,6 +16,7 @@ import { FabricIEvent, PathEvent } from "./fabric";
 type Async<T = void> = T | Promise<T>;
 
 type FabricHandler = (e: FabricIEvent) => Async;
+import { AssertType } from "../types/assert";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -214,6 +215,9 @@ export default class QBoard {
     this.isDown = false;
     this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
     this.baseCanvas.requestRenderAll();
+
+    AssertType<fabric.Object>(this.currentObject); // can do this because mouseDown sets this
+
     this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     this.history.add([this.currentObject]);
