@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 import { GuaranteedIObjectOptions } from "../types/fabric";
-import { AssertType } from "../types/assert";
+import AssertType from "../types/assert";
 
 type Async<T = void> = T | Promise<T>;
 
