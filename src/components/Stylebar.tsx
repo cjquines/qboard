@@ -44,6 +44,8 @@ const Stylebar = (props: {
         actions={fileActions}
         callback={async (action) => {
           if (action === Action.Open) {
+            // FIXME
+            // @ts-ignore
             fileInputRef.current.click();
           } else {
             await props.doAction(action);
