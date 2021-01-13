@@ -34,11 +34,13 @@ export default class HistoryHandler {
     this.remove(command.remove);
   };
 
-  add = (objects: fabric.Object[]): void =>
-    objects?.length && this.save(null, objects);
+  add = (objects?: fabric.Object[]): void => {
+    if (objects?.length) this.save(null, objects);
+  };
 
-  remove = (objects: fabric.Object[]): void =>
-    objects?.length && this.save(objects, null);
+  remove = (objects?: fabric.Object[]): void => {
+    if(objects?.length) this.save(objects, null);
+  };
 
   clear = (clearRedo = false): void => {
     this.history = [];
@@ -61,11 +63,13 @@ export default class HistoryHandler {
     newObjects: fabric.Object[] | null
   ): void => {
     if (this.locked) return;
-    const basis = newObjects || oldObjects;
+    // FIXME: Function signature removes need for this nonsense
+    const basis = (newObjects || oldObjects) ?? ([] as fabric.Object[]);
     this.locked = true;
     this.history.push({
-      ids: basis.map((object: ObjectId) => object.id),
-      oldObjects: newObjects ? oldObjects : this.canvas.serialize(oldObjects),
+      ids: basis.map((object) => (object as ObjectId).id),
+      // FIXME: Function signature removes need for non-null assertion
+      oldObjects: newObjects ? oldObjects : this.canvas.serialize(oldObjects!),
       newObjects: newObjects && this.canvas.serialize(newObjects),
       page: this.pages.currentIndex,
     });
@@ -92,7 +96,8 @@ export default class HistoryHandler {
     isUndo: boolean
   ): Promise<void> => {
     this.locked = true;
-    const last = from.pop();
+    if(!from.length) return;
+    const last = from.pop()!;
     await this.pages.loadPage(last.page);
     this.canvas.apply(last.ids, isUndo ? last.oldObjects : last.newObjects);
     to.push(last);
