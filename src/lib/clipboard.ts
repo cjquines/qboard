@@ -16,7 +16,7 @@ export default class ClipboardHandler {
     public canvasWidth: number,
     public canvasHeight: number
   ) {
-    window.addEventListener("paste", this.pasteExternal);
+    document.addEventListener("paste", this.pasteExternal);
   }
 
   copy = (): fabric.Object => {
