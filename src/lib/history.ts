@@ -19,7 +19,7 @@ export type HistoryCommand = {
 export default class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
-  selection: fabric.Object[];
+  selection: fabric.Object[] | null = null;
   locked = false;
 
   constructor(
