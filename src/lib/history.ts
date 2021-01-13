@@ -35,11 +35,11 @@ export default class HistoryHandler {
   };
 
   add = (objects?: fabric.Object[]): void => {
-    if (objects?.length) this.save(null, objects);
+    if (objects?.length) this.save({ newObjects: objects });
   };
 
   remove = (objects?: fabric.Object[]): void => {
-    if(objects?.length) this.save(objects, null);
+    if (objects?.length) this.save({ oldObjects: objects });
   };
 
   clear = (clearRedo = false): void => {
@@ -56,20 +56,23 @@ export default class HistoryHandler {
   };
 
   modify = (objects: fabric.Object[]): void =>
-    this.save(this.selection, objects);
+    this.save({ oldObjects: this.selection, newObjects: objects });
 
-  save = (
-    oldObjects: fabric.Object[] | null,
-    newObjects: fabric.Object[] | null
-  ): void => {
+  save = ({
+    oldObjects,
+    newObjects,
+  }:
+    | { oldObjects: fabric.Object[]; newObjects? }
+    | {
+        oldObjects?;
+        newObjects: fabric.Object[];
+      }): void => {
     if (this.locked) return;
-    // FIXME: Function signature removes need for this nonsense
-    const basis = (newObjects || oldObjects) ?? ([] as fabric.Object[]);
+    const basis = newObjects || oldObjects;
     this.locked = true;
     this.history.push({
       ids: basis.map((object) => (object as ObjectId).id),
-      // FIXME: Function signature removes need for non-null assertion
-      oldObjects: newObjects ? oldObjects : this.canvas.serialize(oldObjects!),
+      oldObjects: newObjects ? oldObjects : this.canvas.serialize(oldObjects),
       newObjects: newObjects && this.canvas.serialize(newObjects),
       page: this.pages.currentIndex,
     });
