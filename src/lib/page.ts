@@ -8,8 +8,8 @@ export type Cursor = { x: number; y: number };
 
 export default class Page extends fabric.Canvas {
   cursor: Cursor | undefined;
-  canvasWidth: number;
-  canvasHeight: number;
+  canvasWidth: number | undefined;
+  canvasHeight: number | undefined;
   latestId = 0;
   modified = false;
 
