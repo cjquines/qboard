@@ -95,8 +95,8 @@ export default class HistoryHandler {
     to: HistoryItem[],
     isUndo: boolean
   ): Promise<void> => {
+    if (!from.length) return;
     this.locked = true;
-    if(!from.length) return;
     const last = from.pop()!;
     await this.pages.loadPage(last.page);
     this.canvas.apply(last.ids, isUndo ? last.oldObjects : last.newObjects);
