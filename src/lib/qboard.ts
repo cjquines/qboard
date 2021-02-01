@@ -156,10 +156,14 @@ export default class QBoard {
     });
   };
 
+  /**
+   * Assumes no two instances are the same tool
+   */
   switchTool = async (
     tool: ToolHandler = this.handlers.Move
   ): Promise<void> => {
-    if (!tool.activate()) return;
+    // Reference equality because of assumption
+    if (tool === this.activeTool || !tool.activate()) return;
 
     this.activeTool.deactivate();
 
