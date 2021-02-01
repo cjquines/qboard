@@ -168,16 +168,16 @@ export default class QBoard {
     tool: ToolHandler = this.handlers.Move
   ): Promise<void> => {
     // Reference equality because of assumption
-    if (tool === this.activeTool || !tool.activate()) return;
+    if (tool === this.activeTool || !(await tool.activate())) return;
 
     this.activeTool.deactivate();
 
-    if (isBrush(this.activeTool) || requiresBase(this.activeTool)) {
+    if (isBrush(tool) || requiresBase(tool)) {
       await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
 
-      if (isBrush(this.activeTool))
-        await this.activeTool.setBrush(
+      if (isBrush(tool))
+        await tool.setBrush(
           this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
           this.drawerOptions
         );
