@@ -52,8 +52,8 @@ export default class Page extends fabric.Canvas {
   getObjectByIds = (ids: number[]): fabric.Object[] => {
     // multiple element case; kind of inefficient
     if (ids.length > 1) {
-      return this.getObjects().filter((object: ObjectId) =>
-        ids.includes(object.id)
+      return this.getObjects().filter((object) =>
+        ids.includes((object as ObjectId).id)
       );
     }
     // single element case
