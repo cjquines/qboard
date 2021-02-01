@@ -58,12 +58,7 @@ export default class Page extends fabric.Canvas {
     }
     // single element case
     const [id] = ids;
-    for (const object of this.getObjects()) {
-      if ((object as ObjectId).id === id) {
-        return [object];
-      }
-    }
-    return [];
+    return this.getObjects().filter((object) => (object as ObjectId).id === id);
   };
 
   serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
