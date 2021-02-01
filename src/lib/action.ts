@@ -78,7 +78,7 @@ export const actionName = (action: Action): string => {
 
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  actionMap: unknown;
+  readonly actionMap: { [index: string]: Function };
 
   constructor(
     public switchTool: (tool: ToolHandler) => Promise<void>,
