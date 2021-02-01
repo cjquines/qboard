@@ -1,10 +1,10 @@
 import React from "react";
 
 import { Action } from "../lib/action";
+import { ToolHandler } from "../lib/tools";
 
 import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";
-import { ToolHandler } from "../lib/tools";
 
 class Toolbar extends React.Component<{
   currentTool: ToolHandler;
