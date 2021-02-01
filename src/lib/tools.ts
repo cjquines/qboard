@@ -1,4 +1,7 @@
 import { fabric } from "fabric";
+import Page from "./page";
+import ClipboardHandler from "./clipboard";
+import HistoryHandler from "./history";
 
 class Behaviors {
   // given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
@@ -52,18 +55,40 @@ export class ToolHandler {
     y2: number,
     strict: boolean
   ) => fabric.Object | Promise<fabric.Object>;
+  /**
+   * Set with activate()
+   * @private
+   */
   private active: boolean;
 
-  constructor(protected baseCanvas, protected history, protected clipboard) {}
+  constructor(
+    protected baseCanvas: Page,
+    protected history: HistoryHandler,
+    protected clipboard: ClipboardHandler
+  ) {}
 
   setBrush: (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
   ) => void | Promise<void> = () => {};
 
+  /**
+   * Handle the pathCreated event
+   */
   pathCreated: (e: any) => void | Promise<void> = () => {};
+
+  /**
+   * @return Whether the activation was successful.
+   * Maybe want to throw error instead of return boolean.
+   */
   activate: () => boolean | Promise<boolean> = () => (this.active = true);
+  /**
+   * Not allowed to fail
+   */
   deactivate: () => void = () => (this.active = false);
+  /**
+   * get this.active
+   */
   isActive = () => this.active;
 }
 
@@ -268,7 +293,11 @@ export class EllipseHandler extends ToolHandler {
 }
 
 export default class Handlers {
-  static from = (baseCanvas, history, clipboard) => ({
+  static from = (
+    baseCanvas: Page,
+    history: HistoryHandler,
+    clipboard: ClipboardHandler
+  ) => ({
     Move: new MoveHandler(baseCanvas, history, clipboard),
     Pen: new PenHandler(baseCanvas, history, clipboard),
     Eraser: new EraserHandler(baseCanvas, history, clipboard),
