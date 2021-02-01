@@ -20,8 +20,8 @@ export const enum Visibility {
 
 const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
-  const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
-  const [isMobile, setMobility] = useState<boolean>(false);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
+  const [isMobile, setMobility] = useState(false);
 
   const [state, setState]: [
     QBoardState,
