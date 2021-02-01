@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import Handlers, { isDrawing, ToolHandler } from "./tools";
+import Handlers, { isBrush, isDrawing, ToolHandler } from "./tools";
 import Page, { ObjectId } from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -167,13 +167,15 @@ export default class QBoard {
 
     this.activeTool.deactivate();
 
-    if (this.activeTool.isBrush || this.activeTool.requiresBase) {
+    if (isBrush(this.activeTool) || this.activeTool.requiresBase) {
       await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
-      await this.activeTool.setBrush?.(
-        this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
-        this.drawerOptions
-      );
+
+      if (isBrush(this.activeTool))
+        await this.activeTool.setBrush(
+          this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
+          this.drawerOptions
+        );
     } else {
       await this.baseCanvas.deactivateSelection();
       this.canvasElement.parentElement.style.display = "block";
@@ -242,7 +244,7 @@ export default class QBoard {
   };
 
   pathCreated = async (e: any): Promise<void> => {
-    return this.activeTool.pathCreated(e);
+    if (isBrush(this.activeTool)) return this.activeTool.pathCreated(e);
   };
 
   selectionCreated = (e: any): Promise<void> => this.history.store(e.selected);

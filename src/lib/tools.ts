@@ -40,7 +40,11 @@ class Behaviors {
 
 export class ToolHandler {
   // Add type marker `boolean` so it can be overridden; otherwise takes type `false`
-  readonly isBrush: boolean;
+  /**
+   * Make sure that no extending classes except BrushHandler set this to true;
+   * the value of this property is used as a type guard.
+   */
+  readonly isBrush: boolean = false;
   /**
    * Make sure that no extending classes except DrawingToolHandler set this to true;
    * the value of this property is used as a type guard.
@@ -65,16 +69,6 @@ export class ToolHandler {
     protected clipboard: ClipboardHandler
   ) {}
 
-  setBrush: (
-    brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
-  ) => void | Promise<void> = () => {};
-
-  /**
-   * Handle the pathCreated event
-   */
-  pathCreated: (e: any) => void | Promise<void> = () => {};
-
   /**
    * @return Whether the activation was successful.
    * Maybe want to throw error instead of return boolean.
@@ -90,7 +84,7 @@ export class ToolHandler {
   isActive = () => this.active;
 }
 
-abstract class DrawingToolHandler extends ToolHandler {
+export abstract class DrawingToolHandler extends ToolHandler {
   isDrawing = true;
   abstract draw: (
     x: number,
@@ -105,14 +99,29 @@ export function isDrawing(tool: ToolHandler): tool is DrawingToolHandler {
   return tool.isDrawing;
 }
 
+export abstract class BrushHandler extends ToolHandler {
+  isBrush = true;
+
+  /**
+   * Handle the pathCreated event
+   */
+  abstract pathCreated: (e: any) => void | Promise<void> = () => {};
+
+  abstract setBrush: (
+    brush: fabric.BaseBrush,
+    options: fabric.IObjectOptions
+  ) => void | Promise<void> = () => {};
+}
+
+export function isBrush(tool: ToolHandler): tool is BrushHandler {
+  return tool.isBrush;
+}
+
 export class MoveHandler extends ToolHandler {
-  isBrush = false;
   requiresBase = true;
 }
 
-export class PenHandler extends ToolHandler {
-  isBrush = true;
-
+export class PenHandler extends BrushHandler {
   pathCreated = async (e: any) => {
     e.path.id = await this.baseCanvas.getNextId();
     return this.history.add([e.path]);
@@ -124,9 +133,7 @@ export class PenHandler extends ToolHandler {
   };
 }
 
-export class EraserHandler extends ToolHandler {
-  isBrush = true;
-
+export class EraserHandler extends BrushHandler {
   pathCreated = async (e: any) => {
     const path = fabric.util.object.clone(e.path);
     this.baseCanvas.remove(e.path);
@@ -147,9 +154,7 @@ export class EraserHandler extends ToolHandler {
   activate = async () => (await this.clipboard.cut()) && super.activate();
 }
 
-export class LaserHandler extends ToolHandler {
-  isBrush = true;
-
+export class LaserHandler extends BrushHandler {
   pathCreated = (e: any) => {
     setTimeout(async () => {
       this.baseCanvas.remove(e.path);
