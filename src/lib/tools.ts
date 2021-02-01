@@ -39,16 +39,14 @@ class Behaviors {
 }
 
 export class ToolHandler {
-  isBrush: boolean;
-  readonly isDrawing: boolean;
+  // Add type marker `boolean` so it can be overridden; otherwise takes type `false`
+  readonly isBrush: boolean;
+  /**
+   * Make sure that no extending classes except DrawingToolHandler set this to true;
+   * the value of this property is used as a type guard.
+   */
+  readonly isDrawing: boolean = false;
   readonly requiresBase: boolean;
-  draw: (
-    x: number,
-    y: number,
-    options: fabric.IObjectOptions,
-    x2?: number,
-    y2?: number
-  ) => fabric.Object | Promise<fabric.Object>;
   resize: (
     object: fabric.Object,
     x2: number,
@@ -90,6 +88,21 @@ export class ToolHandler {
    * get this.active
    */
   isActive = () => this.active;
+}
+
+abstract class DrawingToolHandler extends ToolHandler {
+  isDrawing = true;
+  abstract draw: (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ) => fabric.Object | Promise<fabric.Object>;
+}
+
+export function isDrawing(tool: ToolHandler): tool is DrawingToolHandler {
+  return tool.isDrawing;
 }
 
 export class MoveHandler extends ToolHandler {
@@ -150,7 +163,7 @@ export class LaserHandler extends ToolHandler {
   };
 }
 
-export class LineHandler extends ToolHandler {
+export class LineHandler extends DrawingToolHandler {
   isBrush = false;
   x: number;
   y: number;
@@ -162,13 +175,7 @@ export class LineHandler extends ToolHandler {
     [-1, 1],
   ];
 
-  draw = (
-    x: number,
-    y: number,
-    options: fabric.IObjectOptions,
-    x2?: number,
-    y2?: number
-  ): fabric.Line => {
+  draw = (x, y, options, x2, y2): fabric.Line => {
     this.x = x;
     this.y = y;
 
@@ -193,7 +200,7 @@ export class LineHandler extends ToolHandler {
   };
 }
 
-export class RectangleHandler extends ToolHandler {
+export class RectangleHandler extends DrawingToolHandler {
   isBrush = false;
   x: number;
   y: number;
@@ -245,7 +252,7 @@ export class RectangleHandler extends ToolHandler {
   };
 }
 
-export class EllipseHandler extends ToolHandler {
+export class EllipseHandler extends DrawingToolHandler {
   isBrush = false;
   x: number;
   y: number;

@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import Handlers, { ToolHandler } from "./tools";
+import Handlers, { isDrawing, ToolHandler } from "./tools";
 import Page, { ObjectId } from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -195,7 +195,7 @@ export default class QBoard {
   };
 
   mouseDown = async (e: fabric.IEvent): Promise<void> => {
-    if (!this.activeTool.isDrawing) return;
+    if (!isDrawing(this.activeTool)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
