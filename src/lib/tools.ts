@@ -194,7 +194,6 @@ export class LaserHandler extends BrushHandler {
 }
 
 export class LineHandler extends DrawingToolHandler {
-  isBrush = false;
   x: number;
   y: number;
 
@@ -226,7 +225,6 @@ export class LineHandler extends DrawingToolHandler {
 }
 
 export class RectangleHandler extends DrawingToolHandler {
-  isBrush = false;
   x: number;
   y: number;
 
@@ -272,7 +270,6 @@ export class RectangleHandler extends DrawingToolHandler {
 }
 
 export class EllipseHandler extends DrawingToolHandler {
-  isBrush = false;
   x: number;
   y: number;
 
