@@ -1,6 +1,11 @@
 import { fabric } from "fabric";
 
-import Handlers, { isBrush, isDrawing, ToolHandler } from "./tools";
+import Handlers, {
+  isBrush,
+  isDrawing,
+  requiresBase,
+  ToolHandler,
+} from "./tools";
 import Page, { ObjectId } from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -167,7 +172,7 @@ export default class QBoard {
 
     this.activeTool.deactivate();
 
-    if (isBrush(this.activeTool) || this.activeTool.requiresBase) {
+    if (isBrush(this.activeTool) || requiresBase(this.activeTool)) {
       await this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
 

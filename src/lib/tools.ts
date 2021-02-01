@@ -50,13 +50,19 @@ export class ToolHandler {
    * the value of this property is used as a type guard.
    */
   readonly isDrawing: boolean = false;
-  readonly requiresBase: boolean;
+  /**
+   * Make sure that no extending classes except DrawingToolHandler set this to true;
+   * the value of this property is used as a type guard.
+   */
+  readonly requiresBase: boolean = false;
+
   resize: (
     object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
   ) => fabric.Object | Promise<fabric.Object>;
+
   /**
    * Set with activate()
    * @private
@@ -117,9 +123,15 @@ export function isBrush(tool: ToolHandler): tool is BrushHandler {
   return tool.isBrush;
 }
 
-export class MoveHandler extends ToolHandler {
+export class RequiresBaseHandler extends ToolHandler {
   requiresBase = true;
 }
+
+export function requiresBase(tool: ToolHandler): tool is RequiresBaseHandler {
+  return tool.requiresBase;
+}
+
+export class MoveHandler extends RequiresBaseHandler {}
 
 export class PenHandler extends BrushHandler {
   pathCreated = async (e) => {
