@@ -64,7 +64,8 @@ export class ToolHandler {
   ) => fabric.Object | Promise<fabric.Object>;
 
   /**
-   * Set with activate()
+   * Set externally from activate().
+   * Set internally with setActive();
    * @private
    */
   private active: boolean;
@@ -79,15 +80,22 @@ export class ToolHandler {
    * @return Whether the activation was successful.
    * Maybe want to throw error instead of return boolean.
    */
-  activate: () => boolean | Promise<boolean> = () => (this.active = true);
+  activate: () => boolean | Promise<boolean> = () => this.setActive(true);
+
   /**
    * Not allowed to fail
    */
-  deactivate: () => void = () => (this.active = false);
+  deactivate: () => void = () => this.setActive(false);
+
   /**
    * get this.active
    */
   isActive = () => this.active;
+
+  /**
+   * set this.active active
+   */
+  protected setActive = (active: boolean) => (this.active = active);
 }
 
 export abstract class DrawingToolHandler extends ToolHandler {
@@ -163,7 +171,12 @@ export class EraserHandler extends BrushHandler {
     brush.width = 5 * options.strokeWidth;
   };
 
-  activate = async () => (await this.clipboard.cut()) && super.activate();
+  /**
+   * Execute cut() which attempts to cut currently selected objects if they exists.
+   * If cut() true then abort; leave current tool active.
+   * Otherwise, mark internal state as active and return true
+   */
+  activate = async () => !(await this.clipboard.cut()) && this.setActive(true);
 }
 
 export class LaserHandler extends BrushHandler {
