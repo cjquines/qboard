@@ -87,11 +87,11 @@ export class ToolHandler {
 export abstract class DrawingToolHandler extends ToolHandler {
   isDrawing = true;
   abstract draw: (
-    x: number,
-    y: number,
-    options: fabric.IObjectOptions,
-    x2?: number,
-    y2?: number
+    x,
+    y,
+    options,
+    x2?,
+    y2?
   ) => fabric.Object | Promise<fabric.Object>;
 }
 
@@ -122,11 +122,11 @@ export class MoveHandler extends ToolHandler {
 }
 
 export class PenHandler extends BrushHandler {
-  pathCreated = async (e: any) => {
+  pathCreated = async (e) => {
     e.path.id = await this.baseCanvas.getNextId();
     return this.history.add([e.path]);
   };
-  setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
+  setBrush = (brush, options) => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
     brush.width = options.strokeWidth;
@@ -134,7 +134,7 @@ export class PenHandler extends BrushHandler {
 }
 
 export class EraserHandler extends BrushHandler {
-  pathCreated = async (e: any) => {
+  pathCreated = async (e) => {
     const path = fabric.util.object.clone(e.path);
     this.baseCanvas.remove(e.path);
     const objects = this.baseCanvas
@@ -145,7 +145,7 @@ export class EraserHandler extends BrushHandler {
     await this.history.remove(objects);
   };
 
-  setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
+  setBrush = (brush, options) => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
@@ -155,13 +155,13 @@ export class EraserHandler extends BrushHandler {
 }
 
 export class LaserHandler extends BrushHandler {
-  pathCreated = (e: any) => {
+  pathCreated = (e) => {
     setTimeout(async () => {
       this.baseCanvas.remove(e.path);
       this.baseCanvas.requestRenderAll();
     }, 1000);
   };
-  setBrush = (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => {
+  setBrush = (brush, options) => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
     brush.width = options.strokeWidth;
@@ -190,12 +190,7 @@ export class LineHandler extends DrawingToolHandler {
     });
   };
 
-  resize = (
-    object: fabric.Line,
-    x2: number,
-    y2: number,
-    strict: boolean
-  ): fabric.Line => {
+  resize = (object, x2, y2, strict): fabric.Line => {
     let [x, y] = [x2, y2];
     if (strict) {
       [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
@@ -215,13 +210,7 @@ export class RectangleHandler extends DrawingToolHandler {
     [-1, 1],
   ];
 
-  draw = (
-    x: number,
-    y: number,
-    options: fabric.IObjectOptions,
-    x2?: number,
-    y2?: number
-  ): fabric.Rect => {
+  draw = (x, y, options, x2, y2): fabric.Rect => {
     this.x = x;
     this.y = y;
 
@@ -267,13 +256,7 @@ export class EllipseHandler extends DrawingToolHandler {
     [-1, 1],
   ];
 
-  draw = (
-    x: number,
-    y: number,
-    options: fabric.IObjectOptions,
-    x2?: number,
-    y2?: number
-  ): fabric.Ellipse => {
+  draw = (x, y, options, x2, y2): fabric.Ellipse => {
     this.x = x;
     this.y = y;
 
