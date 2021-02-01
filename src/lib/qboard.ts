@@ -101,10 +101,15 @@ export default class QBoard {
       this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
       this.updateState
     );
+    this.handlers = Handlers.from(
+      this.baseCanvas,
+      this.history,
+      this.clipboard
+    );
     this.action = new ActionHandler(
       this.switchTool,
+      this.handlers,
       this.currentStyle,
-      this.baseCanvas,
       this.pages,
       this.files,
       this.history,
@@ -117,11 +122,6 @@ export default class QBoard {
       this.updateState
     );
 
-    this.handlers = Handlers.from(
-      this.baseCanvas,
-      this.history,
-      this.clipboard
-    );
     // an instance which has no effect (deactivate method is trivial)
     this.activeTool = new ToolHandler(
       this.baseCanvas,

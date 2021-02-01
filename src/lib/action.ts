@@ -82,8 +82,8 @@ export default class ActionHandler {
 
   constructor(
     public switchTool: (tool: ToolHandler) => Promise<void>,
+    handlers: { [key: string]: ToolHandler },
     public currentStyle: Style,
-    private baseCanvas: Page,
     public pages: Pages,
     public files: FileHandler,
     public history: HistoryHandler,
@@ -95,7 +95,6 @@ export default class ActionHandler {
     ) => void
   ) {
     this.canvas = this.pages.canvas;
-    const handlers = Handlers.from(baseCanvas, history, clipboard);
     this.actionMap = {
       previousPage: pages.previousPage,
       nextPage: pages.nextOrNewPage,
