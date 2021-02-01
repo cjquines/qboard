@@ -188,7 +188,7 @@ export default class QBoard {
 
     this.activeTool = tool;
 
-    this.baseCanvas.isDrawingMode = this.activeTool.isBrush;
+    this.baseCanvas.isDrawingMode = isBrush(this.activeTool);
 
     this.updateState();
   };
