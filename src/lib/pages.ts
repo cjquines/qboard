@@ -44,8 +44,8 @@ export default class Pages {
 
   // TODO: Should saveExisting be renamed and negated to force?
   loadPage = async (index: number, saveExisting = true): Promise<number> => {
-    if (index === this.currentIndex && saveExisting) return index;
     if (saveExisting) this.savePage();
+    if (index === this.currentIndex && saveExisting) return index;
     await this.canvas.loadFromJSONAsync(this.pagesJSON[index]);
     this.currentIndex = index;
     this.updateState();
