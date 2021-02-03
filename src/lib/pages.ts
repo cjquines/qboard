@@ -44,29 +44,29 @@ export default class Pages {
 
   loadPage = async (
     index: number,
-    dontSaveExisting = false,
+    saveExisting = true,
     force = false
   ): Promise<number> => {
     if (index === this.currentIndex && !force) return index;
-    if (!dontSaveExisting) this.savePage();
+    if (saveExisting) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJSON[index]);
     this.currentIndex = index;
-    if (!dontSaveExisting || force) this.updateState();
+    if (saveExisting || force) this.updateState();
     return index;
   };
 
-  previousOrNewPage = async (fromFile: boolean = false): Promise<number> => {
+  previousOrNewPage = async (): Promise<number> => {
     if (this.currentIndex === 0) {
       return this.insertPagesBefore([defaultPageJSON]);
     }
-    return this.loadPage(this.currentIndex - 1, fromFile);
+    return this.loadPage(this.currentIndex - 1);
   };
 
-  nextOrNewPage = async (fromFile: boolean = false): Promise<number> => {
+  nextOrNewPage = async (): Promise<number> => {
     if (this.currentIndex === this.pagesJSON.length - 1) {
       return this.insertPagesAfter([defaultPageJSON]);
     }
-    return this.loadPage(this.currentIndex + 1, fromFile);
+    return this.loadPage(this.currentIndex + 1);
   };
 
   export = async (): Promise<void> => {
@@ -117,7 +117,7 @@ export default class Pages {
     if (!response) return false;
 
     this.pagesJSON = pages;
-    await this.loadPage(0, true, true);
+    await this.loadPage(0, false, true);
     this.canvas.modified = false;
     return true;
   };
@@ -133,7 +133,7 @@ export default class Pages {
     if (!isNonModifying) {
       this.canvas.modified = true;
     }
-    return this.loadPage(this.currentIndex, true);
+    return this.loadPage(this.currentIndex, false, true);
   };
 
   insertPagesAfter = async (
@@ -147,6 +147,6 @@ export default class Pages {
     if (!isNonModifying) {
       this.canvas.modified = true;
     }
-    return this.loadPage(this.currentIndex + 1, false);
+    return this.loadPage(this.currentIndex + 1, true);
   };
 }
