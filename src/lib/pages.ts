@@ -51,7 +51,7 @@ export default class Pages {
     if (saveExisting) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJSON[index]);
     this.currentIndex = index;
-    if (saveExisting || force) this.updateState();
+    this.updateState();
     return index;
   };
 
