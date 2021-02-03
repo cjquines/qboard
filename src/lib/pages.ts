@@ -46,13 +46,17 @@ export default class Pages {
   };
 
   /**
-   * Safe method to load "move to"/"switch to" a specific page in UI
+   * Safe method to load "move to"/"switch to" a specific page in UI.
+   * Will not do anything if `{@param index} === this.currentIndex && {@param saveExisting}`.
+   *
    * @param index The 0-based index of the page to load
    * @param saveExisting
    * Whether to save the contents on the current page to memory before switching pages.
-   * Forces an unconditional re-render when set to `false`.
-   * May need to set to `false` if directly manipulating the internal array.
-   * @return The index of the loaded page.
+   * Forces an unconditional re-render when set to `false`,
+   * as opposed to not doing anything if the current page is {@param index}.
+   * May need to set to `false` if directly manipulating the internal array to prevent an override.
+   * @return
+   * The index of the loaded page.
    * This equals {@param index}.
    */
   // TODO: Should saveExisting be renamed and negated to force?
