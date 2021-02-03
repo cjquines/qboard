@@ -131,6 +131,7 @@ export default class Pages {
     pages: PageJSON[],
     isNonModifying = false
   ): Promise<number> => {
+    this.savePage();
     this.pagesJSON.splice(this.currentIndex, 0, ...pages);
     // make sure not to do
     // this.canvas.modified = !isNonModifying
