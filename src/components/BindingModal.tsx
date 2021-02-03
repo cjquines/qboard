@@ -8,7 +8,8 @@ import Icon from "./Icon";
 Modal.setAppElement("#Overlay");
 
 const nonBinding: Action[] = [
-  Action.AddPage,
+  Action.AddPageStart,
+  Action.AddPageEnd,
   Action.EnterFullScreen,
   Action.ExitFullScreen,
 ];

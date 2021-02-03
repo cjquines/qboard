@@ -32,7 +32,7 @@ const Pagination = (props: {
 
   useEffect(() => void navigate(), [value]);
 
-  const onSubmit: (e) => Promise<void> = (e) => {
+  const onSubmit = (e) => {
     e?.preventDefault();
     return navigate();
   };
@@ -41,11 +41,11 @@ const Pagination = (props: {
 
   return (
     <div className={`pagination visibility-${props.visibility}`}>
-      <OverlayButton
-        className={props.currentPage === 1 ? "disabled" : undefined}
-        action={Action.PreviousPage}
-        callback={props.doAction}
-      />
+      {props.currentPage === 1 ? (
+        <OverlayButton action={Action.AddPageStart} callback={props.doAction} />
+      ) : (
+        <OverlayButton action={Action.PreviousPage} callback={props.doAction} />
+      )}
       <form onSubmit={onSubmit}>
         <input
           onChange={onChange}
@@ -57,7 +57,7 @@ const Pagination = (props: {
       </form>
       <span className="total-pages"> / {props.totalPages}</span>
       {props.currentPage === props.totalPages ? (
-        <OverlayButton action={Action.AddPage} callback={props.doAction} />
+        <OverlayButton action={Action.AddPageEnd} callback={props.doAction} />
       ) : (
         <OverlayButton action={Action.NextPage} callback={props.doAction} />
       )}

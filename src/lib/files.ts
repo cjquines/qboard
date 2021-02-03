@@ -181,6 +181,6 @@ export default class FileHandler {
 
   private handleJSON = async (file: File): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
-    return this.pages.insertPages(this.pages.currentIndex + 1, pages);
+    return this.pages.insertPagesAfter(pages);
   };
 }
