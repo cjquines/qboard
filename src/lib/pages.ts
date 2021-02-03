@@ -71,7 +71,7 @@ export default class Pages {
    */
   previousOrNewPage = (): Promise<number> => {
     if (this.currentIndex === 0) {
-      return this.insertPagesBefore([defaultPageJSON]);
+      return this.insertPagesBefore([defaultPageJSON], true);
     }
     return this.loadPage(this.currentIndex - 1);
   };
@@ -82,7 +82,7 @@ export default class Pages {
    */
   nextOrNewPage = (): Promise<number> => {
     if (this.currentIndex === this.pagesJSON.length - 1) {
-      return this.insertPagesAfter([defaultPageJSON]);
+      return this.insertPagesAfter([defaultPageJSON], true);
     }
     return this.loadPage(this.currentIndex + 1);
   };
