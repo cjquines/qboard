@@ -16,6 +16,9 @@ const defaultPageJSON: PageJSON = {
   background: "white",
 };
 
+/**
+ * @return The current local time in the form `YYYY-MM-DD-HH-mm`
+ */
 const timeString = (): string => {
   const offset = new Date().getTimezoneOffset() * 60000;
   return new Date(Date.now() - offset)
@@ -43,12 +46,14 @@ export default class Pages {
   };
 
   /**
-   * Safe method to load a specific page in UI
+   * Safe method to load "move to"/"switch to" a specific page in UI
    * @param index The 0-based index of the page to load
    * @param saveExisting
-   * Whether to save the contents on the current page to memory.
-   * Forces an unconditional re-render when set to false.
-   * May need to set to false if directly manipulating the internal array.
+   * Whether to save the contents on the current page to memory before switching pages.
+   * Forces an unconditional re-render when set to `false`.
+   * May need to set to `false` if directly manipulating the internal array.
+   * @return The index of the loaded page.
+   * This equals {@param index}.
    */
   // TODO: Should saveExisting be renamed and negated to force?
   loadPage = async (index: number, saveExisting = true): Promise<number> => {
@@ -60,20 +65,32 @@ export default class Pages {
     return index;
   };
 
-  previousOrNewPage = async (): Promise<number> => {
+  /**
+   * Safely move back one page, creating a blank page if necessary.
+   * @return The index of the loaded page.
+   */
+  previousOrNewPage = (): Promise<number> => {
     if (this.currentIndex === 0) {
       return this.insertPagesBefore([defaultPageJSON]);
     }
     return this.loadPage(this.currentIndex - 1);
   };
 
-  nextOrNewPage = async (): Promise<number> => {
+  /**
+   * Safely move forward one page, creating a blank page if necessary.
+   * @return The index of the loaded page.
+   */
+  nextOrNewPage = (): Promise<number> => {
     if (this.currentIndex === this.pagesJSON.length - 1) {
       return this.insertPagesAfter([defaultPageJSON]);
     }
     return this.loadPage(this.currentIndex + 1);
   };
 
+  /**
+   * Safely convert the existing pages to PDF, and initiate a download.
+   * The filename is of the form `qboard-YYYY-MM-DD-HH-mm.pdf` in local time.
+   */
   export = async (): Promise<void> => {
     this.savePage();
     const ratio = 2;
@@ -104,12 +121,23 @@ export default class Pages {
     await this.canvas.loadFromJSONAsync(this.pagesJSON[currentIndexCopy]);
   };
 
+  /**
+   * Safely convert the existing pages to qboard JSON, and initiate a download.
+   * The filename is of the form `qboard-YYYY-MM-DD-HH-mm.json` in local time.
+   */
   saveFile = (): void => {
     this.savePage();
     new JSONWriter(this.pagesJSON).download(`qboard-${timeString()}.json`);
     this.canvas.modified = false;
   };
 
+  /**
+   * Replace the entire board with different data,
+   * after prompting (window.confirm) the user for confirmation.
+   * @param pages an array of page data in the internal format
+   * @return Whether the pages were successfully overwritten.
+   * This is the same as whether the user accepted the prompt.
+   */
   overwritePages = async (
     pages: PageJSON[] = [defaultPageJSON]
   ): Promise<boolean> => {
@@ -127,6 +155,11 @@ export default class Pages {
     return true;
   };
 
+  /**
+   * Add the content of {@param pages} to the pages list before the current page.
+   * @param isNonModifying `true` if you don't want to mark the board as modified due to this change.
+   * Generally set when inserting blank pages, which don't contain any objects.
+   */
   insertPagesBefore = async (
     pages: PageJSON[],
     isNonModifying = false
@@ -139,9 +172,16 @@ export default class Pages {
     if (!isNonModifying) {
       this.canvas.modified = true;
     }
+    // you have already saved the pages via splice;
+    // if you saveExisting then you will be saving to the wrong index
     return this.loadPage(this.currentIndex, false);
   };
 
+  /**
+   * Add the content of {@param pages} to the pages list after the current page.
+   * @param isNonModifying `true` if you don't want to mark the board as modified due to this change.
+   * Generally set when inserting blank pages, which don't contain any objects.
+   */
   insertPagesAfter = async (
     pages: PageJSON[],
     isNonModifying = false
@@ -153,6 +193,8 @@ export default class Pages {
     if (!isNonModifying) {
       this.canvas.modified = true;
     }
+    // you can saveExisting because you're only updating indices _after_ the current page.
+    // you can also saveExisting before the splice
     return this.loadPage(this.currentIndex + 1, true);
   };
 }
