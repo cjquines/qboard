@@ -37,21 +37,20 @@ const BindingModal = (props: {
       >
         <span style={{ left: "0.25em" }}>none</span>
       </button>
-      {Object.values(Action).map(
-        (action) =>
-          !nonBinding.includes(action) && (
-            <button
-              key={action}
-              className={props.action === action ? "active" : undefined}
-              onClick={() => props.callback(action)}
-            >
-              {Icon[action]}
-              <span style={Icon[action] ? {} : { left: "0.25em" }}>
-                {actionName(action)}
-              </span>
-            </button>
-          )
-      )}
+      {Object.values(Action)
+        .filter((action) => !nonBinding.includes(action))
+        .map((action) => (
+          <button
+            key={action}
+            className={props.action === action ? "active" : undefined}
+            onClick={() => props.callback(action)}
+          >
+            {Icon[action]}
+            <span style={Icon[action] ? {} : { left: "0.25em" }}>
+              {actionName(action)}
+            </span>
+          </button>
+        ))}
     </div>
   </Modal>
 );
