@@ -42,12 +42,9 @@ export default class Pages {
     ]);
   };
 
-  loadPage = async (
-    index: number,
-    saveExisting = true,
-    force = false
-  ): Promise<number> => {
-    if (index === this.currentIndex && !force) return index;
+  // TODO: Should saveExisting be renamed and negated to force?
+  loadPage = async (index: number, saveExisting = true): Promise<number> => {
+    if (index === this.currentIndex && saveExisting) return index;
     if (saveExisting) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJSON[index]);
     this.currentIndex = index;
@@ -117,7 +114,7 @@ export default class Pages {
     if (!response) return false;
 
     this.pagesJSON = pages;
-    await this.loadPage(0, false, true);
+    await this.loadPage(0, false);
     this.canvas.modified = false;
     return true;
   };
@@ -133,7 +130,7 @@ export default class Pages {
     if (!isNonModifying) {
       this.canvas.modified = true;
     }
-    return this.loadPage(this.currentIndex, false, true);
+    return this.loadPage(this.currentIndex, false);
   };
 
   insertPagesAfter = async (
