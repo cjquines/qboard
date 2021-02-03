@@ -44,30 +44,27 @@ export default class Pages {
 
   loadPage = async (
     index: number,
-    fromFile = false,
+    dontSaveExisting = false,
     force = false
   ): Promise<number> => {
     if (index === this.currentIndex && !force) return index;
-    if (!fromFile) this.savePage();
+    if (!dontSaveExisting) this.savePage();
     await this.canvas.loadFromJSONAsync(this.pagesJSON[index]);
     this.currentIndex = index;
-    if (!fromFile || force) this.updateState();
+    if (!dontSaveExisting || force) this.updateState();
     return index;
   };
 
-  newPage = async (fromFile = false): Promise<number> => {
-    this.pagesJSON.splice(this.currentIndex + 1, 0, defaultPageJSON);
-    return this.loadPage(this.currentIndex + 1, fromFile);
+  previousOrNewPage = async (fromFile: boolean = false): Promise<number> => {
+    if (this.currentIndex === 0) {
+      return this.insertPagesBefore([defaultPageJSON]);
+    }
+    return this.loadPage(this.currentIndex - 1, fromFile);
   };
 
-  previousPage = async (): Promise<number> => {
-    if (this.currentIndex === 0) return 0;
-    return this.loadPage(this.currentIndex - 1);
-  };
-
-  nextOrNewPage = async (fromFile = false): Promise<number> => {
+  nextOrNewPage = async (fromFile: boolean = false): Promise<number> => {
     if (this.currentIndex === this.pagesJSON.length - 1) {
-      return this.newPage(fromFile);
+      return this.insertPagesAfter([defaultPageJSON]);
     }
     return this.loadPage(this.currentIndex + 1, fromFile);
   };
@@ -125,9 +122,31 @@ export default class Pages {
     return true;
   };
 
-  insertPages = async (index: number, pages: PageJSON[]): Promise<number> => {
-    this.pagesJSON.splice(index, 0, ...pages);
-    this.canvas.modified = true;
-    return this.loadPage(index);
+  insertPagesBefore = async (
+    pages: PageJSON[],
+    isNonModifying = false
+  ): Promise<number> => {
+    this.pagesJSON.splice(this.currentIndex, 0, ...pages);
+    // make sure not to do
+    // this.canvas.modified = !isNonModifying
+    // because that marks an already modified board as unmodified
+    if (!isNonModifying) {
+      this.canvas.modified = true;
+    }
+    return this.loadPage(this.currentIndex, true);
+  };
+
+  insertPagesAfter = async (
+    pages: PageJSON[],
+    isNonModifying = false
+  ): Promise<number> => {
+    this.pagesJSON.splice(this.currentIndex + 1, 0, ...pages);
+    // make sure not to do
+    // this.canvas.modified = !isNonModifying
+    // because that marks an already modified board as unmodified
+    if (!isNonModifying) {
+      this.canvas.modified = true;
+    }
+    return this.loadPage(this.currentIndex + 1, false);
   };
 }

@@ -11,7 +11,8 @@ import React from "react";
 export enum Action {
   PreviousPage = "previousPage",
   NextPage = "nextPage",
-  AddPage = "addPage",
+  AddPageStart = "addPageStart",
+  AddPageEnd = "addPageEnd",
 
   Undo = "undo",
   Redo = "redo",
@@ -58,7 +59,8 @@ export enum Action {
 const nameMap = {
   previousPage: "–Page",
   nextPage: "+Page",
-  addPage: "+Page",
+  addPageStart: "-Page",
+  addPageEnd: "+Page",
   selectAll: "Select All",
   duplicate: "Clone",
   eraser: "Cut / Eraser",
@@ -108,9 +110,10 @@ export default class ActionHandler {
     this.canvas = this.pages.canvas;
 
     this.actionMap = {
-      previousPage: pages.previousPage,
+      previousPage: pages.previousOrNewPage,
       nextPage: pages.nextOrNewPage,
-      addPage: pages.nextOrNewPage,
+      addPageStart: pages.previousOrNewPage,
+      addPageEnd: pages.nextOrNewPage,
 
       undo: history.undo,
       redo: history.redo,

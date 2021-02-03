@@ -11,7 +11,8 @@ const Icon = {
 
   previousPage: fasIcon("caret-left"),
   nextPage: fasIcon("caret-right"),
-  addPage: fasIcon("plus", { transform: "scale(0.7)" }),
+  addPageStart: fasIcon("plus", { transform: "scale(0.7)" }),
+  addPageEnd: fasIcon("plus", { transform: "scale(0.7)" }),
 
   undo: fasIcon("undo"),
   redo: fasIcon("redo"),
