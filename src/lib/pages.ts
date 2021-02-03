@@ -42,6 +42,14 @@ export default class Pages {
     ]);
   };
 
+  /**
+   * Safe method to load a specific page in UI
+   * @param index The 0-based index of the page to load
+   * @param saveExisting
+   * Whether to save the contents on the current page to memory.
+   * Forces an unconditional re-render when set to false.
+   * May need to set to false if directly manipulating the internal array.
+   */
   // TODO: Should saveExisting be renamed and negated to force?
   loadPage = async (index: number, saveExisting = true): Promise<number> => {
     if (saveExisting) this.savePage();
