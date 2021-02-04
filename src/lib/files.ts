@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import { IsSubType, MalformedExpressionException } from "@mehra/ts";
 
 import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
@@ -29,33 +30,95 @@ export class AsyncReader {
     });
 }
 
+/**
+ * Common to _all_ versions of exports
+ */
+interface QboardFile {
+  "qboard-version": number;
+  pages: PageJSON[];
+}
+
+/**
+ * Basic check to test whether {@param object} is a valid qboard file at any version,
+ * i.e. does it have type [[`QboardFile`]]?
+ *
+ * Not a deep check;
+ * all valid qboard files will pass (return `true`) but not all invalid qboard files will fail (return `false`)
+ */
+const isValidQboardFile = (object: unknown): object is QboardFile => {
+  if (object instanceof Object) {
+    return "qboard-version" in object;
+  }
+  return false;
+};
+
+/**
+ * The current qboard file format
+ */
+interface CurrentQboardFile {
+  "qboard-version": 1;
+  pages: PageJSON[];
+}
+
+/**
+ * @Test Ensure that [[`CurrentQboardFile`]] is a subtype of [[`QboardFile`]]
+ */
+{
+  // Inline test because ts doesn't let an interface implement another interface
+  // Technically outputs to JS but it gets optimized out by both the minifier and the optimizing compiler
+
+  // Could be true, false, boolean, never
+  type ExpectTrue = IsSubType<CurrentQboardFile, QboardFile>;
+
+  // Make sure not false nor boolean
+  // @ts-expect-error TS2322
+  const a: ExpectTrue = false;
+
+  // Make sure not false nor never
+  const b: ExpectTrue = true;
+}
+
+/**
+ * A file, supposedly serialized from qboard, doesn't adhere to any version of the qboard file spec
+ */
+export class InvalidQboardFileException extends MalformedExpressionException {
+  constructor(message = "Invalid qboard file") {
+    super(message);
+  }
+}
+
 // manages version compatibility with old document formats
 // change the signature and usages to accommodate new data; this will fill in sample data for missing fields
 export class JSONReader {
+  /**
+   * Get the `pagesJSON` data from a qboard file
+   * @param json A JSON-serialized qboard file
+   * @throws {InvalidQboardFileException} if {@param json} doesn't represent a valid qboard file
+   */
   static read(json: string | ArrayBuffer): PageJSON[] {
-    const object = JSON.parse(json.toString());
+    const object: unknown = JSON.parse(json.toString());
     return JSONReader.readParsed(object);
   }
 
-  // FIXME: provide backwards-compatible interface as input type
-  // * https://github.com/cjquines/qboard/pull/118
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-  static readParsed(object: any): PageJSON[] {
-    const { "qboard-version": version, pages } = object;
-    switch (version) {
-      case 1:
-        return pages;
-      default:
-        return pages;
-    }
+  /**
+   * Get the `pagesJSON` data from a parsed qboard file
+   * @param object A parsed serialized qboard file
+   * @throws {InvalidQboardFileException} if {@param object} doesn't represent a valid qboard file
+   */
+  static readParsed(object: unknown): PageJSON[] {
+    if (!isValidQboardFile(object)) throw new InvalidQboardFileException();
+
+    const {
+      // output is same regardless of version due to forwards compatibility
+      // "qboard-version": version,
+      pages,
+    } = object;
+    return pages;
   }
 }
 
 export class JSONWriter {
-  private readonly sourceJSON: {
-    "qboard-version": number;
-    pages: PageJSON[];
-  };
+  private readonly sourceJSON: CurrentQboardFile;
   private asString?: string;
   private asBlob?: Blob;
   private asUrl?: string;
