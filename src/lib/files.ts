@@ -32,9 +32,12 @@ export class AsyncReader {
 // manages version compatibility with old document formats
 // change the signature and usages to accommodate new data; this will fill in sample data for missing fields
 export class JSONReader {
-  static async read(json: Promise<string | ArrayBuffer>): Promise<PageJSON[]> {
-    const object = JSON.parse((await json).toString());
+  static read(json: string | ArrayBuffer): PageJSON[] {
+    const object = JSON.parse(json.toString());
+    return JSONReader.readParsed(object);
+  }
 
+  static readParsed(object): PageJSON[] {
     const { "qboard-version": version, pages } = object;
     switch (version) {
       case 1:
@@ -155,7 +158,7 @@ export default class FileHandler {
   openFile = async (file: File): Promise<boolean> => {
     this.pages.savePage();
     return this.pages.overwritePages(
-      await JSONReader.read(AsyncReader.readAsText(file))
+      JSONReader.read(await AsyncReader.readAsText(file))
     );
   };
 
@@ -172,7 +175,7 @@ export default class FileHandler {
     );
 
   private handleJSON = async (file: File): Promise<number> => {
-    const pages = await JSONReader.read(AsyncReader.readAsText(file));
+    const pages = JSONReader.read(await AsyncReader.readAsText(file));
     return this.pages.insertPages(this.pages.currentIndex + 1, pages);
   };
 }
