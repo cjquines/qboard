@@ -35,6 +35,7 @@ export class JSONReader {
     const { "qboard-version": version, pages } = object;
     switch (version) {
       case 1:
+      case 2:
         return pages;
       default:
         return pages;
@@ -46,13 +47,15 @@ export class JSONWriter {
   private readonly sourceJSON: {
     "qboard-version": number;
     pages: PageJSON[];
+    "exported-date": Date;
   };
   private stringified: string;
 
   constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
-      "qboard-version": 1,
+      "qboard-version": 2,
       pages: pagesJSON,
+      "exported-date": new Date(), // this date is only parsed once per new JSONWriter()
     };
   }
 
@@ -69,6 +72,41 @@ export class JSONWriter {
     const url = window.URL.createObjectURL(this.toBlob());
     const revoke = () => window.URL.revokeObjectURL(url);
     return [url, revoke];
+  };
+
+  download = (): void => {
+    const [fileURL, revokeURL] = this.toURL();
+
+    new FileUI().download(
+      `qboard-${FileUI.timeStringNow()}.json`,
+      fileURL,
+      revokeURL
+    );
+  };
+}
+
+export class FileUI {
+  static timeString = (date): string => {
+    return [
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+    ].join("-");
+  };
+  static timeStringNow = (): string => FileUI.timeString(new Date());
+
+  download = (name: string, fileURL: string, revokeURL = (): void => {}) => {
+    const elt = document.createElement("a");
+    elt.style.display = "none";
+    elt.href = fileURL;
+    elt.download = name;
+    document.body.appendChild(elt);
+    elt.click();
+    elt.parentElement.removeChild(elt);
+
+    revokeURL();
   };
 }
 

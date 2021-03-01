@@ -2,7 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake.min";
 import { fabric } from "fabric";
 
 import Page from "./page";
-import { JSONWriter } from "./files";
+import { FileUI, JSONWriter } from "./files";
 
 export type PageJSON = {
   version: string;
@@ -14,14 +14,6 @@ const defaultPageJSON: PageJSON = {
   version: "4.2.0",
   objects: [],
   background: "white",
-};
-
-const timeString = (): string => {
-  const offset = new Date().getTimezoneOffset() * 60000;
-  return new Date(Date.now() - offset)
-    .toISOString()
-    .slice(0, -8)
-    .replace(/\D/g, "-");
 };
 
 export default class Pages {
@@ -94,24 +86,16 @@ export default class Pages {
       content,
     };
 
-    pdfMake.createPdf(docDefinition).download(`qboard-${timeString()}.pdf`);
+    pdfMake
+      .createPdf(docDefinition)
+      .download(`qboard-${FileUI.timeStringNow()}.pdf`);
 
     await this.canvas.loadFromJSONAsync(this.pagesJSON[currentIndexCopy]);
   };
 
   saveFile = (): void => {
     this.savePage();
-    const [fileURL, revokeURL] = new JSONWriter(this.pagesJSON).toURL();
-
-    const elt = document.createElement("a");
-    elt.style.display = "none";
-    elt.href = fileURL;
-    elt.download = `qboard-${timeString()}.json`;
-    document.body.appendChild(elt);
-    elt.click();
-    elt.parentElement.removeChild(elt);
-
-    revokeURL();
+    new JSONWriter(this.pagesJSON).download();
     this.canvas.modified = false;
   };
 
