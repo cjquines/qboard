@@ -19,7 +19,7 @@ export default class ClipboardHandler {
     window.addEventListener("paste", this.pasteExternal);
   }
 
-  copy = async (): Promise<fabric.Object> => {
+  copy = (): fabric.Object => {
     const objects: fabric.Object = this.canvas.getActiveObject();
     if (!objects) return null;
     objects.clone((clone) => {
@@ -45,7 +45,7 @@ export default class ClipboardHandler {
     return true;
   };
 
-  paste = async (): Promise<void> => {
+  paste = (): void => {
     if (!this.clipboard) return;
     return this.clipboard.clone((clone) =>
       this.canvas.placeObject(clone).then(this.history.add)

@@ -159,9 +159,9 @@ export default class ActionHandler {
     };
   }
 
-  doAction = async (action: Action): Promise<void> => this.actionMap[action]();
+  doAction = (action: Action): Promise<void> => this.actionMap[action]();
 
-  setDash = async (dash: Dash): Promise<void> => {
+  setDash = (dash: Dash): void => {
     if (dash === this.currentStyle.dash) {
       this.setStyle(Dash.Solid, null, null);
     } else {
@@ -169,7 +169,7 @@ export default class ActionHandler {
     }
   };
 
-  setStroke = async (stroke: Stroke): Promise<void> => {
+  setStroke = (stroke: Stroke): void => {
     if (stroke === this.currentStyle.stroke) {
       this.setStyle(null, Stroke.Black, null);
     } else {
@@ -177,7 +177,7 @@ export default class ActionHandler {
     }
   };
 
-  setFill = async (fill: Fill): Promise<void> => {
+  setFill = (fill: Fill): void => {
     if (fill === this.currentStyle.fill) {
       this.setStyle(null, null, Fill.Transparent);
     } else {

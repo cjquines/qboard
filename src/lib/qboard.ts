@@ -176,7 +176,7 @@ export default class QBoard {
     this.updateState();
   };
 
-  windowResize = async (): Promise<void> => {
+  windowResize = (): void => {
     clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(async () => {
       await this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
@@ -245,7 +245,7 @@ export default class QBoard {
       this.baseCanvas.remove(...objects);
       await this.history.remove(objects);
     } else if (this.currentTool === Tool.Laser) {
-      setTimeout(async () => {
+      setTimeout(() => {
         this.baseCanvas.remove(e.path);
         this.baseCanvas.requestRenderAll();
       }, 1000);

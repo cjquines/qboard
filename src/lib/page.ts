@@ -13,10 +13,7 @@ export default class Page extends fabric.Canvas {
   latestId = 0;
   modified = false;
 
-  fitToWindow = async (
-    canvasWidth: number,
-    canvasHeight: number
-  ): Promise<void> => {
+  fitToWindow = (canvasWidth: number, canvasHeight: number): void => {
     const widthRatio = window.innerWidth / canvasWidth;
     const heightRatio = window.innerHeight / canvasHeight;
     this.setZoom(Math.min(widthRatio, heightRatio));
@@ -26,7 +23,7 @@ export default class Page extends fabric.Canvas {
     this.canvasHeight = canvasHeight;
   };
 
-  deactivateSelection = async (): Promise<void> => {
+  deactivateSelection = (): void => {
     this.isDrawingMode = false;
     this.selection = false;
     this.discardActiveObject();
@@ -36,7 +33,7 @@ export default class Page extends fabric.Canvas {
     this.requestRenderAll();
   };
 
-  activateSelection = async (): Promise<void> => {
+  activateSelection = (): void => {
     this.isDrawingMode = false;
     this.selection = true;
     this.forEachObject((object) => {
@@ -44,7 +41,7 @@ export default class Page extends fabric.Canvas {
     });
   };
 
-  getNextId = async (): Promise<number> => {
+  getNextId = (): number => {
     this.latestId += 1;
     return this.latestId;
   };
@@ -66,7 +63,7 @@ export default class Page extends fabric.Canvas {
     return [];
   };
 
-  serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
+  serialize = (objects: fabric.Object[]): fabric.Object[] => {
     const selection = this.getActiveObjects();
     const reselect =
       selection.length > 1 && objects.some((obj) => selection.includes(obj));
