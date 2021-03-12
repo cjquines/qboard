@@ -120,12 +120,10 @@ export default class Page extends fabric.Canvas {
     } as Partial<fabric.ActiveSelection>);
     if (obj._objects) {
       obj.canvas = this;
-      obj.forEachObject((object) =>
-        this.getNextId().then((id_) => {
-          (object as ObjectId).id = id_;
-          this.add(object);
-        })
-      );
+      obj.forEachObject((object) => {
+        (object as ObjectId).id = this.getNextId();
+        this.add(object);
+      });
       obj.setCoords();
     } else {
       this.add(obj);

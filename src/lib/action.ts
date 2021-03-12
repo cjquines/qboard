@@ -122,7 +122,10 @@ export default class ActionHandler {
         );
         this.canvas.requestRenderAll();
       },
-      duplicate: () => this.clipboard.copy().then(() => this.clipboard.paste()),
+      duplicate: () => {
+        this.clipboard.copy();
+        this.clipboard.paste();
+      },
 
       move: () => this.switchTool(Tool.Move),
       pen: () => this.switchTool(Tool.Pen),
