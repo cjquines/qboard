@@ -28,19 +28,16 @@ export default class HistoryHandler {
     public updateState: () => void
   ) {}
 
-  execute = async (command: HistoryCommand = {}): Promise<void[]> => {
+  execute = (command: HistoryCommand = {}): void => {
     if (command.clear) this.clear(command.clear[0]);
-    const actions: Promise<void>[] = [
-      this.add(command.add),
-      this.remove(command.remove),
-    ];
-    return Promise.all(actions);
+    this.add(command.add);
+    this.remove(command.remove);
   };
 
-  add = async (objects: fabric.Object[]): Promise<void> =>
+  add = (objects: fabric.Object[]): void =>
     objects?.length && this.save(null, objects);
 
-  remove = async (objects: fabric.Object[]): Promise<void> =>
+  remove = (objects: fabric.Object[]): void =>
     objects?.length && this.save(objects, null);
 
   clear = (clearRedo = false): void => {
@@ -49,20 +46,20 @@ export default class HistoryHandler {
     this.updateState();
   };
 
-  store = async (objects: fabric.Object[]): Promise<void> => {
+  store = (objects: fabric.Object[]): void => {
     if (this.locked) return;
     this.locked = true;
     this.selection = this.canvas.serialize(objects);
     this.locked = false;
   };
 
-  modify = async (objects: fabric.Object[]): Promise<void> =>
+  modify = (objects: fabric.Object[]): void =>
     this.save(this.selection, objects);
 
-  save = async (
+  save = (
     oldObjects: fabric.Object[] | null,
     newObjects: fabric.Object[] | null
-  ): Promise<void> => {
+  ): void => {
     if (this.locked) return;
     const basis = newObjects || oldObjects;
     this.locked = true;

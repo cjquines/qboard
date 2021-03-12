@@ -80,7 +80,7 @@ export default class ActionHandler {
   actionMap: unknown;
 
   constructor(
-    public switchTool: (tool: Tool) => Promise<void>,
+    public switchTool: (tool: Tool) => void,
     public currentStyle: Style,
     public pages: Pages,
     public files: FileHandler,

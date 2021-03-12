@@ -102,10 +102,7 @@ export default class Page extends fabric.Canvas {
       });
     });
 
-  placeObject = async (
-    obj: any,
-    cursor: Cursor = this.cursor
-  ): Promise<fabric.Object[]> => {
+  placeObject = (obj: any, cursor: Cursor = this.cursor): fabric.Object[] => {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
     this.discardActiveObject();

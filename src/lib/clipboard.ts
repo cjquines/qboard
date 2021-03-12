@@ -28,7 +28,7 @@ export default class ClipboardHandler {
     return objects;
   };
 
-  cut = async (): Promise<boolean> => {
+  cut = (): boolean => {
     const objects = this.copy() as fabric.ActiveSelection;
     if (!objects) return false;
     this.canvas.discardActiveObject();
@@ -36,10 +36,10 @@ export default class ClipboardHandler {
       objects.forEachObject((object) => {
         this.canvas.remove(object);
       });
-      await this.history.remove(objects._objects);
+      this.history.remove(objects._objects);
     } else {
       this.canvas.remove(objects);
-      await this.history.remove([objects]);
+      this.history.remove([objects]);
     }
     this.canvas.requestRenderAll();
     return true;
@@ -48,13 +48,13 @@ export default class ClipboardHandler {
   paste = (): void => {
     if (!this.clipboard) return;
     return this.clipboard.clone((clone) =>
-      this.canvas.placeObject(clone).then(this.history.add)
+      this.history.add(this.canvas.placeObject(clone))
     );
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
     const historyCommand = await this.files.processFiles(e.clipboardData.files);
-    await this.history.execute(historyCommand);
+    this.history.execute(historyCommand);
     this.paste();
   };
 }

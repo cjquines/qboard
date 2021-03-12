@@ -153,7 +153,7 @@ export default class QBoard {
 
   switchTool = async (tool: Tool): Promise<void> => {
     if (tool === Tool.Eraser) {
-      if (await this.clipboard.cut()) return;
+      if (this.clipboard.cut()) return;
     }
 
     this.currentTool = tool;
@@ -178,7 +178,7 @@ export default class QBoard {
 
   windowResize = (): void => {
     clearTimeout(this.resizeCooldown);
-    this.resizeCooldown = setTimeout(async () => {
+    this.resizeCooldown = setTimeout(() => {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
       this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);
@@ -203,7 +203,7 @@ export default class QBoard {
     this.canvas.requestRenderAll();
   };
 
-  mouseUp: FabricHandler = async () => {
+  mouseUp: FabricHandler = () => {
     if (!this.tool.draw) return;
 
     this.isDown = false;
@@ -211,7 +211,7 @@ export default class QBoard {
     this.baseCanvas.requestRenderAll();
     this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
-    await this.history.add([this.currentObject]);
+    this.history.add([this.currentObject]);
   };
 
   setDragActive = (state: boolean): void => {
@@ -228,13 +228,13 @@ export default class QBoard {
     const historyCommand = await this.files.processFiles(
       (iEvent.e as DragEvent).dataTransfer.files
     );
-    await this.history.execute(historyCommand);
+    this.history.execute(historyCommand);
   };
 
-  pathCreated: FabricHandler = async (e: PathEvent) => {
+  pathCreated: FabricHandler = (e: PathEvent) => {
     if (this.currentTool === Tool.Pen) {
       e.path.id = this.baseCanvas.getNextId();
-      await this.history.add([e.path]);
+      this.history.add([e.path]);
     } else if (this.currentTool === Tool.Eraser) {
       const path = fabric.util.object.clone(e.path);
       this.baseCanvas.remove(e.path);
@@ -243,7 +243,7 @@ export default class QBoard {
         .filter((object) => object.intersectsWithObject(path));
       if (!objects.length) return;
       this.baseCanvas.remove(...objects);
-      await this.history.remove(objects);
+      this.history.remove(objects);
     } else if (this.currentTool === Tool.Laser) {
       setTimeout(() => {
         this.baseCanvas.remove(e.path);
@@ -255,9 +255,9 @@ export default class QBoard {
   selectionCreated: FabricHandler = (e) =>
     !this.history.locked && this.history.store(e.selected);
 
-  objectModified: FabricHandler = async (e) => {
-    await this.history.modify(e.target._objects || [e.target]);
-    await this.history.store(e.target._objects || [e.target]);
+  objectModified: FabricHandler = (e) => {
+    this.history.modify(e.target._objects || [e.target]);
+    this.history.store(e.target._objects || [e.target]);
   };
 
   updateCursor: FabricHandler = (iEvent) => {
