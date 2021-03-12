@@ -110,7 +110,7 @@ export default class FileHandler {
     if (file.type.startsWith("image/")) {
       return {
         action: "image",
-        history: { add: await this.handleImage(file, cursor) },
+        history: { add: [await this.handleImage(file, cursor)] },
       };
     }
 
@@ -136,8 +136,8 @@ export default class FileHandler {
   private handleImage = async (
     file: File,
     cursor?: Cursor
-  ): Promise<fabric.Object[]> =>
-    new Promise<fabric.Object[]>((resolve) =>
+  ): Promise<fabric.Object> =>
+    new Promise<fabric.Object>((resolve) =>
       AsyncReader.readAsDataURL(file).then((result) =>
         fabric.Image.fromURL(result.toString(), (obj: fabric.Image) => {
           resolve(this.pages.canvas.placeObject(obj, cursor));
