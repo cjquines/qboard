@@ -109,7 +109,7 @@ export default class Page extends fabric.Canvas {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
     this.discardActiveObject();
-    const id = await this.getNextId();
+    const id = this.getNextId();
 
     obj.set({
       id,

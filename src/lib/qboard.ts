@@ -160,14 +160,14 @@ export default class QBoard {
     this.tool = this.handlers[tool];
 
     if (tool === Tool.Move || this.tool.isBrush) {
-      await this.baseCanvas.activateSelection();
+      this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
       await this.tool.setBrush?.(
         this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
         this.drawerOptions
       );
     } else {
-      await this.baseCanvas.deactivateSelection();
+      this.baseCanvas.deactivateSelection();
       this.canvasElement.parentElement.style.display = "block";
     }
 
@@ -179,8 +179,8 @@ export default class QBoard {
   windowResize = (): void => {
     clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(async () => {
-      await this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
-      await this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+      this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
+      this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);
   };
 
@@ -190,7 +190,7 @@ export default class QBoard {
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
-    (this.currentObject as ObjectId).id = await this.baseCanvas.getNextId();
+    (this.currentObject as ObjectId).id = this.baseCanvas.getNextId();
     this.canvas.add(this.currentObject);
     this.canvas.requestRenderAll();
   };
@@ -233,7 +233,7 @@ export default class QBoard {
 
   pathCreated: FabricHandler = async (e: PathEvent) => {
     if (this.currentTool === Tool.Pen) {
-      e.path.id = await this.baseCanvas.getNextId();
+      e.path.id = this.baseCanvas.getNextId();
       await this.history.add([e.path]);
     } else if (this.currentTool === Tool.Eraser) {
       const path = fabric.util.object.clone(e.path);

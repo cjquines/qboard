@@ -29,7 +29,7 @@ export default class ClipboardHandler {
   };
 
   cut = async (): Promise<boolean> => {
-    const objects = (await this.copy()) as fabric.ActiveSelection;
+    const objects = this.copy() as fabric.ActiveSelection;
     if (!objects) return false;
     this.canvas.discardActiveObject();
     if (objects.type === "activeSelection") {
@@ -55,6 +55,6 @@ export default class ClipboardHandler {
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
     const historyCommand = await this.files.processFiles(e.clipboardData.files);
     await this.history.execute(historyCommand);
-    await this.paste();
+    this.paste();
   };
 }
