@@ -26,6 +26,7 @@ jobs:
           auto_fix: true
           # Enable linters
           eslint: true
+          eslint_dir: src/
           eslint_extensions: js,jsx,ts,tsx
           prettier: true
           prettier_extensions: html,json,md,vue,yaml,yml # Only run on extensions not part of ESLint config

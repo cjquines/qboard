@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
-    "lint": "eslint **/*.{js,ts,jsx,tsx}",
+    "lint": "eslint src/**/*.{js,ts,jsx,tsx}",
     "lint:fix": "npm run lint -- --fix",
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
