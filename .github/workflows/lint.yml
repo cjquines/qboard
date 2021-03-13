@@ -25,15 +25,4 @@ jobs:
         run: npm ci
 
       - name: Run linters
-        uses: pihart/lint-action@split-prefix
-        with:
-          github_token: ${{ secrets.github_token }}
-          auto_fix: true
-          eslint: true
-          eslint_command_prefix_run: >-
-            npx --no-install eslint src/**/*.{js,ts,jsx,tsx} --fix --no-color --format json
-            #
-          prettier: true
-          prettier_extensions: html,json,md,vue,yaml,yml # Only run on extensions not part of ESLint config
-          stylelint: true
-          stylelint_extensions: css,scss,sass
+        run: npm run lint
