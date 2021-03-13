@@ -14,7 +14,7 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
   ],
-  ignorePatterns: [],
+  ignorePatterns: ["*.js"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.json",
