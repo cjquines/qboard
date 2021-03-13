@@ -25,40 +25,14 @@ jobs:
         run: npm ci
 
       - name: Run linters
-        uses: wearerequired/lint-action@v1.6.0
+        uses: pihart/lint-action@split-prefix
         with:
           github_token: ${{ secrets.github_token }}
           auto_fix: true
-          # Enable linters
           eslint: true
-          # Override their command, which is defined at
-          # https://github.com/wearerequired/lint-action/blob/cb48f596b88daacd6edbafe8939d9178cb789cb8/src/linters/eslint.js#L49
-          # The "#" blocks their command fragment from running
-          # We still use them because they implemented the library to annotate the source code with the eslint output
-          #
-          # They use the prefix twice: once at
-          # https://github.com/wearerequired/lint-action/blob/cb48f596b88daacd6edbafe8939d9178cb789cb8/src/linters/eslint.js#L29
-          # to check that eslint exists, and then once at
-          # https://github.com/wearerequired/lint-action/blob/cb48f596b88daacd6edbafe8939d9178cb789cb8/src/linters/eslint.js#L49
-          # when actually running eslint.
-          # The first time (then), I want to clone exactly what they do;
-          # otherwise if there are any eslint warnings or errors it will error out then and there.
-          # The next time (else), I want to run my own eslint command,
-          # but output to json so that the library can read it to annotate the source
-          #
-          # We must also prepend eslint itself with their default prefix "npx --no-install"
-          # https://github.com/wearerequired/lint-action/blob/cb48f596b88daacd6edbafe8939d9178cb789cb8/src/utils/npm/get-npm-bin-command.js#L10
-          eslint_command_prefix: >-
-            if [ -z "$hasCheckedEslint" ];
-              then
-                npx --no-install eslint -v &&
-                hasCheckedEslint=1;
-              else
-                npx --no-install eslint src/**/*.{js,ts,jsx,tsx} --fix --no-color --format json;
-            fi
+          eslint_command_prefix_run: >-
+            npx --no-install eslint src/**/*.{js,ts,jsx,tsx} --fix --no-color --format json
             #
-            ^ the above "#" creates an end-of-line comment which blocks anything afterwards,
-            including the library's commands
           prettier: true
           prettier_extensions: html,json,md,vue,yaml,yml # Only run on extensions not part of ESLint config
           stylelint: true
