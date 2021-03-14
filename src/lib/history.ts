@@ -29,6 +29,9 @@ export default class HistoryHandler {
     public updateState: () => void
   ) {}
 
+  /**
+   * Behavior is undefined if the same object is in both the `add` and `remove` properties of {@param command}
+   */
   execute = (command: HistoryCommand = {}): void => {
     if (command.clear) this.clear(command.clear[0]);
     this.add(command.add);
