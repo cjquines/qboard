@@ -47,10 +47,10 @@ export default class Page extends fabric.Canvas {
   };
 
   // kind of inefficient
-  getObjectByIds = (ids: number[]): fabric.Object[] =>
+  getObjectByIds = (ids: readonly number[]): fabric.Object[] =>
     this.getObjects().filter((object) => ids.includes((object as ObjectId).id));
 
-  serialize = (objects: fabric.Object[]): fabric.Object[] => {
+  serialize = (objects: readonly fabric.Object[]): fabric.Object[] => {
     const selection = this.getActiveObjects();
     const reselect =
       selection.length > 1 && objects.some((obj) => selection.includes(obj));
@@ -74,7 +74,10 @@ export default class Page extends fabric.Canvas {
     );
   };
 
-  apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
+  apply = (
+    ids: readonly number[],
+    newObjects: fabric.Object[] | null
+  ): void => {
     const oldObjects = this.getObjectByIds(ids);
     if (oldObjects.length) {
       this.remove(...oldObjects);
