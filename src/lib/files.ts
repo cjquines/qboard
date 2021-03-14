@@ -9,24 +9,45 @@ const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
 
 export class AsyncReader {
-  static readAsText = (file: File): Promise<string | ArrayBuffer> =>
+  private static setup = <
+    ReadType extends "Text" | "DataURL" | "ArrayBuffer" | "BinaryString"
+  >(
+    resolve: (
+      value: ReadType extends "Text" | "BinaryString"
+        ? "string"
+        : ReadType extends "DataURL"
+        ? `data:${string}`
+        : ReadType extends "ArrayBuffer"
+        ? ArrayBuffer
+        : never
+    ) => void,
+    reject: (reason: unknown) => void
+  ) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as never);
+    };
+    reader.onerror = reject;
+    type readFn = (file: File) => void;
+    return (reader as unknown) as ReadType extends "Text"
+      ? { readAsText: readFn }
+      : ReadType extends "BinaryString"
+      ? { readAsBinaryString: readFn }
+      : ReadType extends "DataURL"
+      ? { readAsDataURL: readFn }
+      : ReadType extends "ArrayBuffer"
+      ? { readAsArrayBuffer: readFn }
+      : never;
+  };
+
+  static readAsText = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result!);
-      };
-      reader.onerror = reject;
-      reader.readAsText(file);
+      AsyncReader.setup<"Text">(resolve, reject).readAsText(file);
     });
 
-  static readAsDataURL = (file: File): Promise<string | ArrayBuffer> =>
+  static readAsDataURL = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result!);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+      AsyncReader.setup<"DataURL">(resolve, reject).readAsDataURL(file);
     });
 }
 
