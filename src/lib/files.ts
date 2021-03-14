@@ -182,20 +182,20 @@ export default class FileHandler {
     files: FileList,
     cursor?: Cursor
   ): Promise<HistoryCommand> => {
-    const images: fabric.Object[] = [];
-    await Promise.all(
-      [...files].map(async (file) => {
-        if (file.type.startsWith("image/")) {
-          images.push(await this.handleImage(file, cursor));
-        }
-        if (file.type === "application/json") {
-          return this.handleJSON(file);
-        }
-      })
-    );
-    return {
-      add: images.flat(),
-    };
+    const additions: HistoryCommand["add"] = [];
+
+    for (const file of files) {
+      if (file.type.startsWith("image/")) {
+        // eslint-disable-next-line no-await-in-loop
+        additions.push(await this.handleImage(file, cursor));
+      }
+      if (file.type === "application/json") {
+        // eslint-disable-next-line no-await-in-loop
+        await this.handleJSON(file);
+      }
+    }
+
+    return { add: additions };
   };
 
   acceptFile = async (
