@@ -178,6 +178,17 @@ export type FileHandlerResponse = {
 export default class FileHandler {
   constructor(public pages: Pages) {}
 
+  /**
+   * Accepts multiple files, usually via file drop, and performs the equivalent of adding them to qboard in order.
+   * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
+   * JSON files representing qboard files have their pages inserted into the page list *after the current page*,
+   * and then the first page of the inserted file (=current page + 1) is activated.
+   *
+   * Implementation detail: currently *does* add each in order;
+   * this could likely be optimized.
+   * If so, be careful to validate the json files so that the behavior is equivalent to doing each individually.
+   * @param files The ordered list of files
+   */
   processFiles = async (
     files: FileList,
     cursor?: Cursor
