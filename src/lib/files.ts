@@ -30,6 +30,15 @@ export class AsyncReader {
     });
 }
 
+type JSONFile = File & { type: "application/json" };
+type ImageFile = File & { type: `image/${string}` };
+
+const isJSONFile = (file: File): file is JSONFile =>
+  file.type === "application/json";
+
+const isImageFile = (file: File): file is ImageFile =>
+  file.type.startsWith("image/");
+
 /**
  * Common to _all_ versions of exports
  */
@@ -97,7 +106,7 @@ export class JSONReader {
    * @throws {InvalidQboardFileException} if {@param json} doesn't represent a valid qboard file
    */
   static read(json: string | ArrayBuffer): PageJSON[] {
-    const object: unknown = JSON.parse(json.toString());
+    const object = JSON.parse(json.toString());
     return JSONReader.readParsed(object);
   }
 
@@ -196,11 +205,12 @@ export default class FileHandler {
     const additions: HistoryCommand["add"] = [];
 
     for (const file of files) {
-      if (file.type.startsWith("image/")) {
+      if (isImageFile(file)) {
         // eslint-disable-next-line no-await-in-loop
         additions.push(await this.handleImage(file, cursor));
       }
-      if (file.type === "application/json") {
+
+      if (isJSONFile(file)) {
         // eslint-disable-next-line no-await-in-loop
         await this.handleJSON(file);
       }
@@ -227,14 +237,14 @@ export default class FileHandler {
     if (!files.length) return { action: "none" };
     const [file] = files;
 
-    if (file.type.startsWith("image/")) {
+    if (isImageFile(file)) {
       return {
         action: "image",
         history: { add: [await this.handleImage(file, cursor)] },
       };
     }
 
-    if (file.type === "application/json") {
+    if (isJSONFile(file)) {
       await this.openFile(file);
       return {
         action: "json",
@@ -246,7 +256,7 @@ export default class FileHandler {
     return { action: "none" };
   };
 
-  openFile = async (file: File): Promise<boolean> => {
+  openFile = async (file: JSONFile): Promise<boolean> => {
     this.pages.savePage();
     return this.pages.overwritePages(
       JSONReader.read(await AsyncReader.readAsText(file))
@@ -254,7 +264,7 @@ export default class FileHandler {
   };
 
   private handleImage = async (
-    file: File,
+    file: ImageFile,
     cursor?: Cursor
   ): Promise<fabric.Object> =>
     AsyncReader.readAsDataURL(file)
@@ -278,7 +288,7 @@ export default class FileHandler {
         return img;
       });
 
-  private handleJSON = async (file: File): Promise<number> => {
+  private handleJSON = async (file: JSONFile): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
     return this.pages.insertPagesAfter(pages);
   };
