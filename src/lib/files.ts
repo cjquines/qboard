@@ -324,9 +324,10 @@ export default class FileHandler {
 
   private handlePDF = async (file: PDFFile): Promise<number> => {
     await this.pages.newPage();
-    const doc = await getDocument(
-      new Uint8Array(await AsyncReader.readAsArrayBuffer(file))
-    ).promise;
+    const doc = await getDocument({
+      data: new Uint8Array(await AsyncReader.readAsArrayBuffer(file)),
+      fontExtraProperties: true,
+    }).promise;
 
     // for (let i = 0; i < doc.numPages; i++) {
     //   const page = await doc.getPage(i + 1);
@@ -339,7 +340,7 @@ export default class FileHandler {
     const page = await doc.getPage(1);
     const opList = await page.getOperatorList();
     const svgGraphics = new SVGGraphics(page.commonObjs, page.objs);
-    // svgGraphics.embedFonts = true;
+    svgGraphics.embedFonts = true;
     const svg = await svgGraphics.getSVG(
       opList,
       page.getViewport({ scale: 1, rotation: 0, dontFlip: false })
