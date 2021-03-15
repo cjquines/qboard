@@ -4,11 +4,27 @@ import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
+import { getDocument, SVGGraphics } from "pdfjs-dist";
 
 const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
 
 export class AsyncReader {
+  static readAsText = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      AsyncReader.setup<"Text">(resolve, reject).readAsText(file);
+    });
+
+  static readAsDataURL = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      AsyncReader.setup<"DataURL">(resolve, reject).readAsDataURL(file);
+    });
+
+  static readAsArrayBuffer = (file: File): Promise<ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      AsyncReader.setup<"ArrayBuffer">(resolve, reject).readAsArrayBuffer(file);
+    });
+
   private static setup = <
     ReadType extends "Text" | "DataURL" | "ArrayBuffer" | "BinaryString"
   >(
@@ -39,26 +55,20 @@ export class AsyncReader {
       ? { readAsArrayBuffer: readFn }
       : never;
   };
-
-  static readAsText = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      AsyncReader.setup<"Text">(resolve, reject).readAsText(file);
-    });
-
-  static readAsDataURL = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      AsyncReader.setup<"DataURL">(resolve, reject).readAsDataURL(file);
-    });
 }
 
 type JSONFile = File & { type: "application/json" };
 type ImageFile = File & { type: `image/${string}` };
+type PDFFile = File & { type: "application/pdf" };
 
 const isJSONFile = (file: File): file is JSONFile =>
   file.type === "application/json";
 
 const isImageFile = (file: File): file is ImageFile =>
   file.type.startsWith("image/");
+
+const isPDFFile = (file: File): file is PDFFile =>
+  file.type === "application/pdf";
 
 /**
  * Common to _all_ versions of exports
@@ -200,6 +210,11 @@ export class JSONWriter {
   };
 }
 
+const loadSVGFromString = (str: string) =>
+  new Promise<fabric.Object[]>((resolve) => {
+    fabric.loadSVGFromString(str, (results, options) => resolve(results));
+  });
+
 export default class FileHandler {
   constructor(public pages: Pages, private history: HistoryHandler) {}
 
@@ -226,6 +241,11 @@ export default class FileHandler {
       if (isJSONFile(file)) {
         // eslint-disable-next-line no-await-in-loop
         await this.handleJSON(file);
+      }
+
+      if (isPDFFile(file)) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.handlePDF(file);
       }
     }
 
@@ -300,5 +320,37 @@ export default class FileHandler {
   private handleJSON = async (file: JSONFile): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
     return this.pages.insertPagesAfter(pages);
+  };
+
+  private handlePDF = async (file: PDFFile): Promise<number> => {
+    await this.pages.newPage();
+    const doc = await getDocument(
+      new Uint8Array(await AsyncReader.readAsArrayBuffer(file))
+    ).promise;
+
+    // for (let i = 0; i < doc.numPages; i++) {
+    //   const page = await doc.getPage(i + 1);
+    //   await page.render({
+    //     canvasContext: this.pages.canvas.getContext(),
+    //     viewport: page.getViewport(),
+    //   }).promise;
+    // }
+
+    const page = await doc.getPage(1);
+    const opList = await page.getOperatorList();
+    const svgGraphics = new SVGGraphics(page.commonObjs, page.objs);
+    // svgGraphics.embedFonts = true;
+    const svg = await svgGraphics.getSVG(
+      opList,
+      page.getViewport({ scale: 1, rotation: 0, dontFlip: false })
+    );
+    const str = new XMLSerializer().serializeToString(svg);
+    console.log({ str });
+    const objects = await loadSVGFromString(str);
+    // console.log({ objects });
+    objects.forEach((object) =>
+      this.pages.canvas.placeObject(object, { x: object.left, y: object.top })
+    );
+    return 0;
   };
 }
