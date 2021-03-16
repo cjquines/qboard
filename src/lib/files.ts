@@ -212,7 +212,7 @@ export class JSONWriter {
 
 const loadSVGFromString = (str: string) =>
   new Promise<fabric.Object[]>((resolve) => {
-    fabric.loadSVGFromString(str, (results, options) => resolve(results));
+    fabric.loadSVGFromString(str, (results) => resolve(results));
   });
 
 export default class FileHandler {
@@ -323,35 +323,48 @@ export default class FileHandler {
   };
 
   private handlePDF = async (file: PDFFile): Promise<number> => {
-    await this.pages.newPage();
+    console.log("Handling pdf", file);
     const doc = await getDocument({
       data: new Uint8Array(await AsyncReader.readAsArrayBuffer(file)),
       fontExtraProperties: true,
     }).promise;
 
-    // for (let i = 0; i < doc.numPages; i++) {
-    //   const page = await doc.getPage(i + 1);
-    //   await page.render({
-    //     canvasContext: this.pages.canvas.getContext(),
-    //     viewport: page.getViewport(),
-    //   }).promise;
-    // }
+    // Don't call get() accessor multiple times
+    const { numPages } = doc;
+    console.log({ numPages });
+    for (let i = 0; i < numPages; i++) {
+      this.pages.savePage();
+      // eslint-disable-next-line no-await-in-loop
+      await this.pages.newPage();
 
-    const page = await doc.getPage(1);
-    const opList = await page.getOperatorList();
-    const svgGraphics = new SVGGraphics(page.commonObjs, page.objs);
-    svgGraphics.embedFonts = true;
-    const svg = await svgGraphics.getSVG(
-      opList,
-      page.getViewport({ scale: 1, rotation: 0, dontFlip: false })
-    );
-    const str = new XMLSerializer().serializeToString(svg);
-    console.log({ str });
-    const objects = await loadSVGFromString(str);
-    // console.log({ objects });
-    objects.forEach((object) =>
-      this.pages.canvas.placeObject(object, { x: object.left, y: object.top })
-    );
+      // eslint-disable-next-line no-await-in-loop
+      const page = await doc.getPage(i + 1);
+      // eslint-disable-next-line no-await-in-loop
+      const opList = await page.getOperatorList();
+
+      const svgGraphics = new SVGGraphics(page.commonObjs, page.objs);
+      svgGraphics.embedFonts = true;
+      // eslint-disable-next-line no-await-in-loop
+      const svg = await svgGraphics.getSVG(
+        opList,
+        page.getViewport({ scale: 1, rotation: 0, dontFlip: false })
+      );
+
+      const str = new XMLSerializer().serializeToString(svg);
+      console.log({ str });
+      // eslint-disable-next-line no-await-in-loop
+      const objects = await loadSVGFromString(str);
+      // console.log({ objects });
+
+      this.pages.canvas.add(...objects).requestRenderAll();
+      this.pages.updateState();
+
+      // await page.render({
+      //   canvasContext: this.pages.canvas.getContext(),
+      //   viewport: page.getViewport(),
+      // }).promise;
+    }
+
     return 0;
   };
 }
