@@ -1,4 +1,6 @@
 import { fabric } from "fabric";
+import { GuaranteedIObjectOptions } from "../types/fabric";
+import AssertType from "../types/assert";
 
 type Async<T = void> = T | Promise<T>;
 
@@ -52,7 +54,7 @@ export default interface ToolHandler {
   draw?: (
     x: number,
     y: number,
-    options: fabric.IObjectOptions,
+    options: GuaranteedIObjectOptions,
     x2?: number,
     y2?: number
   ) => Async<fabric.Object>;
@@ -64,7 +66,10 @@ export default interface ToolHandler {
     strict: boolean
   ) => Async<fabric.Object>;
 
-  setBrush?: (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => Async;
+  setBrush?: (
+    brush: fabric.BaseBrush,
+    options: GuaranteedIObjectOptions
+  ) => Async;
 }
 
 export class MoveHandler implements ToolHandler {
@@ -78,7 +83,7 @@ export class PenHandler implements ToolHandler {
 
   setBrush = (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ): void => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
@@ -92,7 +97,7 @@ export class EraserHandler implements ToolHandler {
 
   setBrush = (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ): void => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
@@ -106,7 +111,7 @@ export class LaserHandler implements ToolHandler {
 
   setBrush = (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ): void => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
@@ -117,8 +122,8 @@ export class LaserHandler implements ToolHandler {
 export class LineHandler implements ToolHandler {
   tool: Tool = Tool.Line;
   isBrush = false;
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 0],
@@ -139,7 +144,7 @@ export class LineHandler implements ToolHandler {
 
     return new Promise<fabric.Line>((resolve) => {
       resolve(
-        new fabric.Line([x, y, x2, y2], {
+        new fabric.Line([x, y, x2, y2] as number[], {
           ...options,
           perPixelTargetFind: true,
         })
@@ -148,15 +153,16 @@ export class LineHandler implements ToolHandler {
   };
 
   resize = async (
-    object: fabric.Line,
+    object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
   ): Promise<fabric.Line> => {
-    let [x, y] = [x2, y2];
-    if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+    AssertType<fabric.Line>(object);
+
+    const [, x, y] = strict
+      ? rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object.set({ x2: x, y2: y }).setCoords();
     return new Promise<fabric.Line>((resolve) => {
       resolve(object);
@@ -167,8 +173,8 @@ export class LineHandler implements ToolHandler {
 export class RectangleHandler implements ToolHandler {
   tool: Tool = Tool.Rectangle;
   isBrush = false;
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 1],
@@ -198,10 +204,9 @@ export class RectangleHandler implements ToolHandler {
     y2: number,
     strict: boolean
   ): Promise<fabric.Rect> => {
-    let [x, y] = [x2, y2];
-    if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+    const [, x, y] = strict
+      ? rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object
       .set({
         originX: this.x > x ? "right" : "left",
@@ -220,8 +225,8 @@ export class RectangleHandler implements ToolHandler {
 export class EllipseHandler implements ToolHandler {
   tool: Tool = Tool.Ellipse;
   isBrush = false;
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 1],
@@ -246,22 +251,22 @@ export class EllipseHandler implements ToolHandler {
   };
 
   resize = async (
-    object: fabric.Ellipse,
+    object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
   ): Promise<fabric.Ellipse> => {
-    let [x, y] = [x2, y2];
+    AssertType<fabric.Ellipse>(object);
 
-    if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+    const [, x, y] = strict
+      ? rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object
       .set({
         originX: this.x > x ? "right" : "left",
         originY: this.y > y ? "bottom" : "top",
-        rx: Math.abs(x - object.left) / 2,
-        ry: Math.abs(y - object.top) / 2,
+        rx: Math.abs(x - (object.left || 0)) / 2,
+        ry: Math.abs(y - (object.top || 0)) / 2,
       })
       .setCoords();
 

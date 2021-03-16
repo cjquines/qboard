@@ -6,7 +6,7 @@ import FileHandler from "./files";
 import HistoryHandler from "./history";
 
 export default class ClipboardHandler {
-  clipboard: fabric.Object;
+  clipboard: fabric.Object | undefined;
 
   constructor(
     public canvas: Page,
@@ -16,10 +16,10 @@ export default class ClipboardHandler {
     public canvasWidth: number,
     public canvasHeight: number
   ) {
-    window.addEventListener("paste", this.pasteExternal);
+    document.addEventListener("paste", this.pasteExternal);
   }
 
-  copy = (): fabric.Object => {
+  copy = (): fabric.Object | null => {
     const objects: fabric.Object = this.canvas.getActiveObject();
     if (!objects) return null;
     objects.clone((clone) => {
@@ -46,14 +46,17 @@ export default class ClipboardHandler {
   };
 
   paste = (): void => {
-    if (!this.clipboard) return;
+    if (this.clipboard === undefined) return;
+
     return this.clipboard.clone((clone) =>
       this.history.add(this.canvas.placeObject(clone))
     );
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {
-    const historyCommand = await this.files.processFiles(e.clipboardData.files);
+    const historyCommand = await this.files.processFiles(
+      e.clipboardData!.files
+    );
     this.history.execute(historyCommand);
     this.paste();
   };

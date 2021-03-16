@@ -1,7 +1,8 @@
 import { fabric } from "fabric";
 
-import Page, { ObjectId } from "./page";
+import Page from "./page";
 import Pages from "./pages";
+import { ObjectId } from "../types/fabric";
 
 interface HistoryItem {
   ids: number[];
@@ -19,7 +20,7 @@ export type HistoryCommand = {
 export default class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
-  selection: fabric.Object[];
+  selection: fabric.Object[] | null = null;
   locked = false;
 
   constructor(
@@ -34,11 +35,13 @@ export default class HistoryHandler {
     this.remove(command.remove);
   };
 
-  add = (objects: fabric.Object[]): void =>
-    objects?.length && this.save(null, objects);
+  add = (objects?: fabric.Object[]): void => {
+    if (objects?.length) this.save({ newObjects: objects });
+  };
 
-  remove = (objects: fabric.Object[]): void =>
-    objects?.length && this.save(objects, null);
+  remove = (objects?: fabric.Object[]): void => {
+    if (objects?.length) this.save({ oldObjects: objects });
+  };
 
   clear = (clearRedo = false): void => {
     this.history = [];
@@ -54,17 +57,22 @@ export default class HistoryHandler {
   };
 
   modify = (objects: fabric.Object[]): void =>
-    this.save(this.selection, objects);
+    this.save({ oldObjects: this.selection, newObjects: objects });
 
-  save = (
-    oldObjects: fabric.Object[] | null,
-    newObjects: fabric.Object[] | null
-  ): void => {
+  save = ({
+    oldObjects,
+    newObjects,
+  }:
+    | { oldObjects: fabric.Object[]; newObjects? }
+    | {
+        oldObjects?;
+        newObjects: fabric.Object[];
+      }): void => {
     if (this.locked) return;
     const basis = newObjects || oldObjects;
     this.locked = true;
     this.history.push({
-      ids: basis.map((object: ObjectId) => object.id),
+      ids: basis.map((object) => (object as ObjectId).id),
       oldObjects: newObjects ? oldObjects : this.canvas.serialize(oldObjects),
       newObjects: newObjects && this.canvas.serialize(newObjects),
       page: this.pages.currentIndex,
@@ -91,8 +99,9 @@ export default class HistoryHandler {
     to: HistoryItem[],
     isUndo: boolean
   ): Promise<void> => {
+    if (!from.length) return;
     this.locked = true;
-    const last = from.pop();
+    const last = from.pop()!;
     await this.pages.loadPage(last.page);
     this.canvas.apply(last.ids, isUndo ? last.oldObjects : last.newObjects);
     to.push(last);

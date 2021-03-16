@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 
 import ToolHandler, { Handlers, Tool } from "./tools";
-import Page, { ObjectId } from "./page";
+import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
 import HistoryHandler from "./history";
@@ -9,11 +9,18 @@ import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
-import { FabricIEvent, PathEvent } from "./fabric";
+import { HTMLChildElement } from "../types/html";
+import {
+  FabricIEvent,
+  GuaranteedIObjectOptions,
+  ObjectId,
+  PathEvent,
+} from "../types/fabric";
 
 type Async<T = void> = T | Promise<T>;
 
 type FabricHandler = (e: FabricIEvent) => Async;
+import AssertType from "../types/assert";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -43,7 +50,7 @@ export default class QBoard {
     stroke: Stroke.Black,
     fill: Fill.Transparent,
   };
-  drawerOptions: fabric.IObjectOptions = {
+  readonly drawerOptions: GuaranteedIObjectOptions = {
     fill: "transparent",
     stroke: "#000000",
     strokeWidth: 4,
@@ -52,18 +59,18 @@ export default class QBoard {
     strokeUniform: true,
   };
 
-  resizeCooldown: NodeJS.Timeout;
-  currentTool: Tool;
-  tool: ToolHandler;
-  currentObject: fabric.Object;
+  resizeCooldown: NodeJS.Timeout | undefined;
+  currentTool!: Tool;
+  tool!: ToolHandler;
+  currentObject: fabric.Object | undefined;
   dragActive = false;
   isDown = false;
   strict = false;
-  callback: (state: QBoardState) => void;
+  callback: ((state: QBoardState) => void) | undefined;
 
   constructor(
-    public canvasElement: HTMLCanvasElement,
-    public baseCanvasElement: HTMLCanvasElement,
+    public canvasElement: HTMLCanvasElement & HTMLChildElement,
+    public baseCanvasElement: HTMLCanvasElement & HTMLChildElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -123,19 +130,30 @@ export default class QBoard {
 
     window.onresize = this.windowResize;
     window.onbeforeunload = () => this.baseCanvas.modified || null;
+    {
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
+      // @ts-ignore
+      this.canvas.on("mouse:down", this.mouseDown);
+      // @ts-ignore
+      this.canvas.on("mouse:move", this.mouseMove);
+      // @ts-ignore
+      this.canvas.on("mouse:up", this.mouseUp);
 
-    this.canvas.on("mouse:down", this.mouseDown);
-    this.canvas.on("mouse:move", this.mouseMove);
-    this.canvas.on("mouse:up", this.mouseUp);
+      this.baseCanvas.on("dragenter", () => this.setDragActive(true));
+      this.baseCanvas.on("dragleave", () => this.setDragActive(false));
+      // @ts-ignore
+      this.baseCanvas.on("drop", this.drop);
 
-    this.baseCanvas.on("dragenter", () => this.setDragActive(true));
-    this.baseCanvas.on("dragleave", () => this.setDragActive(false));
-    this.baseCanvas.on("drop", this.drop);
-
-    this.baseCanvas.on("path:created", this.pathCreated);
-    this.baseCanvas.on("selection:created", this.selectionCreated);
-    this.baseCanvas.on("object:modified", this.objectModified);
-    this.baseCanvas.on("mouse:move", this.updateCursor);
+      // @ts-ignore
+      this.baseCanvas.on("path:created", this.pathCreated);
+      // @ts-ignore
+      this.baseCanvas.on("selection:created", this.selectionCreated);
+      // @ts-ignore
+      this.baseCanvas.on("object:modified", this.objectModified);
+      // @ts-ignore
+      this.baseCanvas.on("mouse:move", this.updateCursor);
+      /* eslint-enable @typescript-eslint/ban-ts-comment */
+    }
   }
 
   updateState = (): void => {
@@ -177,7 +195,7 @@ export default class QBoard {
   };
 
   windowResize = (): void => {
-    clearTimeout(this.resizeCooldown);
+    if (this.resizeCooldown !== undefined) clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(() => {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
       this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
@@ -199,7 +217,10 @@ export default class QBoard {
     if (!(this.tool.draw && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
-    await this.tool.resize(this.currentObject, x, y, this.strict);
+
+    if (this.currentObject !== undefined)
+      await this.tool.resize?.(this.currentObject, x, y, this.strict);
+
     this.canvas.requestRenderAll();
   };
 
@@ -209,6 +230,9 @@ export default class QBoard {
     this.isDown = false;
     this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
     this.baseCanvas.requestRenderAll();
+
+    AssertType<fabric.Object>(this.currentObject); // can do this because mouseDown sets this
+
     this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     this.history.add([this.currentObject]);
@@ -226,12 +250,14 @@ export default class QBoard {
     this.setDragActive(false);
 
     const historyCommand = await this.files.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files
+      (iEvent.e as DragEvent).dataTransfer!.files
     );
     this.history.execute(historyCommand);
   };
 
-  pathCreated: FabricHandler = (e: PathEvent) => {
+  pathCreated: FabricHandler = (e) => {
+    AssertType<PathEvent>(e);
+
     if (this.currentTool === Tool.Pen) {
       e.path.id = this.baseCanvas.getNextId();
       this.history.add([e.path]);
@@ -252,8 +278,10 @@ export default class QBoard {
     }
   };
 
-  selectionCreated: FabricHandler = (e) =>
-    !this.history.locked && this.history.store(e.selected);
+  selectionCreated: FabricHandler = (e) => {
+    if (this.history.locked) return;
+    return this.history.store(e.selected);
+  };
 
   objectModified: FabricHandler = (e) => {
     this.history.modify(e.target._objects || [e.target]);
