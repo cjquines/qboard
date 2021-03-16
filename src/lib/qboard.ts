@@ -18,7 +18,7 @@ import { FabricIEvent, PathEvent } from "./fabric";
 
 type Async<T = void> = T | Promise<T>;
 
-type FabricHandler = (e: FabricIEvent) => Async;
+type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
 
 export interface QBoardState {
   dragActive: boolean;
@@ -253,14 +253,14 @@ export default class QBoard {
     this.history.execute(historyCommand);
   };
 
-  pathCreated: FabricHandler = (e) => {
+  pathCreated: FabricHandler<PathEvent> = (e) => {
     if (isBrush(this.activeTool)) this.activeTool.pathCreated(e);
   };
 
-  selectionCreated: FabricHandler = (e) =>
+  selectionCreated: FabricHandler<FabricIEvent> = (e) =>
     !this.history.locked && this.history.store(e.selected);
 
-  objectModified: FabricHandler = (e) => {
+  objectModified: FabricHandler<FabricIEvent> = (e) => {
     this.history.modify(e.target._objects || [e.target]);
     this.history.store(e.target._objects || [e.target]);
   };

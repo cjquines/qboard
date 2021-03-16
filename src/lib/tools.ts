@@ -2,6 +2,7 @@ import { fabric } from "fabric";
 import Page from "./page";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
+import { FabricIEvent, PathEvent } from "./fabric";
 
 type Async<T = void> = T | Promise<T>;
 
@@ -92,12 +93,12 @@ export class ToolHandler {
   /**
    * get this.active
    */
-  isActive = () => this.active;
+  isActive = (): boolean => this.active;
 
   /**
    * set this.active active
    */
-  protected setActive = (active: boolean) => (this.active = active);
+  protected setActive = (active: boolean): boolean => (this.active = active);
 }
 
 export abstract class DrawingToolHandler extends ToolHandler {
@@ -121,9 +122,9 @@ export abstract class BrushHandler extends ToolHandler {
   /**
    * Handle the pathCreated event
    */
-  abstract pathCreated: (e: any) => Async<void> = () => {};
+  pathCreated: (e: FabricIEvent) => void = () => {};
 
-  abstract setBrush: (
+  setBrush: (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
   ) => void | Promise<void> = () => {};
@@ -144,11 +145,11 @@ export function requiresBase(tool: ToolHandler): tool is RequiresBaseHandler {
 export class MoveHandler extends RequiresBaseHandler {}
 
 export class PenHandler extends BrushHandler {
-  pathCreated = async (e) => {
-    e.path.id = await this.baseCanvas.getNextId();
-    return this.history.add([e.path]);
+  pathCreated = (e: PathEvent): void => {
+    e.path.id = this.baseCanvas.getNextId();
+    this.history.add([e.path]);
   };
-  setBrush = (brush, options) => {
+  setBrush = (brush: fabric.BaseBrush, options) => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
     brush.width = options.strokeWidth;
