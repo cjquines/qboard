@@ -13,10 +13,7 @@ export default class Page extends fabric.Canvas {
   latestId = 0;
   modified = false;
 
-  fitToWindow = async (
-    canvasWidth: number,
-    canvasHeight: number
-  ): Promise<void> => {
+  fitToWindow = (canvasWidth: number, canvasHeight: number): void => {
     const widthRatio = window.innerWidth / canvasWidth;
     const heightRatio = window.innerHeight / canvasHeight;
     this.setZoom(Math.min(widthRatio, heightRatio));
@@ -26,7 +23,7 @@ export default class Page extends fabric.Canvas {
     this.canvasHeight = canvasHeight;
   };
 
-  deactivateSelection = async (): Promise<void> => {
+  deactivateSelection = (): void => {
     this.isDrawingMode = false;
     this.selection = false;
     this.discardActiveObject();
@@ -36,7 +33,7 @@ export default class Page extends fabric.Canvas {
     this.requestRenderAll();
   };
 
-  activateSelection = async (): Promise<void> => {
+  activateSelection = (): void => {
     this.isDrawingMode = false;
     this.selection = true;
     this.forEachObject((object) => {
@@ -44,30 +41,26 @@ export default class Page extends fabric.Canvas {
     });
   };
 
-  getNextId = async (): Promise<number> => {
+  getNextId = (): number => {
     this.latestId += 1;
     return this.latestId;
   };
 
-  getObjectByIds = (ids: number[]): fabric.Object[] => {
-    // multiple element case; kind of inefficient
-    if (ids.length > 1) {
-      return this.getObjects().filter((object: ObjectId) =>
-        ids.includes(object.id)
+  // kind of inefficient
+  getObjectByIds = (ids: number[]): fabric.Object[] =>
+    this.getObjects().filter((object) => ids.includes((object as ObjectId).id));
+
+  serialize = (objects: fabric.Object[]): fabric.Object[] => {
+    const selection = this.getActiveObjects();
+    const reselect =
+      selection.length > 1 && objects.some((obj) => selection.includes(obj));
+    if (reselect) {
+      this.discardActiveObject();
+      this.setActiveObject(
+        new fabric.ActiveSelection(selection, { canvas: this })
       );
     }
-    // single element case
-    const [id] = ids;
-    for (const object of this.getObjects()) {
-      if ((object as ObjectId).id === id) {
-        return [object];
-      }
-    }
-    return [];
-  };
-
-  serialize = async (objects: fabric.Object[]): Promise<fabric.Object[]> => {
-    return objects.map((object) => object.toObject(["strokeUniform"]));
+    return objects.map((obj) => obj.toObject(["strokeUniform"]));
   };
 
   apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
@@ -96,36 +89,25 @@ export default class Page extends fabric.Canvas {
       });
     });
 
-  placeObject = async (
-    obj: any,
+  placeObject<T extends fabric.Object>(
+    obj: T,
     cursor: Cursor = this.cursor
-  ): Promise<fabric.Object[]> => {
+  ): T {
     const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
       cursor || {};
     this.discardActiveObject();
-    const id = await this.getNextId();
+    const id = this.getNextId();
 
-    obj.set({
+    obj.set(({
       id,
       left: x,
       top: y,
       originX: "center",
       originY: "center",
-    } as Partial<fabric.ActiveSelection>);
-    if (obj._objects) {
-      obj.canvas = this;
-      obj.forEachObject((object) =>
-        this.getNextId().then((id_) => {
-          (object as ObjectId).id = id_;
-          this.add(object);
-        })
-      );
-      obj.setCoords();
-    } else {
-      this.add(obj);
-    }
+    } as Partial<fabric.Object>) as Partial<T>);
+    this.add(obj);
     this.setActiveObject(obj);
     this.requestRenderAll();
-    return obj._objects || [obj];
-  };
+    return obj;
+  }
 }

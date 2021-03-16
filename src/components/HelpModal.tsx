@@ -77,7 +77,7 @@ const HelpModal = (props: {
           with ctrl
         </button>
         <button onClick={() => toggleHand()}>
-          {leftHanded ? "make right-handed" : "make left-handed"}
+          {leftHanded ? "show left side" : "show right side"}
         </button>
       </p>
       <Bindings

@@ -77,7 +77,10 @@ export default class Pages {
     const ratio = 2;
     const content = [];
     const currentIndexCopy = this.currentIndex;
+    // Load each page and then record it as svg
     for (const page of this.pagesJSON) {
+      // As of now, each page needs to be individually loaded, so we await each load
+      // eslint-disable-next-line no-await-in-loop
       await this.canvas.loadFromJSONAsync(page);
       content.push({
         svg: this.canvas.toSVG(),
@@ -101,17 +104,7 @@ export default class Pages {
 
   saveFile = (): void => {
     this.savePage();
-    const [fileURL, revokeURL] = new JSONWriter(this.pagesJSON).toURL();
-
-    const elt = document.createElement("a");
-    elt.style.display = "none";
-    elt.href = fileURL;
-    elt.download = `qboard-${timeString()}.json`;
-    document.body.appendChild(elt);
-    elt.click();
-    elt.parentElement.removeChild(elt);
-
-    revokeURL();
+    new JSONWriter(this.pagesJSON).download(`qboard-${timeString()}.json`);
     this.canvas.modified = false;
   };
 

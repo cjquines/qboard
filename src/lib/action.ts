@@ -81,7 +81,7 @@ export default class ActionHandler {
   readonly actionMap: { [index: string]: Function };
 
   constructor(
-    public switchTool: (tool: ToolHandler) => Promise<void>,
+    public switchTool: (tool: ToolHandler) => void,
     handlers: { [key: string]: ToolHandler },
     public currentStyle: Style,
     public pages: Pages,
@@ -95,6 +95,7 @@ export default class ActionHandler {
     ) => void
   ) {
     this.canvas = this.pages.canvas;
+
     this.actionMap = {
       previousPage: pages.previousPage,
       nextPage: pages.nextOrNewPage,
@@ -123,7 +124,10 @@ export default class ActionHandler {
         );
         this.canvas.requestRenderAll();
       },
-      duplicate: () => this.clipboard.copy().then(() => this.clipboard.paste()),
+      duplicate: () => {
+        this.clipboard.copy();
+        this.clipboard.paste();
+      },
 
       move: () => this.switchTool(handlers.Move),
       pen: () => this.switchTool(handlers.Pen),
@@ -160,9 +164,9 @@ export default class ActionHandler {
     };
   }
 
-  doAction = async (action: Action): Promise<void> => this.actionMap[action]();
+  doAction = (action: Action): Promise<void> => this.actionMap[action]();
 
-  setDash = async (dash: Dash): Promise<void> => {
+  setDash = (dash: Dash): void => {
     if (dash === this.currentStyle.dash) {
       this.setStyle(Dash.Solid, null, null);
     } else {
@@ -170,7 +174,7 @@ export default class ActionHandler {
     }
   };
 
-  setStroke = async (stroke: Stroke): Promise<void> => {
+  setStroke = (stroke: Stroke): void => {
     if (stroke === this.currentStyle.stroke) {
       this.setStyle(null, Stroke.Black, null);
     } else {
@@ -178,7 +182,7 @@ export default class ActionHandler {
     }
   };
 
-  setFill = async (fill: Fill): Promise<void> => {
+  setFill = (fill: Fill): void => {
     if (fill === this.currentStyle.fill) {
       this.setStyle(null, null, Fill.Transparent);
     } else {

@@ -3,6 +3,8 @@ import Page from "./page";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 
+type Async<T = void> = T | Promise<T>;
+
 class Behaviors {
   // given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
   static rectify = (
@@ -61,7 +63,7 @@ export class ToolHandler {
     x2: number,
     y2: number,
     strict: boolean
-  ) => fabric.Object | Promise<fabric.Object>;
+  ) => Async<fabric.Object>;
 
   /**
    * Set externally from activate().
@@ -80,7 +82,7 @@ export class ToolHandler {
    * @return Whether the activation was successful.
    * Maybe want to throw error instead of return boolean.
    */
-  activate: () => boolean | Promise<boolean> = () => this.setActive(true);
+  activate: () => Async<boolean> = () => this.setActive(true);
 
   /**
    * Not allowed to fail
@@ -119,7 +121,7 @@ export abstract class BrushHandler extends ToolHandler {
   /**
    * Handle the pathCreated event
    */
-  abstract pathCreated: (e: any) => void | Promise<void> = () => {};
+  abstract pathCreated: (e: any) => Async<void> = () => {};
 
   abstract setBrush: (
     brush: fabric.BaseBrush,
@@ -154,7 +156,7 @@ export class PenHandler extends BrushHandler {
 }
 
 export class EraserHandler extends BrushHandler {
-  pathCreated = async (e) => {
+  pathCreated = (e) => {
     const path = fabric.util.object.clone(e.path);
     this.baseCanvas.remove(e.path);
     const objects = this.baseCanvas
@@ -162,7 +164,7 @@ export class EraserHandler extends BrushHandler {
       .filter((object) => object.intersectsWithObject(path));
     if (!objects.length) return;
     this.baseCanvas.remove(...objects);
-    await this.history.remove(objects);
+    this.history.remove(objects);
   };
 
   setBrush = (brush, options) => {
@@ -176,12 +178,12 @@ export class EraserHandler extends BrushHandler {
    * If cut() true then abort; leave current tool active.
    * Otherwise, mark internal state as active and return true
    */
-  activate = async () => !(await this.clipboard.cut()) && this.setActive(true);
+  activate = () => !this.clipboard.cut() && this.setActive(true);
 }
 
 export class LaserHandler extends BrushHandler {
   pathCreated = (e) => {
-    setTimeout(async () => {
+    setTimeout(() => {
       this.baseCanvas.remove(e.path);
       this.baseCanvas.requestRenderAll();
     }, 1000);

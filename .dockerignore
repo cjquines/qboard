@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+dist
+
+public
+
+.idea
+
+LICENSE.md
+README.md
+
+.eslintrc.js
+.gitignore
+.stylelintrc.js
