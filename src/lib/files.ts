@@ -4,6 +4,9 @@ import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
 
+const defaults = <T>(value: T, getDefaultValue: () => T) =>
+  value === undefined ? getDefaultValue() : value;
+
 export class AsyncReader {
   static readAsText = (file: File): Promise<string | ArrayBuffer> =>
     new Promise((resolve, reject) => {
@@ -47,7 +50,9 @@ export class JSONWriter {
     "qboard-version": number;
     pages: PageJSON[];
   };
-  private stringified: string;
+  private asString: string;
+  private asBlob: Blob;
+  private asUrl: string;
 
   constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
@@ -56,19 +61,40 @@ export class JSONWriter {
     };
   }
 
-  toString = (): string => {
-    if (this.stringified !== undefined) return this.stringified;
-    this.stringified = JSON.stringify(this.sourceJSON);
-    return this.stringified;
-  };
+  toString = (): string =>
+    (this.asString = defaults(this.asString, () =>
+      JSON.stringify(this.sourceJSON)
+    ));
 
   toBlob = (): Blob =>
-    new Blob([this.toString()], { type: "application/json" });
+    (this.asBlob = defaults(
+      this.asBlob,
+      () => new Blob([this.toString()], { type: "application/json" })
+    ));
 
   toURL = (): [string, () => void] => {
-    const url = window.URL.createObjectURL(this.toBlob());
-    const revoke = () => window.URL.revokeObjectURL(url);
-    return [url, revoke];
+    this.asUrl = defaults(this.asUrl, () =>
+      window.URL.createObjectURL(this.toBlob())
+    );
+    const revoke = () => {
+      window.URL.revokeObjectURL(this.asUrl);
+      this.asUrl = undefined;
+    };
+    return [this.asUrl, revoke];
+  };
+
+  download = (filename = "qboard-file") => {
+    const [fileURL, revokeURL] = this.toURL();
+
+    const elt = document.createElement("a");
+    elt.style.display = "none";
+    elt.href = fileURL;
+    elt.download = filename;
+    document.body.appendChild(elt);
+    elt.click();
+    elt.remove();
+
+    revokeURL();
   };
 }
 
