@@ -5,6 +5,12 @@
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
+    "lint": "npm run eslint && npm run stylelint",
+    "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
+    "eslint": "eslint src/**/*.{js,ts,jsx,tsx}",
+    "eslint:fix": "npm run eslint -- --fix",
+    "stylelint": "stylelint **/*.{css,sass,scss}",
+    "stylelint:fix": "npm run stylelint -- --fix",
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
     "start": "nwb serve-react-app"

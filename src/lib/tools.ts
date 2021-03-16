@@ -1,5 +1,7 @@
 import { fabric } from "fabric";
 
+type Async<T = void> = T | Promise<T>;
+
 // projects the point x2, y2 to the vector with origin ox, oy and direction vx, vy. returns the square distance and the coordinates of the projection.
 const project = (
   ox: number,
@@ -53,19 +55,16 @@ export default interface ToolHandler {
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ) => Promise<fabric.Object>;
+  ) => Async<fabric.Object>;
 
   resize?: (
     object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
-  ) => Promise<fabric.Object>;
+  ) => Async<fabric.Object>;
 
-  setBrush?: (
-    brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
-  ) => Promise<void>;
+  setBrush?: (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => Async;
 }
 
 export class MoveHandler implements ToolHandler {
@@ -77,10 +76,10 @@ export class PenHandler implements ToolHandler {
   tool: Tool = Tool.Pen;
   isBrush = true;
 
-  setBrush = async (
+  setBrush = (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
-  ): Promise<void> => {
+  ): void => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
     brush.width = options.strokeWidth;
@@ -91,10 +90,10 @@ export class EraserHandler implements ToolHandler {
   tool: Tool = Tool.Eraser;
   isBrush = true;
 
-  setBrush = async (
+  setBrush = (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
-  ): Promise<void> => {
+  ): void => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
@@ -105,10 +104,10 @@ export class LaserHandler implements ToolHandler {
   tool: Tool = Tool.Laser;
   isBrush = true;
 
-  setBrush = async (
+  setBrush = (
     brush: fabric.BaseBrush,
     options: fabric.IObjectOptions
-  ): Promise<void> => {
+  ): void => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
     brush.width = options.strokeWidth;

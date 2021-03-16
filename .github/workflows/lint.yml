@@ -1,6 +1,11 @@
 name: Lint
 
-on: push
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [master, main]
 
 jobs:
   run-linters:
@@ -20,14 +25,4 @@ jobs:
         run: npm ci
 
       - name: Run linters
-        uses: wearerequired/lint-action@v1.6.0
-        with:
-          github_token: ${{ secrets.github_token }}
-          auto_fix: true
-          # Enable linters
-          eslint: true
-          eslint_extensions: js,jsx,ts,tsx
-          prettier: true
-          prettier_extensions: html,json,md,vue,yaml,yml # Only run on extensions not part of ESLint config
-          stylelint: true
-          stylelint_extensions: css,scss,sass
+        run: npm run lint

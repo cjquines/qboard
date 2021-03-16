@@ -77,7 +77,10 @@ export default class Pages {
     const ratio = 2;
     const content = [];
     const currentIndexCopy = this.currentIndex;
+    // Load each page and then record it as svg
     for (const page of this.pagesJSON) {
+      // As of now, each page needs to be individually loaded, so we await each load
+      // eslint-disable-next-line no-await-in-loop
       await this.canvas.loadFromJSONAsync(page);
       content.push({
         svg: this.canvas.toSVG(),
