@@ -85,7 +85,7 @@ export class JSONWriter {
     return [this.asUrl, revoke];
   };
 
-  download = (filename = "qboard-file") => {
+  download = (filename = "qboard-file"): void => {
     const [fileURL, revokeURL] = this.toURL();
 
     const elt = document.createElement("a");

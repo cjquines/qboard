@@ -91,7 +91,10 @@ export default class Page extends fabric.Canvas {
 
   placeObject<T extends fabric.Object>(
     obj: T,
-    { x = this.canvasWidth / 2, y = this.canvasHeight / 2 }: Partial<Cursor> = this.cursor ?? {}
+    {
+      x = this.canvasWidth / 2,
+      y = this.canvasHeight / 2,
+    }: Partial<Cursor> = this.cursor ?? {}
   ): T {
     this.discardActiveObject();
     const id = this.getNextId();

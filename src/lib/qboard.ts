@@ -131,6 +131,7 @@ export default class QBoard {
     window.onresize = this.windowResize;
     window.onbeforeunload = () => this.baseCanvas.modified || null;
     {
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
       // @ts-ignore
       this.canvas.on("mouse:down", this.mouseDown);
       // @ts-ignore
@@ -151,6 +152,7 @@ export default class QBoard {
       this.baseCanvas.on("object:modified", this.objectModified);
       // @ts-ignore
       this.baseCanvas.on("mouse:move", this.updateCursor);
+      /* eslint-enable @typescript-eslint/ban-ts-comment */
     }
   }
 

@@ -66,7 +66,10 @@ export default interface ToolHandler {
     strict: boolean
   ) => Async<fabric.Object>;
 
-  setBrush?: (brush: fabric.BaseBrush, options: GuaranteedIObjectOptions) => Async;
+  setBrush?: (
+    brush: fabric.BaseBrush,
+    options: GuaranteedIObjectOptions
+  ) => Async;
 }
 
 export class MoveHandler implements ToolHandler {
