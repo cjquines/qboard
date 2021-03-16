@@ -164,7 +164,9 @@ export default class ActionHandler {
     };
   }
 
-  doAction = async (action: Action): Promise<unknown> => await this.actionMap[action]();
+  doAction = async (action: Action): Promise<void> => {
+    await this.actionMap[action]();
+  };
 
   setDash = (dash: Dash): void => {
     if (dash === this.currentStyle.dash) {

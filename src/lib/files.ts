@@ -4,7 +4,7 @@ import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
 
-const defaults = <T>(value: T, getDefaultValue: () => T) =>
+const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
 
 export class AsyncReader {
@@ -50,9 +50,9 @@ export class JSONWriter {
     "qboard-version": number;
     pages: PageJSON[];
   };
-  private asString: string;
-  private asBlob: Blob;
-  private asUrl: string;
+  private asString?: string;
+  private asBlob?: Blob;
+  private asUrl?: string;
 
   constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
@@ -77,6 +77,8 @@ export class JSONWriter {
       window.URL.createObjectURL(this.toBlob())
     );
     const revoke = () => {
+      if (this.asUrl === undefined) return;
+
       window.URL.revokeObjectURL(this.asUrl);
       this.asUrl = undefined;
     };
@@ -110,7 +112,7 @@ export default class FileHandler {
     files: FileList,
     cursor?: Cursor
   ): Promise<HistoryCommand> => {
-    const images: fabric.Object[][] = [];
+    const images: fabric.Object[] = [];
     await Promise.all(
       [...files].map(async (file) => {
         if (file.type.startsWith("image/")) {

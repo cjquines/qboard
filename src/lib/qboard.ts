@@ -10,13 +10,17 @@ import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
 import { HTMLChildElement } from "../types/html";
-import { GuaranteedIObjectOptions, ObjectId } from "../types/fabric";
-import { FabricIEvent, PathEvent } from "./fabric";
+import {
+  FabricIEvent,
+  GuaranteedIObjectOptions,
+  ObjectId,
+  PathEvent,
+} from "../types/fabric";
 
 type Async<T = void> = T | Promise<T>;
 
 type FabricHandler = (e: FabricIEvent) => Async;
-import { AssertType } from "../types/assert";
+import AssertType from "../types/assert";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -126,19 +130,28 @@ export default class QBoard {
 
     window.onresize = this.windowResize;
     window.onbeforeunload = () => this.baseCanvas.modified || null;
+    {
+      // @ts-ignore
+      this.canvas.on("mouse:down", this.mouseDown);
+      // @ts-ignore
+      this.canvas.on("mouse:move", this.mouseMove);
+      // @ts-ignore
+      this.canvas.on("mouse:up", this.mouseUp);
 
-    this.canvas.on("mouse:down", this.mouseDown);
-    this.canvas.on("mouse:move", this.mouseMove);
-    this.canvas.on("mouse:up", this.mouseUp);
+      this.baseCanvas.on("dragenter", () => this.setDragActive(true));
+      this.baseCanvas.on("dragleave", () => this.setDragActive(false));
+      // @ts-ignore
+      this.baseCanvas.on("drop", this.drop);
 
-    this.baseCanvas.on("dragenter", () => this.setDragActive(true));
-    this.baseCanvas.on("dragleave", () => this.setDragActive(false));
-    this.baseCanvas.on("drop", this.drop);
-
-    this.baseCanvas.on("path:created", this.pathCreated);
-    this.baseCanvas.on("selection:created", this.selectionCreated);
-    this.baseCanvas.on("object:modified", this.objectModified);
-    this.baseCanvas.on("mouse:move", this.updateCursor);
+      // @ts-ignore
+      this.baseCanvas.on("path:created", this.pathCreated);
+      // @ts-ignore
+      this.baseCanvas.on("selection:created", this.selectionCreated);
+      // @ts-ignore
+      this.baseCanvas.on("object:modified", this.objectModified);
+      // @ts-ignore
+      this.baseCanvas.on("mouse:move", this.updateCursor);
+    }
   }
 
   updateState = (): void => {
@@ -240,7 +253,9 @@ export default class QBoard {
     this.history.execute(historyCommand);
   };
 
-  pathCreated: FabricHandler = (e: PathEvent) => {
+  pathCreated: FabricHandler = (e) => {
+    AssertType<PathEvent>(e);
+
     if (this.currentTool === Tool.Pen) {
       e.path.id = this.baseCanvas.getNextId();
       this.history.add([e.path]);
