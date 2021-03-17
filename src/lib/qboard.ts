@@ -157,6 +157,7 @@ export default class QBoard {
       this.baseCanvas.on("dragleave", () => this.setDragActive(false));
       this.baseCanvas.on("drop", this.drop);
 
+      // @ts-ignore
       this.baseCanvas.on("path:created", this.pathCreated);
       // @ts-ignore
       this.baseCanvas.on("selection:created", this.selectionCreated);

@@ -76,7 +76,7 @@ export class ToolHandler {
    * Set internally with setActive();
    * @private
    */
-  private active: boolean;
+  private active = false;
 
   constructor(
     protected baseCanvas: Page,
@@ -127,7 +127,7 @@ export abstract class BrushHandler extends ToolHandler {
   /**
    * Handle the pathCreated event
    */
-  pathCreated: (e: FabricIEvent) => void = () => {};
+  pathCreated: (e: PathEvent) => void = () => {};
 
   setBrush: (
     brush: fabric.BaseBrush,
