@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import instantiateTools, { Tool } from "./tools";
+import instantiateTools, { Tool, Tools } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -43,8 +43,7 @@ export default class QBoard {
   action: ActionHandler;
   keyboard: KeyboardHandler;
 
-  // FIXME: Strengthen this type
-  tools: Record<"Move" | "Pen", Tool>;
+  tools: Tools;
   activeTool: Tool;
   currentStyle: Style = {
     dash: Dash.Solid,
@@ -109,7 +108,11 @@ export default class QBoard {
       this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
       this.updateState
     );
-    this.tools = instantiateTools(this.baseCanvas, this.history, this.clipboard);
+    this.tools = instantiateTools(
+      this.baseCanvas,
+      this.history,
+      this.clipboard
+    );
     this.action = new ActionHandler(
       this.switchTool,
       this.tools,
