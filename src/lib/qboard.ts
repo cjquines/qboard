@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import Tools, { Tool } from "./tools";
+import instantiateTools, { Tool } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -109,7 +109,7 @@ export default class QBoard {
       this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
       this.updateState
     );
-    this.tools = Tools.from(this.baseCanvas, this.history, this.clipboard);
+    this.tools = instantiateTools(this.baseCanvas, this.history, this.clipboard);
     this.action = new ActionHandler(
       this.switchTool,
       this.tools,

@@ -349,26 +349,26 @@ export class Ellipse extends DrawingTool {
   };
 }
 
-export default class Tools {
-  static from = (
-    baseCanvas: Page,
-    history: HistoryHandler,
-    clipboard: ClipboardHandler
-  ): {
-    Line: Line;
-    Ellipse: Ellipse;
-    Move: Move;
-    Laser: Laser;
-    Pen: Pen;
-    Rectangle: Rectangle;
-    Eraser: Eraser;
-  } => ({
-    Move: new Move(baseCanvas, history, clipboard),
-    Pen: new Pen(baseCanvas, history, clipboard),
-    Eraser: new Eraser(baseCanvas, history, clipboard),
-    Laser: new Laser(baseCanvas, history, clipboard),
-    Line: new Line(baseCanvas, history, clipboard),
-    Rectangle: new Rectangle(baseCanvas, history, clipboard),
-    Ellipse: new Ellipse(baseCanvas, history, clipboard),
-  });
-}
+const instantiateTools = (
+  baseCanvas: Page,
+  history: HistoryHandler,
+  clipboard: ClipboardHandler
+): {
+  Line: Line;
+  Ellipse: Ellipse;
+  Move: Move;
+  Laser: Laser;
+  Pen: Pen;
+  Rectangle: Rectangle;
+  Eraser: Eraser;
+} => ({
+  Move: new Move(baseCanvas, history, clipboard),
+  Pen: new Pen(baseCanvas, history, clipboard),
+  Eraser: new Eraser(baseCanvas, history, clipboard),
+  Laser: new Laser(baseCanvas, history, clipboard),
+  Line: new Line(baseCanvas, history, clipboard),
+  Rectangle: new Rectangle(baseCanvas, history, clipboard),
+  Ellipse: new Ellipse(baseCanvas, history, clipboard),
+});
+
+export default instantiateTools;
