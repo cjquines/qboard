@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import Handlers, { ToolHandler } from "./tools";
+import Tools, { Tool } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -44,8 +44,8 @@ export default class QBoard {
   keyboard: KeyboardHandler;
 
   // FIXME: Strengthen this type
-  handlers: Record<"Move" | "Pen", ToolHandler>;
-  activeTool: ToolHandler;
+  tools: Record<"Move" | "Pen", Tool>;
+  activeTool: Tool;
   currentStyle: Style = {
     dash: Dash.Solid,
     stroke: Stroke.Black,
@@ -109,14 +109,10 @@ export default class QBoard {
       this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
       this.updateState
     );
-    this.handlers = Handlers.from(
-      this.baseCanvas,
-      this.history,
-      this.clipboard
-    );
+    this.tools = Tools.from(this.baseCanvas, this.history, this.clipboard);
     this.action = new ActionHandler(
       this.switchTool,
-      this.handlers,
+      this.tools,
       this.currentStyle,
       this.pages,
       this.files,
@@ -131,11 +127,7 @@ export default class QBoard {
     );
 
     // an instance which has no effect (deactivate method is trivial)
-    this.activeTool = new ToolHandler(
-      this.baseCanvas,
-      this.history,
-      this.clipboard
-    );
+    this.activeTool = new Tool(this.baseCanvas, this.history, this.clipboard);
     void this.switchTool();
 
     void this.windowResize();
@@ -178,9 +170,7 @@ export default class QBoard {
   /**
    * Assumes no two instances are the same tool
    */
-  switchTool = async (
-    tool: ToolHandler = this.handlers.Move
-  ): Promise<void> => {
+  switchTool = async (tool: Tool = this.tools.Move): Promise<void> => {
     // Reference equality because of assumption
     if (tool === this.activeTool || !(await tool.activate())) return;
 

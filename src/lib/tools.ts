@@ -42,33 +42,33 @@ class Behaviors {
   };
 }
 
-export class ToolHandler {
+export class Tool {
   // Add type marker `boolean` so it can be overridden; otherwise takes type `false`
   /**
-   * Make sure that no extending classes except DrawingToolHandler set this to true;
+   * Make sure that no extending classes except DrawingTool set this to true;
    * the value of this property is used as a type guard.
    */
   protected readonly _isDrawing: boolean = false;
   /**
-   * Make sure that no extending classes except DrawingToolHandler set this to true;
+   * Make sure that no extending classes except RequiresBaseTool set this to true;
    * the value of this property is used as a type guard.
    */
   protected readonly _requiresBase: boolean = false;
   /**
-   * Make sure that no extending classes except BrushHandler set this to true;
+   * Make sure that no extending classes except Brush set this to true;
    * the value of this property is used as a type guard.
    */
   protected readonly _isBrush: boolean = false;
 
-  isDrawing(): this is DrawingToolHandler {
+  isDrawing(): this is DrawingTool {
     return this._isDrawing;
   }
 
-  requiresBase(): this is RequiresBaseHandler {
+  requiresBase(): this is RequiresBase {
     return this._requiresBase;
   }
 
-  isBrush(): this is BrushHandler {
+  isBrush(): this is Brush {
     return this._isBrush;
   }
 
@@ -114,7 +114,7 @@ export class ToolHandler {
   protected setActive = (active: boolean): boolean => (this.active = active);
 }
 
-export abstract class DrawingToolHandler extends ToolHandler {
+export abstract class DrawingTool extends Tool {
   _isDrawing = true;
   abstract draw: (
     x,
@@ -124,11 +124,11 @@ export abstract class DrawingToolHandler extends ToolHandler {
     y2?
   ) => fabric.Object | Promise<fabric.Object>;
 }
-export abstract class RequiresBaseHandler extends ToolHandler {
+export abstract class RequiresBase extends Tool {
   _requiresBase = true;
 }
 
-export abstract class BrushHandler extends RequiresBaseHandler {
+export abstract class Brush extends RequiresBase {
   _isBrush = true;
 
   /**
@@ -142,9 +142,9 @@ export abstract class BrushHandler extends RequiresBaseHandler {
   ) => void | Promise<void> = () => {};
 }
 
-export class MoveHandler extends RequiresBaseHandler {}
+export class Move extends RequiresBase {}
 
-export class PenHandler extends BrushHandler {
+export class Pen extends Brush {
   pathCreated = (e: PathEvent): void => {
     e.path.id = this.baseCanvas.getNextId();
     this.history.add([e.path]);
@@ -159,7 +159,7 @@ export class PenHandler extends BrushHandler {
   };
 }
 
-export class EraserHandler extends BrushHandler {
+export class Eraser extends Brush {
   pathCreated = (e: PathEvent): void => {
     const path = fabric.util.object.clone(e.path);
     this.baseCanvas.remove(e.path);
@@ -193,7 +193,7 @@ export class EraserHandler extends BrushHandler {
   activate = (): boolean => !this.clipboard.cut() && this.setActive(true);
 }
 
-export class LaserHandler extends BrushHandler {
+export class Laser extends Brush {
   pathCreated = (e: PathEvent): void => {
     setTimeout(() => {
       this.baseCanvas.remove(e.path);
@@ -210,7 +210,7 @@ export class LaserHandler extends BrushHandler {
   };
 }
 
-export class LineHandler extends DrawingToolHandler {
+export class Line extends DrawingTool {
   x = 0;
   y = 0;
 
@@ -253,7 +253,7 @@ export class LineHandler extends DrawingToolHandler {
   };
 }
 
-export class RectangleHandler extends DrawingToolHandler {
+export class Rectangle extends DrawingTool {
   x = 0;
   y = 0;
 
@@ -303,7 +303,7 @@ export class RectangleHandler extends DrawingToolHandler {
   };
 }
 
-export class EllipseHandler extends DrawingToolHandler {
+export class Ellipse extends DrawingTool {
   x = 0;
   y = 0;
 
@@ -349,26 +349,26 @@ export class EllipseHandler extends DrawingToolHandler {
   };
 }
 
-export default class Handlers {
+export default class Tools {
   static from = (
     baseCanvas: Page,
     history: HistoryHandler,
     clipboard: ClipboardHandler
   ): {
-    Line: LineHandler;
-    Ellipse: EllipseHandler;
-    Move: MoveHandler;
-    Laser: LaserHandler;
-    Pen: PenHandler;
-    Rectangle: RectangleHandler;
-    Eraser: EraserHandler;
+    Line: Line;
+    Ellipse: Ellipse;
+    Move: Move;
+    Laser: Laser;
+    Pen: Pen;
+    Rectangle: Rectangle;
+    Eraser: Eraser;
   } => ({
-    Move: new MoveHandler(baseCanvas, history, clipboard),
-    Pen: new PenHandler(baseCanvas, history, clipboard),
-    Eraser: new EraserHandler(baseCanvas, history, clipboard),
-    Laser: new LaserHandler(baseCanvas, history, clipboard),
-    Line: new LineHandler(baseCanvas, history, clipboard),
-    Rectangle: new RectangleHandler(baseCanvas, history, clipboard),
-    Ellipse: new EllipseHandler(baseCanvas, history, clipboard),
+    Move: new Move(baseCanvas, history, clipboard),
+    Pen: new Pen(baseCanvas, history, clipboard),
+    Eraser: new Eraser(baseCanvas, history, clipboard),
+    Laser: new Laser(baseCanvas, history, clipboard),
+    Line: new Line(baseCanvas, history, clipboard),
+    Rectangle: new Rectangle(baseCanvas, history, clipboard),
+    Ellipse: new Ellipse(baseCanvas, history, clipboard),
   });
 }

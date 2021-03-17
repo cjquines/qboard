@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { ToolHandler } from "./tools";
+import { Tool } from "./tools";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
@@ -83,8 +83,8 @@ export default class ActionHandler {
   readonly actionMap: Record<Action, (...args: any[]) => Async<unknown>>;
 
   constructor(
-    public switchTool: (tool: ToolHandler) => void,
-    handlers: { [key: string]: ToolHandler },
+    public switchTool: (tool: Tool) => void,
+    tools: { [key: string]: Tool },
     public currentStyle: Style,
     public pages: Pages,
     public files: FileHandler,
@@ -131,13 +131,13 @@ export default class ActionHandler {
         this.clipboard.paste();
       },
 
-      move: () => this.switchTool(handlers.Move),
-      pen: () => this.switchTool(handlers.Pen),
-      eraser: () => this.switchTool(handlers.Eraser),
-      laser: () => this.switchTool(handlers.Laser),
-      line: () => this.switchTool(handlers.Line),
-      ellipse: () => this.switchTool(handlers.Ellipse),
-      rectangle: () => this.switchTool(handlers.Rectangle),
+      move: () => this.switchTool(tools.Move),
+      pen: () => this.switchTool(tools.Pen),
+      eraser: () => this.switchTool(tools.Eraser),
+      laser: () => this.switchTool(tools.Laser),
+      line: () => this.switchTool(tools.Line),
+      ellipse: () => this.switchTool(tools.Ellipse),
+      rectangle: () => this.switchTool(tools.Rectangle),
 
       dotted: () => this.setDash(Dash.Dotted),
       dashed: () => this.setDash(Dash.Dashed),
