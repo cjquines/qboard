@@ -181,6 +181,9 @@ export class EraserHandler extends BrushHandler {
   };
 
   /**
+   * Attempts to activate the current tool
+   *
+   * Default implementation:
    * Execute cut() which attempts to cut currently selected objects if they exist.
    * If cut() true then abort; leave current tool active.
    * Otherwise, mark internal state as active and return true
