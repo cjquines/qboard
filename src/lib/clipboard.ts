@@ -28,9 +28,14 @@ export default class ClipboardHandler {
     return objects;
   };
 
+  /**
+   * Cuts currently selected objects, if any
+   * @return Whether there were objects to cut
+   */
   cut = (): boolean => {
     const objects = this.copy() as fabric.ActiveSelection;
     if (!objects) return false;
+
     this.canvas.discardActiveObject();
     if (objects.type === "activeSelection") {
       objects.forEachObject((object) => {
@@ -42,6 +47,7 @@ export default class ClipboardHandler {
       this.history.remove([objects]);
     }
     this.canvas.requestRenderAll();
+
     return true;
   };
 

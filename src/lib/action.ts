@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { Tool } from "./tools";
+import { ToolHandler } from "./tools";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
@@ -79,10 +79,12 @@ type Async<T> = T | Promise<T>;
 
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  actionMap: { [key: string]: (...args: any[]) => Async<unknown> };
+  // FIXME: This exists because of a hack: open is written as an action even though it doesn't function as one
+  readonly actionMap: Record<Action, (...args: any[]) => Async<unknown>>;
 
   constructor(
-    public switchTool: (tool: Tool) => void,
+    public switchTool: (tool: ToolHandler) => void,
+    handlers: { [key: string]: ToolHandler },
     public currentStyle: Style,
     public pages: Pages,
     public files: FileHandler,
@@ -129,13 +131,13 @@ export default class ActionHandler {
         this.clipboard.paste();
       },
 
-      move: () => this.switchTool(Tool.Move),
-      pen: () => this.switchTool(Tool.Pen),
-      eraser: () => this.switchTool(Tool.Eraser),
-      laser: () => this.switchTool(Tool.Laser),
-      line: () => this.switchTool(Tool.Line),
-      ellipse: () => this.switchTool(Tool.Ellipse),
-      rectangle: () => this.switchTool(Tool.Rectangle),
+      move: () => this.switchTool(handlers.Move),
+      pen: () => this.switchTool(handlers.Pen),
+      eraser: () => this.switchTool(handlers.Eraser),
+      laser: () => this.switchTool(handlers.Laser),
+      line: () => this.switchTool(handlers.Line),
+      ellipse: () => this.switchTool(handlers.Ellipse),
+      rectangle: () => this.switchTool(handlers.Rectangle),
 
       dotted: () => this.setDash(Dash.Dotted),
       dashed: () => this.setDash(Dash.Dashed),

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import keyboardJS from "keyboardjs";
 
 import QBoard, { QBoardState } from "../lib/qboard";
-import { Tool } from "../lib/tools";
 import { Dash, Fill, Stroke } from "../lib/styles";
 import { defaultKeys } from "../lib/keyboard";
 
@@ -19,12 +18,10 @@ export const enum Visibility {
   Full,
 }
 
-const Overlay = (props: { qboard: QBoard }): JSX.Element => {
-  const { qboard } = props;
-
+const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
-  const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
-  const [isMobile, setMobility] = useState<boolean>(false);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
+  const [isMobile, setMobility] = useState(false);
 
   const [state, setState]: [
     QBoardState,
@@ -33,7 +30,6 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
     dragActive: false,
     currentPage: 0,
     totalPages: 0,
-    currentTool: Tool.Move,
     currentStyle: {
       dash: Dash.Solid,
       stroke: Stroke.Black,
@@ -95,7 +91,8 @@ const Overlay = (props: { qboard: QBoard }): JSX.Element => {
           visibility={visibility}
         />
         <Toolbar
-          currentTool={state.currentTool}
+          currentTool={qboard.activeTool}
+          handlers={qboard.handlers}
           doAction={qboard.action.doAction}
           visibility={visibility}
         />
