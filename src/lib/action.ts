@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { Tool } from "./tools";
+import { Tool, Tools } from "./tools";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
@@ -84,7 +84,7 @@ export default class ActionHandler {
 
   constructor(
     public switchTool: (tool: Tool) => void,
-    tools: { [key: string]: Tool },
+    tools: Tools,
     public currentStyle: Style,
     public pages: Pages,
     public files: FileHandler,

@@ -1,14 +1,14 @@
 import React from "react";
 
 import { Action } from "../lib/action";
-import { Tool } from "../lib/tools";
+import { Tool, Tools } from "../lib/tools";
 
 import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";
 
 const Toolbar = (props: {
   currentTool: Tool;
-  tools: { [key: string]: Tool };
+  tools: Tools;
   doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
 }): JSX.Element => {

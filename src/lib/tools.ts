@@ -349,11 +349,7 @@ export class Ellipse extends DrawingTool {
   };
 }
 
-const instantiateTools = (
-  baseCanvas: Page,
-  history: HistoryHandler,
-  clipboard: ClipboardHandler
-): {
+export interface Tools {
   Line: Line;
   Ellipse: Ellipse;
   Move: Move;
@@ -361,7 +357,13 @@ const instantiateTools = (
   Pen: Pen;
   Rectangle: Rectangle;
   Eraser: Eraser;
-} => ({
+}
+
+const instantiateTools = (
+  baseCanvas: Page,
+  history: HistoryHandler,
+  clipboard: ClipboardHandler
+): Tools => ({
   Move: new Move(baseCanvas, history, clipboard),
   Pen: new Pen(baseCanvas, history, clipboard),
   Eraser: new Eraser(baseCanvas, history, clipboard),
