@@ -1,7 +1,6 @@
 import { fabric } from "fabric";
 
 import Handlers, { ToolHandler } from "./tools";
-import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
@@ -76,9 +75,11 @@ export const actionName = (action: Action): string => {
   return name && name[0].toUpperCase() + name.slice(1);
 };
 
+type Async<T> = T | Promise<T>;
+
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  readonly actionMap: { [index: string]: Function };
+  readonly actionMap: Record<Action, (...args:any[])=>Async<unknown>>;
 
   constructor(
     public switchTool: (tool: ToolHandler) => void,
@@ -164,7 +165,9 @@ export default class ActionHandler {
     };
   }
 
-  doAction = (action: Action): Promise<void> => this.actionMap[action]();
+  doAction = async (action: Action): Promise<void> => {
+    await this.actionMap[action]();
+  };
 
   setDash = (dash: Dash): void => {
     if (dash === this.currentStyle.dash) {

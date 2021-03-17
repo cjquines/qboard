@@ -3,7 +3,9 @@
     "esModuleInterop": true,
     "jsx": "react",
     "target": "ES2019",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "strict": true,
+    "noImplicitAny": false
   },
   "include": ["./src/**/*"]
 }

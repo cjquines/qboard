@@ -6,32 +6,39 @@ import { Action } from "../lib/action";
 import Icon from "./Icon";
 import ButtonRow from "./ButtonRow";
 
-const DashStyle = (props: {
-  dashStyle: Dash;
+type StyleOptions = {
   callback: (action: Action) => Promise<void>;
-  inContext: boolean;
-}) => {
+  inContext?: boolean;
+};
+
+const DashStyle = ({
+  dashStyle,
+  callback,
+  inContext = false,
+}: StyleOptions & { dashStyle: Dash }) => {
   const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
   const button = (
-    <button className="inactive">{Icon[dashes[props.dashStyle]]}</button>
+    <button className="inactive">{Icon[dashes[dashStyle]]}</button>
   );
 
   return (
     <ButtonRow
       actions={dashes}
-      className={(action, i) =>
-        props.inContext && props.dashStyle === i && "active"
-      }
-      callback={props.callback}
-      outerButton={!props.inContext && button}
+      className={(action, i) => {
+        if (inContext && dashStyle === i) return "active";
+      }}
+      callback={callback}
+      outerButton={!inContext && button}
     />
   );
 };
 
-const StrokeStyle = (props: {
+const StrokeStyle = ({
+  strokeStyle,
+  callback,
+  inContext = false,
+}: StyleOptions & {
   strokeStyle: string;
-  callback: (action: Action) => Promise<void>;
-  inContext: boolean;
 }): JSX.Element => {
   const strokes = [
     Action.Black,
@@ -49,40 +56,40 @@ const StrokeStyle = (props: {
   ];
   const button = (
     <button className="inactive">
-      <i className="fas fa-circle" style={{ color: props.strokeStyle }} />
+      <i className="fas fa-circle" style={{ color: strokeStyle }} />
     </button>
   );
 
   return (
     <ButtonRow
       actions={strokes}
-      className={(action, i) =>
-        props.inContext && props.strokeStyle === strokeMap[i] && "active"
-      }
-      callback={props.callback}
-      outerButton={!props.inContext && button}
+      className={(action, i) => {
+        if (inContext && strokeStyle === strokeMap[i]) return "active";
+      }}
+      callback={callback}
+      outerButton={!inContext && button}
     />
   );
 };
 
-const FillStyle = (props: {
+const FillStyle = ({
+  fillStyle,
+  callback,
+  inContext = false,
+}: StyleOptions & {
   fillStyle: Fill;
-  callback: (action: Action) => Promise<void>;
-  inContext: boolean;
 }): JSX.Element => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
-  const button = (
-    <button className="inactive">{Icon[fills[props.fillStyle]]}</button>
-  );
+  const button = <button className="inactive">{Icon[fills[fillStyle]]}</button>;
 
   return (
     <ButtonRow
       actions={fills}
-      className={(action, i) =>
-        props.inContext && props.fillStyle === i && "active"
-      }
-      callback={props.callback}
-      outerButton={!props.inContext && button}
+      className={(action, i) => {
+        if (inContext && fillStyle === i) return "active";
+      }}
+      callback={callback}
+      outerButton={!inContext && button}
     />
   );
 };
@@ -95,17 +102,17 @@ const StyleMenu = (props: {
   return (
     <>
       <DashStyle
-        dashStyle={props.currentStyle ? props.currentStyle.dash : null}
+        dashStyle={props.currentStyle.dash}
         callback={props.doAction}
         inContext={props.inContext}
       />
       <StrokeStyle
-        strokeStyle={props.currentStyle ? props.currentStyle.stroke : null}
+        strokeStyle={props.currentStyle.stroke}
         callback={props.doAction}
         inContext={props.inContext}
       />
       <FillStyle
-        fillStyle={props.currentStyle ? props.currentStyle.fill : null}
+        fillStyle={props.currentStyle.fill}
         callback={props.doAction}
         inContext={props.inContext}
       />

@@ -3,6 +3,8 @@ import Page from "./page";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { FabricIEvent, PathEvent } from "./fabric";
+import { GuaranteedIObjectOptions } from "../types/fabric";
+import AssertType from "../types/assert";
 
 type Async<T = void> = T | Promise<T>;
 
@@ -59,7 +61,7 @@ export class ToolHandler {
    */
   readonly requiresBase: boolean = false;
 
-  resize: (
+  resize?: (
     object: fabric.Object,
     x2: number,
     y2: number,
@@ -126,7 +128,7 @@ export abstract class BrushHandler extends ToolHandler {
 
   setBrush: (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ) => void | Promise<void> = () => {};
 }
 
@@ -149,7 +151,10 @@ export class PenHandler extends BrushHandler {
     e.path.id = this.baseCanvas.getNextId();
     this.history.add([e.path]);
   };
-  setBrush = (brush: fabric.BaseBrush, options) => {
+  setBrush = (
+    brush: fabric.BaseBrush,
+    options: GuaranteedIObjectOptions
+  ): void => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
     brush.width = options.strokeWidth;
@@ -157,7 +162,7 @@ export class PenHandler extends BrushHandler {
 }
 
 export class EraserHandler extends BrushHandler {
-  pathCreated = (e) => {
+  pathCreated = (e: PathEvent): void => {
     const path = fabric.util.object.clone(e.path);
     this.baseCanvas.remove(e.path);
     const objects = this.baseCanvas
@@ -168,28 +173,36 @@ export class EraserHandler extends BrushHandler {
     this.history.remove(objects);
   };
 
-  setBrush = (brush, options) => {
+  setBrush = (
+    brush: fabric.BaseBrush,
+    options: GuaranteedIObjectOptions
+  ): void => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
   };
 
   /**
-   * Execute cut() which attempts to cut currently selected objects if they exists.
+   * Execute cut() which attempts to cut currently selected objects if they exist.
    * If cut() true then abort; leave current tool active.
    * Otherwise, mark internal state as active and return true
+   *
+   * @return Whether it was able to successfully activate
    */
-  activate = () => !this.clipboard.cut() && this.setActive(true);
+  activate = (): boolean => !this.clipboard.cut() && this.setActive(true);
 }
 
 export class LaserHandler extends BrushHandler {
-  pathCreated = (e) => {
+  pathCreated = (e: PathEvent): void => {
     setTimeout(() => {
       this.baseCanvas.remove(e.path);
       this.baseCanvas.requestRenderAll();
     }, 1000);
   };
-  setBrush = (brush, options) => {
+  setBrush = (
+    brush: fabric.BaseBrush,
+    options: GuaranteedIObjectOptions
+  ): void => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
     brush.width = options.strokeWidth;
@@ -197,8 +210,8 @@ export class LaserHandler extends BrushHandler {
 }
 
 export class LineHandler extends DrawingToolHandler {
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 0],
@@ -207,36 +220,54 @@ export class LineHandler extends DrawingToolHandler {
     [-1, 1],
   ];
 
-  draw = (x, y, options, x2, y2): fabric.Line => {
+  draw = (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): fabric.Line => {
     this.x = x;
     this.y = y;
 
-    return new fabric.Line([x, y, x2, y2], {
+    return new fabric.Line([x, y, x2, y2] as number[], {
       ...options,
       perPixelTargetFind: true,
     });
   };
 
-  resize = (object, x2, y2, strict): fabric.Line => {
-    let [x, y] = [x2, y2];
-    if (strict) {
-      [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+  resize = (
+    object: fabric.Object,
+    x2: number,
+    y2: number,
+    strict: boolean
+  ): fabric.Line => {
+    AssertType<fabric.Line>(object);
+
+    const [, x, y] = strict
+      ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object.set({ x2: x, y2: y }).setCoords();
     return object;
   };
 }
 
 export class RectangleHandler extends DrawingToolHandler {
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 1],
     [-1, 1],
   ];
 
-  draw = (x, y, options, x2, y2): fabric.Rect => {
+  draw = (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): fabric.Rect => {
     this.x = x;
     this.y = y;
 
@@ -255,10 +286,9 @@ export class RectangleHandler extends DrawingToolHandler {
     y2: number,
     strict: boolean
   ): fabric.Rect => {
-    let [x, y] = [x2, y2];
-    if (strict) {
-      [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+    const [, x, y] = strict
+      ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object
       .set({
         originX: this.x > x ? "right" : "left",
@@ -273,15 +303,21 @@ export class RectangleHandler extends DrawingToolHandler {
 }
 
 export class EllipseHandler extends DrawingToolHandler {
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 1],
     [-1, 1],
   ];
 
-  draw = (x, y, options, x2, y2): fabric.Ellipse => {
+  draw = (
+    x: number,
+    y: number,
+    options: fabric.IObjectOptions,
+    x2?: number,
+    y2?: number
+  ): fabric.Ellipse => {
     this.x = x;
     this.y = y;
 
@@ -289,22 +325,22 @@ export class EllipseHandler extends DrawingToolHandler {
   };
 
   resize = (
-    object: fabric.Ellipse,
+    object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
   ): fabric.Ellipse => {
-    let [x, y] = [x2, y2];
+    AssertType<fabric.Ellipse>(object);
 
-    if (strict) {
-      [, x, y] = Behaviors.rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+    const [, x, y] = strict
+      ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object
       .set({
         originX: this.x > x ? "right" : "left",
         originY: this.y > y ? "bottom" : "top",
-        rx: Math.abs(x - object.left) / 2,
-        ry: Math.abs(y - object.top) / 2,
+        rx: Math.abs(x - (object.left || 0)) / 2,
+        ry: Math.abs(y - (object.top || 0)) / 2,
       })
       .setCoords();
 
@@ -317,7 +353,15 @@ export default class Handlers {
     baseCanvas: Page,
     history: HistoryHandler,
     clipboard: ClipboardHandler
-  ) => ({
+  ): {
+    Line: LineHandler;
+    Ellipse: EllipseHandler;
+    Move: MoveHandler;
+    Laser: LaserHandler;
+    Pen: PenHandler;
+    Rectangle: RectangleHandler;
+    Eraser: EraserHandler;
+  } => ({
     Move: new MoveHandler(baseCanvas, history, clipboard),
     Pen: new PenHandler(baseCanvas, history, clipboard),
     Eraser: new EraserHandler(baseCanvas, history, clipboard),

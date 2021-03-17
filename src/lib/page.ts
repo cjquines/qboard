@@ -1,15 +1,15 @@
 import { fabric } from "fabric";
-
-export interface ObjectId extends fabric.Object {
-  id: number;
-}
+import { ObjectId } from "../types/fabric";
 
 export type Cursor = { x: number; y: number };
 
 export default class Page extends fabric.Canvas {
-  cursor: Cursor;
-  canvasWidth: number;
-  canvasHeight: number;
+  cursor: Cursor | undefined;
+
+  // assert not undefined because fitToWindow, which is called at init, sets these
+  canvasWidth!: number;
+  canvasHeight!: number;
+
   latestId = 0;
   modified = false;
 
@@ -91,10 +91,11 @@ export default class Page extends fabric.Canvas {
 
   placeObject<T extends fabric.Object>(
     obj: T,
-    cursor: Cursor = this.cursor
+    {
+      x = this.canvasWidth / 2,
+      y = this.canvasHeight / 2,
+    }: Partial<Cursor> = this.cursor ?? {}
   ): T {
-    const { x = this.canvasWidth / 2, y = this.canvasHeight / 2 } =
-      cursor || {};
     this.discardActiveObject();
     const id = this.getNextId();
 
