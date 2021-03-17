@@ -45,11 +45,6 @@ class Behaviors {
 export class ToolHandler {
   // Add type marker `boolean` so it can be overridden; otherwise takes type `false`
   /**
-   * Make sure that no extending classes except BrushHandler set this to true;
-   * the value of this property is used as a type guard.
-   */
-  protected readonly _isBrush: boolean = false;
-  /**
    * Make sure that no extending classes except DrawingToolHandler set this to true;
    * the value of this property is used as a type guard.
    */
@@ -59,10 +54,11 @@ export class ToolHandler {
    * the value of this property is used as a type guard.
    */
   protected readonly _requiresBase: boolean = false;
-
-  isBrush(): this is BrushHandler {
-    return this._isBrush;
-  }
+  /**
+   * Make sure that no extending classes except BrushHandler set this to true;
+   * the value of this property is used as a type guard.
+   */
+  protected readonly _isBrush: boolean = false;
 
   isDrawing(): this is DrawingToolHandler {
     return this._isDrawing;
@@ -70,6 +66,10 @@ export class ToolHandler {
 
   requiresBase(): this is RequiresBaseHandler {
     return this._requiresBase;
+  }
+
+  isBrush(): this is BrushHandler {
+    return this._isBrush;
   }
 
   resize?: (
@@ -124,8 +124,11 @@ export abstract class DrawingToolHandler extends ToolHandler {
     y2?
   ) => fabric.Object | Promise<fabric.Object>;
 }
+export abstract class RequiresBaseHandler extends ToolHandler {
+  _requiresBase = true;
+}
 
-export abstract class BrushHandler extends ToolHandler {
+export abstract class BrushHandler extends RequiresBaseHandler {
   _isBrush = true;
 
   /**
@@ -137,10 +140,6 @@ export abstract class BrushHandler extends ToolHandler {
     brush: fabric.BaseBrush,
     options: GuaranteedIObjectOptions
   ) => void | Promise<void> = () => {};
-}
-
-export class RequiresBaseHandler extends ToolHandler {
-  _requiresBase = true;
 }
 
 export class MoveHandler extends RequiresBaseHandler {}
