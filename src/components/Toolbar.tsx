@@ -1,25 +1,25 @@
 import React from "react";
 
 import { Action } from "../lib/action";
-import { ToolHandler } from "../lib/tools";
+import { Tool } from "../lib/tools";
 
 import { Visibility } from "./Overlay";
 import OverlayButton from "./OverlayButton";
 
 const Toolbar = (props: {
-  currentTool: ToolHandler;
-  handlers: { [key: string]: ToolHandler };
+  currentTool: Tool;
+  tools: { [key: string]: Tool };
   doAction: (action: Action) => Promise<void>;
   visibility: Visibility;
 }): JSX.Element => {
   const items = [
-    { tool: props.handlers.Move, action: Action.Move },
-    { tool: props.handlers.Pen, action: Action.Pen },
-    { tool: props.handlers.Eraser, action: Action.Eraser },
-    { tool: props.handlers.Laser, action: Action.Laser },
-    { tool: props.handlers.Line, action: Action.Line },
-    { tool: props.handlers.Rectangle, action: Action.Rectangle },
-    { tool: props.handlers.Ellipse, action: Action.Ellipse },
+    { tool: props.tools.Move, action: Action.Move },
+    { tool: props.tools.Pen, action: Action.Pen },
+    { tool: props.tools.Eraser, action: Action.Eraser },
+    { tool: props.tools.Laser, action: Action.Laser },
+    { tool: props.tools.Line, action: Action.Line },
+    { tool: props.tools.Rectangle, action: Action.Rectangle },
+    { tool: props.tools.Ellipse, action: Action.Ellipse },
   ];
 
   return (

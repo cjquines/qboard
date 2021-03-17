@@ -92,7 +92,7 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
         />
         <Toolbar
           currentTool={qboard.activeTool}
-          handlers={qboard.handlers}
+          tools={qboard.tools}
           doAction={qboard.action.doAction}
           visibility={visibility}
         />
