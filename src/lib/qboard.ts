@@ -1,11 +1,6 @@
 import { fabric } from "fabric";
 
-import Handlers, {
-  isBrush,
-  isDrawing,
-  requiresBase,
-  ToolHandler,
-} from "./tools";
+import Handlers, { ToolHandler } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
@@ -191,11 +186,11 @@ export default class QBoard {
 
     this.activeTool.deactivate();
 
-    if (isBrush(tool) || requiresBase(tool)) {
+    if (tool.isBrush() || tool.requiresBase()) {
       this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
 
-      if (isBrush(tool))
+      if (tool.isBrush())
         await tool.setBrush(
           this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
           this.drawerOptions
@@ -207,7 +202,7 @@ export default class QBoard {
 
     this.activeTool = tool;
 
-    this.baseCanvas.isDrawingMode = isBrush(this.activeTool);
+    this.baseCanvas.isDrawingMode = this.activeTool.isBrush();
 
     this.updateState();
   };
@@ -221,7 +216,7 @@ export default class QBoard {
   };
 
   mouseDown: FabricHandler = async (e) => {
-    if (!isDrawing(this.activeTool)) return;
+    if (!this.activeTool.isDrawing()) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
@@ -232,7 +227,7 @@ export default class QBoard {
   };
 
   mouseMove: FabricHandler = async (e) => {
-    if (!(isDrawing(this.activeTool) && this.isDown)) return;
+    if (!(this.activeTool.isDrawing() && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
 
@@ -243,7 +238,7 @@ export default class QBoard {
   };
 
   mouseUp: FabricHandler = () => {
-    if (!isDrawing(this.activeTool)) return;
+    if (!this.activeTool.isDrawing()) return;
 
     this.isDown = false;
     this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
@@ -274,7 +269,7 @@ export default class QBoard {
   };
 
   pathCreated: FabricHandler<PathEvent> = (e) => {
-    if (isBrush(this.activeTool)) this.activeTool.pathCreated(e);
+    if (this.activeTool.isBrush()) this.activeTool.pathCreated(e);
   };
 
   selectionCreated: FabricHandler<FabricIEvent> = (e) => {

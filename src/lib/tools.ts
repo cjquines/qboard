@@ -2,11 +2,7 @@ import { fabric } from "fabric";
 import Page from "./page";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
-import {
-  FabricIEvent,
-  PathEvent,
-  GuaranteedIObjectOptions,
-} from "../types/fabric";
+import { PathEvent, GuaranteedIObjectOptions } from "../types/fabric";
 import AssertType from "../types/assert";
 
 type Async<T = void> = T | Promise<T>;
@@ -52,17 +48,29 @@ export class ToolHandler {
    * Make sure that no extending classes except BrushHandler set this to true;
    * the value of this property is used as a type guard.
    */
-  readonly isBrush: boolean = false;
+  protected readonly _isBrush: boolean = false;
   /**
    * Make sure that no extending classes except DrawingToolHandler set this to true;
    * the value of this property is used as a type guard.
    */
-  readonly isDrawing: boolean = false;
+  protected readonly _isDrawing: boolean = false;
   /**
    * Make sure that no extending classes except DrawingToolHandler set this to true;
    * the value of this property is used as a type guard.
    */
-  readonly requiresBase: boolean = false;
+  protected readonly _requiresBase: boolean = false;
+
+  isBrush(): this is BrushHandler {
+    return this._isBrush;
+  }
+
+  isDrawing(): this is DrawingToolHandler {
+    return this._isDrawing;
+  }
+
+  requiresBase(): this is RequiresBaseHandler {
+    return this._requiresBase;
+  }
 
   resize?: (
     object: fabric.Object,
@@ -72,8 +80,8 @@ export class ToolHandler {
   ) => Async<fabric.Object>;
 
   /**
-   * Set externally from activate().
-   * Set internally with setActive();
+   * Set externally from activate() and deactivate().
+   * Set internally (from an extending class) with setActive();
    * @private
    */
   private active = false;
@@ -107,7 +115,7 @@ export class ToolHandler {
 }
 
 export abstract class DrawingToolHandler extends ToolHandler {
-  isDrawing = true;
+  _isDrawing = true;
   abstract draw: (
     x,
     y,
@@ -117,12 +125,8 @@ export abstract class DrawingToolHandler extends ToolHandler {
   ) => fabric.Object | Promise<fabric.Object>;
 }
 
-export function isDrawing(tool: ToolHandler): tool is DrawingToolHandler {
-  return tool.isDrawing;
-}
-
 export abstract class BrushHandler extends ToolHandler {
-  isBrush = true;
+  _isBrush = true;
 
   /**
    * Handle the pathCreated event
@@ -135,16 +139,8 @@ export abstract class BrushHandler extends ToolHandler {
   ) => void | Promise<void> = () => {};
 }
 
-export function isBrush(tool: ToolHandler): tool is BrushHandler {
-  return tool.isBrush;
-}
-
 export class RequiresBaseHandler extends ToolHandler {
-  requiresBase = true;
-}
-
-export function requiresBase(tool: ToolHandler): tool is RequiresBaseHandler {
-  return tool.requiresBase;
+  _requiresBase = true;
 }
 
 export class MoveHandler extends RequiresBaseHandler {}
