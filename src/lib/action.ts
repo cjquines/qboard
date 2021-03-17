@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import Handlers, { ToolHandler } from "./tools";
+import { ToolHandler } from "./tools";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
@@ -79,7 +79,8 @@ type Async<T> = T | Promise<T>;
 
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  readonly actionMap: Record<Action, (...args:any[])=>Async<unknown>>;
+  // FIXME: This exists because of a hack: open is written as an action even though it doesn't function as one
+  readonly actionMap: Record<Action, (...args: any[]) => Async<unknown>>;
 
   constructor(
     public switchTool: (tool: ToolHandler) => void,

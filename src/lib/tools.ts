@@ -2,8 +2,11 @@ import { fabric } from "fabric";
 import Page from "./page";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
-import { FabricIEvent, PathEvent } from "./fabric";
-import { GuaranteedIObjectOptions } from "../types/fabric";
+import {
+  FabricIEvent,
+  PathEvent,
+  GuaranteedIObjectOptions,
+} from "../types/fabric";
 import AssertType from "../types/assert";
 
 type Async<T = void> = T | Promise<T>;
