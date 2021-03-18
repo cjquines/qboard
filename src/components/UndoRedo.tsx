@@ -8,7 +8,7 @@ import OverlayButton from "./OverlayButton";
 const UndoRedo = (props: {
   canUndo: boolean;
   canRedo: boolean;
-  doAction: (action: Action) => Promise<void>;
+  doAction: (action: Action) => void;
   visibility: Visibility;
 }): JSX.Element => {
   return (

@@ -7,7 +7,7 @@ import StyleMenu from "./StyleMenu";
 
 const ContextMenu = (props: {
   currentStyle: Style;
-  doAction: (action: Action) => Promise<void>;
+  doAction: (action: Action) => void;
 }): JSX.Element | null => {
   const [coords, setCoords] = useState<[number, number] | null>(null);
 

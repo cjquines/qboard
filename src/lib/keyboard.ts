@@ -76,7 +76,7 @@ export default class KeyboardHandler {
   keyMap: KeyMap = {};
 
   constructor(
-    public doAction: (action: Action) => Promise<void>,
+    public doAction: (action: Action) => void,
     public setStrict: (strict: boolean) => void,
     public updateState: () => void
   ) {

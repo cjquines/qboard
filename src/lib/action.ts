@@ -76,12 +76,9 @@ export const actionName = (action: Action): string => {
   return name && name[0].toUpperCase() + name.slice(1);
 };
 
-type Async<T = void> = T | Promise<T>;
-
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  // FIXME: async to keep commit clean; don't need to change signatures
-  readonly actionMap: Record<Action, () => Async<unknown>>;
+  readonly actionMap: Record<Action, () => void>;
 
   constructor(
     public switchTool: (tool: Tool) => void,
@@ -178,9 +175,7 @@ export default class ActionHandler {
     };
   }
 
-  doAction = async (action: Action): Promise<void> => {
-    await this.actionMap[action]();
-  };
+  doAction = (action: Action): void => this.actionMap[action]();
 
   setDash = (dash: Dash): void => {
     if (dash === this.currentStyle.dash) {
