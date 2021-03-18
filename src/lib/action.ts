@@ -6,6 +6,7 @@ import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
+import React from "react";
 
 export enum Action {
   PreviousPage = "previousPage",
@@ -75,12 +76,12 @@ export const actionName = (action: Action): string => {
   return name && name[0].toUpperCase() + name.slice(1);
 };
 
-type Async<T> = T | Promise<T>;
+type Async<T = void> = T | Promise<T>;
 
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  // FIXME: This exists because of a hack: open is written as an action even though it doesn't function as one
-  readonly actionMap: Record<Action, (...args: any[]) => Async<unknown>>;
+  // FIXME: async to keep commit clean; don't need to change signatures
+  readonly actionMap: Record<Action, () => Async<unknown>>;
 
   constructor(
     public switchTool: (tool: Tool) => void,
@@ -94,7 +95,18 @@ export default class ActionHandler {
       dash: Dash | null,
       stroke: Stroke | null,
       fill: Fill | null
-    ) => void
+    ) => void,
+    /**
+     * Intentionally mutable global state object
+     */
+    private globalState: {
+      /**
+       * A ref to the global input element used for file input
+       *
+       * Readonly because we ourselves don't mutate this
+       */
+      readonly fileInputRef?: React.RefObject<HTMLInputElement>;
+    }
   ) {
     this.canvas = this.pages.canvas;
 
@@ -106,7 +118,7 @@ export default class ActionHandler {
       undo: history.undo,
       redo: history.redo,
 
-      open: files.openFile,
+      open: () => globalState.fileInputRef?.current?.click(),
       save: pages.saveFile,
       export: pages.export,
       cut: clipboard.cut,

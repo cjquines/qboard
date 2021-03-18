@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Style } from "../lib/styles";
 import { Action } from "../lib/action";
@@ -15,7 +15,6 @@ const Stylebar = (props: {
   visibility: Visibility;
   isMobile: boolean;
 }): JSX.Element => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const fileButton = <button className="inactive">{Icon.file}</button>;
   const fileActions = [Action.Open, Action.Save, Action.Export];
 
@@ -33,22 +32,9 @@ const Stylebar = (props: {
 
   return (
     <div className={`stylebar visibility-${props.visibility}`}>
-      <input
-        accept=""
-        onChange={(e) => props.acceptFile(e.target.files!)}
-        multiple={false}
-        ref={fileInputRef}
-        type="file"
-      />
       <ButtonRow
         actions={fileActions}
-        callback={async (action) => {
-          if (action === Action.Open) {
-            fileInputRef.current?.click();
-          } else {
-            await props.doAction(action);
-          }
-        }}
+        callback={props.doAction}
         cName="file-actions"
         outerButton={fileButton}
       />

@@ -11,6 +11,7 @@ import Toolbar from "./Toolbar";
 import Stylebar from "./Stylebar";
 import HelpModal from "./HelpModal";
 import ContextMenu from "./ContextMenu";
+import VirtualFileInput from "./VirtualFileInput";
 
 export const enum Visibility {
   None,
@@ -75,6 +76,14 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
 
   return (
     <>
+      <VirtualFileInput
+        acceptFiles={qboard.files.acceptFile}
+        captureRef={(ref) => {
+          qboard.globalState.fileInputRef = ref;
+        }}
+        multiple
+        accept="application/json, application/pdf, image/*"
+      />
       <div className={`drop-area ${state.dragActive ? "active" : ""}`} />
       <div className={`overlay visibility-${visibility}`}>
         <Pagination

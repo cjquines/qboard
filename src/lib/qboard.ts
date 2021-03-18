@@ -67,6 +67,16 @@ export default class QBoard {
   strict = false;
   callback: ((state: QBoardState) => void) | undefined;
 
+  /**
+   * Intentionally mutable global state object
+   */
+  public globalState: {
+    /**
+     * A ref to the global input element used for file input
+     */
+    fileInputRef?: React.RefObject<HTMLInputElement>;
+  } = {};
+
   constructor(
     public canvasElement: HTMLCanvasElement & HTMLChildElement,
     public baseCanvasElement: HTMLCanvasElement & HTMLChildElement,
@@ -134,7 +144,8 @@ export default class QBoard {
       this.files,
       this.history,
       this.clipboard,
-      this.style.set
+      this.style.set,
+      this.globalState
     );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,
