@@ -9,7 +9,7 @@ import OverlayButton from "./OverlayButton";
 const Toolbar = (props: {
   currentTool: Tool;
   tools: Tools;
-  doAction: (action: Action) => Promise<void>;
+  doAction: (action: Action) => void;
   visibility: Visibility;
 }): JSX.Element => {
   const items = [

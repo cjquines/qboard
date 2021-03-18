@@ -9,7 +9,7 @@ const Pagination = (props: {
   loadPage: (index: number) => Promise<void | number>;
   currentPage: number;
   totalPages: number;
-  doAction: (action: Action) => Promise<void>;
+  doAction: (action: Action) => void;
   visibility: Visibility;
 }): JSX.Element => {
   const [value, setValue] = useState(0);

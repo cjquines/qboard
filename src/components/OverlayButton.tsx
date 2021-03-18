@@ -7,7 +7,7 @@ import Icon from "./Icon";
 
 const OverlayButton = (props: {
   action: Action;
-  callback: (action: Action) => Promise<void>;
+  callback: (action: Action) => void;
   className?: string;
 }): JSX.Element => {
   return (

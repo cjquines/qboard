@@ -7,7 +7,7 @@ import Icon from "./Icon";
 import ButtonRow from "./ButtonRow";
 
 type StyleOptions = {
-  callback: (action: Action) => Promise<void>;
+  callback: (action: Action) => void;
   inContext?: boolean;
 };
 
@@ -96,7 +96,7 @@ const FillStyle = ({
 
 const StyleMenu = (props: {
   currentStyle: Style;
-  doAction: (action: Action) => Promise<void>;
+  doAction: (action: Action) => void;
   inContext?: boolean;
 }): JSX.Element => {
   return (

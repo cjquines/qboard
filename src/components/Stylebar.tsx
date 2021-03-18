@@ -10,7 +10,7 @@ import StyleMenu from "./StyleMenu";
 
 const Stylebar = (props: {
   currentStyle: Style;
-  doAction: (action: Action) => Promise<void>;
+  doAction: (action: Action) => void;
   acceptFile: (files: FileList) => Promise<void | void[]>;
   visibility: Visibility;
   isMobile: boolean;
