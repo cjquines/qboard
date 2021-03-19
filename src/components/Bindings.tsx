@@ -37,8 +37,8 @@ const Key = (props: {
     <button className="key" onClick={() => props.callback(props.letter)}>
       <div className="action">
         {props.action && Icon[props.action]}
-        <span className={props.action ? undefined : "unassigned"}>
-          {actionName(props.action) || "none"}
+        <span className={props.action === undefined ? "unassigned" : undefined}>
+          {props.action === undefined ? "none" : actionName(props.action)}
         </span>
       </div>
       <span className="letter">
@@ -59,7 +59,9 @@ const Bindings = (props: {
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState<string>("");
-  const [bindingModalAction, setBindingModalAction] = useState(undefined);
+  const [bindingModalAction, setBindingModalAction] = useState<Action | null>(
+    null
+  );
 
   const rows = [
     {

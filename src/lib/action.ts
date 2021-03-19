@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 
-import { Tool } from "./tools";
+import { Tool, Tools } from "./tools";
 import Pages from "./pages";
 import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
@@ -75,12 +75,16 @@ export const actionName = (action: Action): string => {
   return name && name[0].toUpperCase() + name.slice(1);
 };
 
+type Async<T> = T | Promise<T>;
+
 export default class ActionHandler {
   canvas: fabric.Canvas;
-  actionMap: unknown;
+  // FIXME: This exists because of a hack: open is written as an action even though it doesn't function as one
+  readonly actionMap: Record<Action, (...args: any[]) => Async<unknown>>;
 
   constructor(
     public switchTool: (tool: Tool) => void,
+    tools: Tools,
     public currentStyle: Style,
     public pages: Pages,
     public files: FileHandler,
@@ -127,13 +131,13 @@ export default class ActionHandler {
         this.clipboard.paste();
       },
 
-      move: () => this.switchTool(Tool.Move),
-      pen: () => this.switchTool(Tool.Pen),
-      eraser: () => this.switchTool(Tool.Eraser),
-      laser: () => this.switchTool(Tool.Laser),
-      line: () => this.switchTool(Tool.Line),
-      ellipse: () => this.switchTool(Tool.Ellipse),
-      rectangle: () => this.switchTool(Tool.Rectangle),
+      move: () => this.switchTool(tools.Move),
+      pen: () => this.switchTool(tools.Pen),
+      eraser: () => this.switchTool(tools.Eraser),
+      laser: () => this.switchTool(tools.Laser),
+      line: () => this.switchTool(tools.Line),
+      ellipse: () => this.switchTool(tools.Ellipse),
+      rectangle: () => this.switchTool(tools.Rectangle),
 
       dotted: () => this.setDash(Dash.Dotted),
       dashed: () => this.setDash(Dash.Dashed),
@@ -162,7 +166,9 @@ export default class ActionHandler {
     };
   }
 
-  doAction = (action: Action): Promise<void> => this.actionMap[action]();
+  doAction = async (action: Action): Promise<void> => {
+    await this.actionMap[action]();
+  };
 
   setDash = (dash: Dash): void => {
     if (dash === this.currentStyle.dash) {

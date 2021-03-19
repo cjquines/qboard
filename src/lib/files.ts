@@ -4,7 +4,7 @@ import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
 
-const defaults = <T>(value: T, getDefaultValue: () => T) =>
+const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
 
 export class AsyncReader {
@@ -12,7 +12,7 @@ export class AsyncReader {
     new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        resolve(reader.result);
+        resolve(reader.result!);
       };
       reader.onerror = reject;
       reader.readAsText(file);
@@ -22,7 +22,7 @@ export class AsyncReader {
     new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        resolve(reader.result);
+        resolve(reader.result!);
       };
       reader.onerror = reject;
       reader.readAsDataURL(file);
@@ -53,9 +53,9 @@ export class JSONWriter {
     "qboard-version": number;
     pages: PageJSON[];
   };
-  private asString: string;
-  private asBlob: Blob;
-  private asUrl: string;
+  private asString?: string;
+  private asBlob?: Blob;
+  private asUrl?: string;
 
   constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
@@ -80,13 +80,15 @@ export class JSONWriter {
       window.URL.createObjectURL(this.toBlob())
     );
     const revoke = () => {
+      if (this.asUrl === undefined) return;
+
       window.URL.revokeObjectURL(this.asUrl);
       this.asUrl = undefined;
     };
     return [this.asUrl, revoke];
   };
 
-  download = (filename = "qboard-file") => {
+  download = (filename = "qboard-file"): void => {
     const [fileURL, revokeURL] = this.toURL();
 
     const elt = document.createElement("a");
@@ -113,7 +115,7 @@ export default class FileHandler {
     files: FileList,
     cursor?: Cursor
   ): Promise<HistoryCommand> => {
-    const images = [];
+    const images: fabric.Object[] = [];
     await Promise.all(
       [...files].map(async (file) => {
         if (file.type.startsWith("image/")) {

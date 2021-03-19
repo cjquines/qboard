@@ -75,7 +75,7 @@ export default class Pages {
   export = async (): Promise<void> => {
     this.savePage();
     const ratio = 2;
-    const content = [];
+    const content: { svg: string; width: number }[] = [];
     const currentIndexCopy = this.currentIndex;
     // Load each page and then record it as svg
     for (const page of this.pagesJSON) {

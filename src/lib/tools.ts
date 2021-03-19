@@ -1,61 +1,76 @@
 import { fabric } from "fabric";
+import Page from "./page";
+import ClipboardHandler from "./clipboard";
+import HistoryHandler from "./history";
+import { PathEvent, GuaranteedIObjectOptions } from "../types/fabric";
+import AssertType from "../types/assert";
 
 type Async<T = void> = T | Promise<T>;
 
-// projects the point x2, y2 to the vector with origin ox, oy and direction vx, vy. returns the square distance and the coordinates of the projection.
-const project = (
-  ox: number,
-  oy: number,
-  vx: number,
-  vy: number,
-  x2: number,
-  y2: number
-): number[] => {
-  const x = x2 - ox;
-  const y = y2 - oy;
-  const side = vx * y - vy * x;
-  const sq = vx * vx + vy * vy;
-  return [
-    Math.abs(side) / sq,
-    ox + x + (vy * side) / sq,
-    oy + y - (vx * side) / sq,
-  ];
-};
-
-// given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
-const rectify = (
-  dirs: number[][],
-  x: number,
-  y: number,
-  x2: number,
-  y2: number
-): number[] => {
-  return dirs
-    .map((d) => project(x, y, d[0], d[1], x2, y2))
-    .reduce((acc, cur) => (acc[0] < cur[0] ? acc : cur));
-};
-
-export const enum Tool {
-  Move,
-  Pen,
-  Eraser,
-  Laser,
-  Line,
-  Rectangle,
-  Ellipse,
-}
-
-export default interface ToolHandler {
-  tool: Tool;
-  isBrush: boolean;
-
-  draw?: (
+class Behaviors {
+  // given the origin x, y, snaps the point x2, y2 to the nearest vector in dirs
+  static rectify = (
+    dirs: number[][],
     x: number,
     y: number,
-    options: fabric.IObjectOptions,
-    x2?: number,
-    y2?: number
-  ) => Async<fabric.Object>;
+    x2: number,
+    y2: number
+  ): number[] => {
+    return dirs
+      .map((d) => Behaviors.project(x, y, d[0], d[1], x2, y2))
+      .reduce((acc, cur) => (acc[0] < cur[0] ? acc : cur));
+  };
+
+  // projects the point x2, y2 to the vector with origin ox, oy and direction vx, vy. returns the square distance and the coordinates of the projection.
+  private static project = (
+    ox: number,
+    oy: number,
+    vx: number,
+    vy: number,
+    x2: number,
+    y2: number
+  ): number[] => {
+    const x = x2 - ox;
+    const y = y2 - oy;
+    const side = vx * y - vy * x;
+    const sq = vx * vx + vy * vy;
+    return [
+      Math.abs(side) / sq,
+      ox + x + (vy * side) / sq,
+      oy + y - (vx * side) / sq,
+    ];
+  };
+}
+
+export class Tool {
+  // Add type marker `boolean` so it can be overridden; otherwise takes type `false`
+  /**
+   * Make sure that no extending classes except DrawingTool set this to true;
+   * the value of this property is used as a type guard.
+   */
+  protected readonly _isDrawing: boolean = false;
+  /**
+   * Make sure that no extending classes except RequiresBaseTool set this to true;
+   * the value of this property is used as a type guard.
+   */
+  protected readonly _requiresBase: boolean = false;
+  /**
+   * Make sure that no extending classes except Brush set this to true;
+   * the value of this property is used as a type guard.
+   */
+  protected readonly _isBrush: boolean = false;
+
+  isDrawing(): this is DrawingTool {
+    return this._isDrawing;
+  }
+
+  requiresBase(): this is RequiresBase {
+    return this._requiresBase;
+  }
+
+  isBrush(): this is Brush {
+    return this._isBrush;
+  }
 
   resize?: (
     object: fabric.Object,
@@ -64,21 +79,79 @@ export default interface ToolHandler {
     strict: boolean
   ) => Async<fabric.Object>;
 
-  setBrush?: (brush: fabric.BaseBrush, options: fabric.IObjectOptions) => Async;
+  /**
+   * Set externally from activate() and deactivate().
+   * Set internally (from an extending class) with setActive();
+   * @private
+   */
+  private active = false;
+
+  constructor(
+    protected baseCanvas: Page,
+    protected history: HistoryHandler,
+    protected clipboard: ClipboardHandler
+  ) {}
+
+  /**
+   * @return Whether the activation was successful.
+   * Maybe want to throw error instead of return boolean.
+   */
+  activate: () => Async<boolean> = () => this.setActive(true);
+
+  /**
+   * Not allowed to fail
+   */
+  deactivate: () => void = () => this.setActive(false);
+
+  /**
+   * get this.active
+   */
+  isActive = (): boolean => this.active;
+
+  /**
+   * set this.active active
+   */
+  protected setActive = (active: boolean): boolean => (this.active = active);
 }
 
-export class MoveHandler implements ToolHandler {
-  tool: Tool = Tool.Move;
-  isBrush = false;
+export abstract class DrawingTool extends Tool {
+  _isDrawing = true;
+  abstract draw: (
+    x,
+    y,
+    options,
+    x2?,
+    y2?
+  ) => fabric.Object | Promise<fabric.Object>;
+}
+export abstract class RequiresBase extends Tool {
+  _requiresBase = true;
 }
 
-export class PenHandler implements ToolHandler {
-  tool: Tool = Tool.Pen;
-  isBrush = true;
+export abstract class Brush extends RequiresBase {
+  _isBrush = true;
 
+  /**
+   * Handle the pathCreated event
+   */
+  pathCreated: (e: PathEvent) => void = () => {};
+
+  setBrush: (
+    brush: fabric.BaseBrush,
+    options: GuaranteedIObjectOptions
+  ) => void | Promise<void> = () => {};
+}
+
+export class Move extends RequiresBase {}
+
+export class Pen extends Brush {
+  pathCreated = (e: PathEvent): void => {
+    e.path.id = this.baseCanvas.getNextId();
+    this.history.add([e.path]);
+  };
   setBrush = (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ): void => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
@@ -86,27 +159,50 @@ export class PenHandler implements ToolHandler {
   };
 }
 
-export class EraserHandler implements ToolHandler {
-  tool: Tool = Tool.Eraser;
-  isBrush = true;
+export class Eraser extends Brush {
+  pathCreated = (e: PathEvent): void => {
+    const path = fabric.util.object.clone(e.path);
+    this.baseCanvas.remove(e.path);
+    const objects = this.baseCanvas
+      .getObjects()
+      .filter((object) => object.intersectsWithObject(path));
+    if (!objects.length) return;
+    this.baseCanvas.remove(...objects);
+    this.history.remove(objects);
+  };
 
   setBrush = (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ): void => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
     brush.width = 5 * options.strokeWidth;
   };
+
+  /**
+   * Attempts to activate the current tool
+   *
+   * Default implementation:
+   * Execute cut() which attempts to cut currently selected objects if they exist.
+   * If cut() true then abort; leave current tool active.
+   * Otherwise, mark internal state as active and return true
+   *
+   * @return Whether it was able to successfully activate
+   */
+  activate = (): boolean => !this.clipboard.cut() && this.setActive(true);
 }
 
-export class LaserHandler implements ToolHandler {
-  tool: Tool = Tool.Laser;
-  isBrush = true;
-
+export class Laser extends Brush {
+  pathCreated = (e: PathEvent): void => {
+    setTimeout(() => {
+      this.baseCanvas.remove(e.path);
+      this.baseCanvas.requestRenderAll();
+    }, 1000);
+  };
   setBrush = (
     brush: fabric.BaseBrush,
-    options: fabric.IObjectOptions
+    options: GuaranteedIObjectOptions
   ): void => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
@@ -114,11 +210,9 @@ export class LaserHandler implements ToolHandler {
   };
 }
 
-export class LineHandler implements ToolHandler {
-  tool: Tool = Tool.Line;
-  isBrush = false;
-  x: number;
-  y: number;
+export class Line extends DrawingTool {
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 0],
@@ -127,81 +221,75 @@ export class LineHandler implements ToolHandler {
     [-1, 1],
   ];
 
-  draw = async (
+  draw = (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ): Promise<fabric.Line> => {
+  ): fabric.Line => {
     this.x = x;
     this.y = y;
 
-    return new Promise<fabric.Line>((resolve) => {
-      resolve(
-        new fabric.Line([x, y, x2, y2], {
-          ...options,
-          perPixelTargetFind: true,
-        })
-      );
+    return new fabric.Line([x, y, x2, y2] as number[], {
+      ...options,
+      perPixelTargetFind: true,
     });
   };
 
-  resize = async (
-    object: fabric.Line,
+  resize = (
+    object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
-  ): Promise<fabric.Line> => {
-    let [x, y] = [x2, y2];
-    if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+  ): fabric.Line => {
+    AssertType<fabric.Line>(object);
+
+    const [, x, y] = strict
+      ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object.set({ x2: x, y2: y }).setCoords();
-    return new Promise<fabric.Line>((resolve) => {
-      resolve(object);
-    });
+    return object;
   };
 }
 
-export class RectangleHandler implements ToolHandler {
-  tool: Tool = Tool.Rectangle;
-  isBrush = false;
-  x: number;
-  y: number;
+export class Rectangle extends DrawingTool {
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 1],
     [-1, 1],
   ];
 
-  draw = async (
+  draw = (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ): Promise<fabric.Rect> => {
+  ): fabric.Rect => {
     this.x = x;
     this.y = y;
 
-    return new Promise<fabric.Rect>((resolve) => {
-      resolve(
-        new fabric.Rect({ left: x, top: y, width: x2, height: y2, ...options })
-      );
+    return new fabric.Rect({
+      left: x,
+      top: y,
+      width: x2,
+      height: y2,
+      ...options,
     });
   };
 
-  resize = async (
+  resize = (
     object: fabric.Rect,
     x2: number,
     y2: number,
     strict: boolean
-  ): Promise<fabric.Rect> => {
-    let [x, y] = [x2, y2];
-    if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+  ): fabric.Rect => {
+    const [, x, y] = strict
+      ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object
       .set({
         originX: this.x > x ? "right" : "left",
@@ -211,72 +299,78 @@ export class RectangleHandler implements ToolHandler {
       })
       .setCoords();
 
-    return new Promise<fabric.Rect>((resolve) => {
-      resolve(object);
-    });
+    return object;
   };
 }
 
-export class EllipseHandler implements ToolHandler {
-  tool: Tool = Tool.Ellipse;
-  isBrush = false;
-  x: number;
-  y: number;
+export class Ellipse extends DrawingTool {
+  x = 0;
+  y = 0;
 
   dirs: number[][] = [
     [1, 1],
     [-1, 1],
   ];
 
-  draw = async (
+  draw = (
     x: number,
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
     y2?: number
-  ): Promise<fabric.Ellipse> => {
+  ): fabric.Ellipse => {
     this.x = x;
     this.y = y;
 
-    return new Promise<fabric.Ellipse>((resolve) => {
-      resolve(
-        new fabric.Ellipse({ left: x, top: y, rx: x2, ry: y2, ...options })
-      );
-    });
+    return new fabric.Ellipse({ ...options, left: x, top: y, rx: x2, ry: y2 });
   };
 
-  resize = async (
-    object: fabric.Ellipse,
+  resize = (
+    object: fabric.Object,
     x2: number,
     y2: number,
     strict: boolean
-  ): Promise<fabric.Ellipse> => {
-    let [x, y] = [x2, y2];
+  ): fabric.Ellipse => {
+    AssertType<fabric.Ellipse>(object);
 
-    if (strict) {
-      [, x, y] = rectify(this.dirs, this.x, this.y, x2, y2);
-    }
+    const [, x, y] = strict
+      ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
+      : [undefined, x2, y2];
     object
       .set({
         originX: this.x > x ? "right" : "left",
         originY: this.y > y ? "bottom" : "top",
-        rx: Math.abs(x - object.left) / 2,
-        ry: Math.abs(y - object.top) / 2,
+        rx: Math.abs(x - (object.left || 0)) / 2,
+        ry: Math.abs(y - (object.top || 0)) / 2,
       })
       .setCoords();
 
-    return new Promise<fabric.Ellipse>((resolve) => {
-      resolve(object);
-    });
+    return object;
   };
 }
 
-export const Handlers = [
-  new MoveHandler(),
-  new PenHandler(),
-  new EraserHandler(),
-  new LaserHandler(),
-  new LineHandler(),
-  new RectangleHandler(),
-  new EllipseHandler(),
-];
+export interface Tools {
+  Line: Line;
+  Ellipse: Ellipse;
+  Move: Move;
+  Laser: Laser;
+  Pen: Pen;
+  Rectangle: Rectangle;
+  Eraser: Eraser;
+}
+
+const instantiateTools = (
+  baseCanvas: Page,
+  history: HistoryHandler,
+  clipboard: ClipboardHandler
+): Tools => ({
+  Move: new Move(baseCanvas, history, clipboard),
+  Pen: new Pen(baseCanvas, history, clipboard),
+  Eraser: new Eraser(baseCanvas, history, clipboard),
+  Laser: new Laser(baseCanvas, history, clipboard),
+  Line: new Line(baseCanvas, history, clipboard),
+  Rectangle: new Rectangle(baseCanvas, history, clipboard),
+  Ellipse: new Ellipse(baseCanvas, history, clipboard),
+});
+
+export default instantiateTools;

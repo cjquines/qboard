@@ -1,8 +1,8 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 
 import { Stroke } from "../lib/styles";
 
-const fasIcon = (iconName: string, style?: unknown) => (
+const fasIcon = (iconName: string, style?: CSSProperties) => (
   <i className={`fas fa-${iconName}`} style={style} />
 );
 

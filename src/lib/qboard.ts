@@ -1,8 +1,8 @@
 import { fabric } from "fabric";
 import { Network } from "@mehra/ts";
 
-import ToolHandler, { Handlers, Tool } from "./tools";
-import Page, { ObjectId } from "./page";
+import instantiateTools, { Tool, Tools } from "./tools";
+import Page from "./page";
 import Pages from "./pages";
 import FileHandler, { JSONReader } from "./files";
 import HistoryHandler from "./history";
@@ -10,17 +10,23 @@ import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
-import { FabricIEvent, PathEvent } from "./fabric";
+import { HTMLChildElement } from "../types/html";
+import {
+  FabricIEvent,
+  GuaranteedIObjectOptions,
+  ObjectId,
+  PathEvent,
+} from "../types/fabric";
 
 type Async<T = void> = T | Promise<T>;
 
-type FabricHandler = (e: FabricIEvent) => Async;
+type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
+import AssertType from "../types/assert";
 
 export interface QBoardState {
   dragActive: boolean;
   currentPage: number;
   totalPages: number;
-  currentTool: Tool;
   currentStyle: Style;
   canUndo: boolean;
   canRedo: boolean;
@@ -38,13 +44,14 @@ export default class QBoard {
   action: ActionHandler;
   keyboard: KeyboardHandler;
 
-  handlers: ToolHandler[] = Handlers;
+  tools: Tools;
+  activeTool: Tool;
   currentStyle: Style = {
     dash: Dash.Solid,
     stroke: Stroke.Black,
     fill: Fill.Transparent,
   };
-  drawerOptions: fabric.IObjectOptions = {
+  readonly drawerOptions: GuaranteedIObjectOptions = {
     fill: "transparent",
     stroke: "#000000",
     strokeWidth: 4,
@@ -53,18 +60,16 @@ export default class QBoard {
     strokeUniform: true,
   };
 
-  resizeCooldown: NodeJS.Timeout;
-  currentTool: Tool;
-  tool: ToolHandler;
-  currentObject: fabric.Object;
+  resizeCooldown: NodeJS.Timeout | undefined;
+  currentObject: fabric.Object | undefined;
   dragActive = false;
   isDown = false;
   strict = false;
-  callback: (state: QBoardState) => void;
+  callback: ((state: QBoardState) => void) | undefined;
 
   constructor(
-    public canvasElement: HTMLCanvasElement,
-    public baseCanvasElement: HTMLCanvasElement,
+    public canvasElement: HTMLCanvasElement & HTMLChildElement,
+    public baseCanvasElement: HTMLCanvasElement & HTMLChildElement,
     public canvasWidth: number,
     public canvasHeight: number
   ) {
@@ -113,8 +118,14 @@ export default class QBoard {
       this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
       this.updateState
     );
+    this.tools = instantiateTools(
+      this.baseCanvas,
+      this.history,
+      this.clipboard
+    );
     this.action = new ActionHandler(
       this.switchTool,
+      this.tools,
       this.currentStyle,
       this.pages,
       this.files,
@@ -128,24 +139,33 @@ export default class QBoard {
       this.updateState
     );
 
-    void this.switchTool(Tool.Move);
+    // an instance which has no effect (deactivate method is trivial)
+    this.activeTool = new Tool(this.baseCanvas, this.history, this.clipboard);
+    void this.switchTool();
+
     void this.windowResize();
 
     window.onresize = this.windowResize;
     window.onbeforeunload = () => this.baseCanvas.modified || null;
+    {
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
+      this.canvas.on("mouse:down", this.mouseDown);
+      this.canvas.on("mouse:move", this.mouseMove);
+      this.canvas.on("mouse:up", this.mouseUp);
 
-    this.canvas.on("mouse:down", this.mouseDown);
-    this.canvas.on("mouse:move", this.mouseMove);
-    this.canvas.on("mouse:up", this.mouseUp);
+      this.baseCanvas.on("dragenter", () => this.setDragActive(true));
+      this.baseCanvas.on("dragleave", () => this.setDragActive(false));
+      this.baseCanvas.on("drop", this.drop);
 
-    this.baseCanvas.on("dragenter", () => this.setDragActive(true));
-    this.baseCanvas.on("dragleave", () => this.setDragActive(false));
-    this.baseCanvas.on("drop", this.drop);
-
-    this.baseCanvas.on("path:created", this.pathCreated);
-    this.baseCanvas.on("selection:created", this.selectionCreated);
-    this.baseCanvas.on("object:modified", this.objectModified);
-    this.baseCanvas.on("mouse:move", this.updateCursor);
+      // @ts-ignore
+      this.baseCanvas.on("path:created", this.pathCreated);
+      // @ts-ignore
+      this.baseCanvas.on("selection:created", this.selectionCreated);
+      // @ts-ignore
+      this.baseCanvas.on("object:modified", this.objectModified);
+      this.baseCanvas.on("mouse:move", this.updateCursor);
+      /* eslint-enable @typescript-eslint/ban-ts-comment */
+    }
   }
 
   updateState = (): void => {
@@ -153,7 +173,6 @@ export default class QBoard {
       dragActive: this.dragActive,
       currentPage: this.pages.currentIndex + 1,
       totalPages: this.pages.pagesJSON.length,
-      currentTool: this.currentTool,
       currentStyle: this.currentStyle,
       canUndo: this.history.history.length > 0,
       canRedo: this.history.redoStack.length > 0,
@@ -161,33 +180,39 @@ export default class QBoard {
     });
   };
 
-  switchTool = async (tool: Tool): Promise<void> => {
-    if (tool === Tool.Eraser) {
-      if (this.clipboard.cut()) return;
-    }
+  /**
+   * Assumes no two instances are the same tool
+   */
+  switchTool = async (tool: Tool = this.tools.Move): Promise<void> => {
+    // Reference equality because of assumption
+    if (tool === this.activeTool || !(await tool.activate())) return;
 
-    this.currentTool = tool;
-    this.tool = this.handlers[tool];
+    this.activeTool.deactivate();
 
-    if (tool === Tool.Move || this.tool.isBrush) {
+    if (tool.isBrush() || tool.requiresBase()) {
       this.baseCanvas.activateSelection();
       this.canvasElement.parentElement.style.display = "none";
-      await this.tool.setBrush?.(
-        this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
-        this.drawerOptions
-      );
     } else {
       this.baseCanvas.deactivateSelection();
       this.canvasElement.parentElement.style.display = "block";
     }
 
-    this.baseCanvas.isDrawingMode = this.tool.isBrush;
+    if (tool.isBrush()) {
+      await tool.setBrush(
+        this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
+        this.drawerOptions
+      );
+    }
+
+    this.activeTool = tool;
+
+    this.baseCanvas.isDrawingMode = this.activeTool.isBrush();
 
     this.updateState();
   };
 
   windowResize = (): void => {
-    clearTimeout(this.resizeCooldown);
+    if (this.resizeCooldown !== undefined) clearTimeout(this.resizeCooldown);
     this.resizeCooldown = setTimeout(() => {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
       this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
@@ -195,30 +220,36 @@ export default class QBoard {
   };
 
   mouseDown: FabricHandler = async (e) => {
-    if (!this.tool.draw) return;
+    if (!this.activeTool.isDrawing()) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
-    this.currentObject = await this.tool.draw(x, y, this.drawerOptions);
+    this.currentObject = await this.activeTool.draw(x, y, this.drawerOptions);
     (this.currentObject as ObjectId).id = this.baseCanvas.getNextId();
     this.canvas.add(this.currentObject);
     this.canvas.requestRenderAll();
   };
 
   mouseMove: FabricHandler = async (e) => {
-    if (!(this.tool.draw && this.isDown)) return;
+    if (!(this.activeTool.isDrawing() && this.isDown)) return;
 
     const { x, y } = this.canvas.getPointer(e.e);
-    await this.tool.resize(this.currentObject, x, y, this.strict);
+
+    if (this.currentObject !== undefined)
+      await this.activeTool.resize?.(this.currentObject, x, y, this.strict);
+
     this.canvas.requestRenderAll();
   };
 
   mouseUp: FabricHandler = () => {
-    if (!this.tool.draw) return;
+    if (!this.activeTool.isDrawing()) return;
 
     this.isDown = false;
     this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
     this.baseCanvas.requestRenderAll();
+
+    AssertType<fabric.Object>(this.currentObject); // can do this because mouseDown sets this
+
     this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     this.history.add([this.currentObject]);
@@ -236,36 +267,21 @@ export default class QBoard {
     this.setDragActive(false);
 
     const historyCommand = await this.files.processFiles(
-      (iEvent.e as DragEvent).dataTransfer.files
+      (iEvent.e as DragEvent).dataTransfer!.files
     );
     this.history.execute(historyCommand);
   };
 
-  pathCreated: FabricHandler = (e: PathEvent) => {
-    if (this.currentTool === Tool.Pen) {
-      e.path.id = this.baseCanvas.getNextId();
-      this.history.add([e.path]);
-    } else if (this.currentTool === Tool.Eraser) {
-      const path = fabric.util.object.clone(e.path);
-      this.baseCanvas.remove(e.path);
-      const objects = this.baseCanvas
-        .getObjects()
-        .filter((object) => object.intersectsWithObject(path));
-      if (!objects.length) return;
-      this.baseCanvas.remove(...objects);
-      this.history.remove(objects);
-    } else if (this.currentTool === Tool.Laser) {
-      setTimeout(() => {
-        this.baseCanvas.remove(e.path);
-        this.baseCanvas.requestRenderAll();
-      }, 1000);
-    }
+  pathCreated: FabricHandler<PathEvent> = (e) => {
+    if (this.activeTool.isBrush()) this.activeTool.pathCreated(e);
   };
 
-  selectionCreated: FabricHandler = (e) =>
-    !this.history.locked && this.history.store(e.selected);
+  selectionCreated: FabricHandler<FabricIEvent> = (e) => {
+    if (this.history.locked) return;
+    return this.history.store(e.selected);
+  };
 
-  objectModified: FabricHandler = (e) => {
+  objectModified: FabricHandler<FabricIEvent> = (e) => {
     this.history.modify(e.target._objects || [e.target]);
     this.history.store(e.target._objects || [e.target]);
   };
