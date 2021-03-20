@@ -92,11 +92,14 @@ export default class QBoard {
       this.updateState
     );
 
-    if (queryParams.get("json") !== null)
-      Network.loadJSON(queryParams.get("json"))
-        .then(JSONReader.readParsed)
-        .then(this.pages.overwritePages)
-        .catch(console.error);
+    {
+      const jsonLink = queryParams.get("json");
+      if (jsonLink !== null)
+        Network.loadJSON(jsonLink)
+          .then(JSONReader.readParsed)
+          .then(this.pages.overwritePages)
+          .catch(console.error);
+    }
 
     this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
