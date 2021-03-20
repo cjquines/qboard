@@ -37,7 +37,10 @@ export class JSONReader {
     return JSONReader.readParsed(object);
   }
 
-  static readParsed(object): PageJSON[] {
+  // FIXME: provide backwards-compatible interface as input type
+  // * https://github.com/cjquines/qboard/pull/118
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+  static readParsed(object: any): PageJSON[] {
     const { "qboard-version": version, pages } = object;
     switch (version) {
       case 1:
