@@ -1,9 +1,10 @@
 import { fabric } from "fabric";
+import { Network } from "@mehra/ts";
 
 import instantiateTools, { Tool, Tools } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
-import FileHandler from "./files";
+import FileHandler, { JSONReader } from "./files";
 import HistoryHandler from "./history";
 import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
@@ -72,6 +73,8 @@ export default class QBoard {
     public canvasWidth: number,
     public canvasHeight: number
   ) {
+    const queryParams = new URLSearchParams(window.location.search);
+
     this.baseCanvas = new Page(baseCanvasElement, {
       backgroundColor: "white",
       renderOnAddRemove: false,
@@ -88,6 +91,16 @@ export default class QBoard {
       this.canvasHeight,
       this.updateState
     );
+
+    {
+      const jsonLink = queryParams.get("json");
+      if (jsonLink !== null)
+        Network.loadJSON(jsonLink)
+          .then(JSONReader.readParsed)
+          .then(this.pages.overwritePages)
+          .catch(console.error);
+    }
+
     this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
       this.baseCanvas,

@@ -25,14 +25,14 @@ const timeString = (): string => {
 };
 
 export default class Pages {
-  pagesJSON: PageJSON[] = [defaultPageJSON];
   currentIndex = 0;
 
   constructor(
     public canvas: Page,
     public canvasWidth: number,
     public canvasHeight: number,
-    public updateState: () => void
+    public updateState: () => void,
+    public pagesJSON: PageJSON[] = [defaultPageJSON]
   ) {}
 
   savePage = (): void => {
