@@ -1,4 +1,5 @@
-import pdfMake from "pdfmake/build/pdfmake.min";
+import pdfMake from "pdfmake/build/pdfmake";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 import { fabric } from "fabric";
 
 import Page from "./page";
@@ -111,7 +112,7 @@ export default class Pages {
       });
     }
 
-    const docDefinition = {
+    const docDefinition: TDocumentDefinitions = {
       pageSize: {
         width: this.canvasWidth / ratio,
         height: this.canvasHeight / ratio,
