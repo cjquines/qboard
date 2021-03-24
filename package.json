@@ -19,7 +19,7 @@
     "@mehra/ts": "^5.0.1",
     "fabric": "^4.2.0",
     "keyboardjs": "^2.6.4",
-    "pdfmake": "^0.1.68",
+    "pdfmake": "^0.1.70",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
