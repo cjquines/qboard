@@ -17,7 +17,7 @@ const HelpModal = (props: {
   isOpen: boolean;
   toggleOpen: () => void;
   isMobile: boolean;
-  toggleMobility: () => void;
+  // toggleMobility: () => void;
 }): JSX.Element => {
   const [keyModifier, setKeyModifier] = useState("");
   const [leftHanded, setLeftHanded] = useState(false);
@@ -94,11 +94,11 @@ const HelpModal = (props: {
       <p style={{ color: "#666" }}>
         By <a href="https://cjquines.com/">CJ Quines</a> and{" "}
         <a href="https://pihart.github.io/">Avi Mehra</a>. View on{" "}
-        <a href="https://github.com/cjquines/qboard">Github</a>. Use{" "}
+        <a href="https://github.com/cjquines/qboard">Github</a>.
+        {/* Use{" "}
         <a onClick={() => props.toggleMobility()} tabIndex={0}>
           {props.isMobile ? "desktop" : "mobile"} site
-        </a>
-        .
+        </a>.*/}
       </p>
     </Modal>
   );
