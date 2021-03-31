@@ -22,7 +22,8 @@ export const enum Visibility {
 const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
-  const [isMobile, setMobility] = useState(false);
+  // const [isMobile, setMobility] = useState(false);
+  const isMobile = true;
 
   const [state, setState]: [
     QBoardState,
@@ -48,20 +49,22 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
     });
   };
 
-  const toggleMobility = (): void => {
+  // Code is temporarily dead as a result of https://github.com/cjquines/qboard/issues/91;
+  // Commenting so it can get erased in build
+  /*const toggleMobility = (): void => {
     setMobility((wasMobile) => {
       window.localStorage.setItem("isMobile", wasMobile ? "false" : "true");
       return !wasMobile;
     });
-  };
+  };*/
 
   useEffect(() => {
     if (window.localStorage.getItem("helpModalOpen") !== "false") {
       setHelpModalOpen(true);
     }
-    if (window.localStorage.getItem("isMobile") !== "false") {
-      setMobility(true);
-    }
+    // if (window.localStorage.getItem("isMobile") !== "false") {
+    //   setMobility(true);
+    // }
 
     qboard.callback = setState;
     qboard.updateState();
@@ -124,7 +127,7 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
           isOpen={helpModalOpen}
           toggleOpen={toggleOpen}
           isMobile={isMobile}
-          toggleMobility={toggleMobility}
+          // toggleMobility={toggleMobility}
         />
       </div>
       <ContextMenu
