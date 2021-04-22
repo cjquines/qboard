@@ -41,11 +41,12 @@ const Pagination = (props: {
 
   return (
     <div className={`pagination visibility-${props.visibility}`}>
-      {props.currentPage === 1 ? (
-        <OverlayButton action={Action.AddPageStart} callback={props.doAction} />
-      ) : (
-        <OverlayButton action={Action.PreviousPage} callback={props.doAction} />
-      )}
+      <OverlayButton
+        action={
+          props.currentPage === 1 ? Action.AddPageStart : Action.PreviousPage
+        }
+        callback={props.doAction}
+      />
       <form onSubmit={onSubmit}>
         <input
           onChange={onChange}
@@ -56,11 +57,14 @@ const Pagination = (props: {
         />
       </form>
       <span className="total-pages"> / {props.totalPages}</span>
-      {props.currentPage === props.totalPages ? (
-        <OverlayButton action={Action.AddPageEnd} callback={props.doAction} />
-      ) : (
-        <OverlayButton action={Action.NextPage} callback={props.doAction} />
-      )}
+      <OverlayButton
+        action={
+          props.currentPage === props.totalPages
+            ? Action.AddPageEnd
+            : Action.NextPage
+        }
+        callback={props.doAction}
+      />
     </div>
   );
 };
