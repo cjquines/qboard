@@ -10,5 +10,6 @@ module.exports = {
         ignoreAtRules: ["function", "if", "each", "include", "mixin"],
       },
     ],
+    "no-invalid-position-at-import-rule": null,
   },
 };
