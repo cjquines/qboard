@@ -75,6 +75,7 @@ export default class QBoard {
      * A ref to the global input element used for file input
      */
     fileInputRef?: React.RefObject<HTMLInputElement>;
+    toggleHelpModal?: () => void;
   } = {};
 
   constructor(

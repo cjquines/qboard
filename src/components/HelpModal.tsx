@@ -55,7 +55,7 @@ const HelpModal = (props: {
         </span>
       </p>
       <p>
-        Press <b>{leftHanded ? "0" : "1"}</b> to show or hide this screen.
+        Press <b>?</b> to show or hide this screen.
       </p>
       <p>
         <button

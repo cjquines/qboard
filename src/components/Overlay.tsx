@@ -67,14 +67,12 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
     // }
 
     qboard.callback = setState;
+    qboard.globalState.toggleHelpModal = toggleOpen;
     qboard.updateState();
 
     keyboardJS.bind("tab", () => {
       setVisibility((currentVisibility) => (currentVisibility + 2) % 3);
     });
-
-    keyboardJS.bind("1", () => toggleOpen());
-    keyboardJS.bind("0", () => toggleOpen());
   }, []);
 
   return (

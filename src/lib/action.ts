@@ -50,6 +50,7 @@ export enum Action {
   HalfFilled = "halfFilled",
   Filled = "filled",
 
+  Help = "help",
   ResetStyles = "resetStyles",
   FullScreen = "fullScreen",
   EnterFullScreen = "enterFullScreen",
@@ -105,6 +106,7 @@ export default class ActionHandler {
        * Readonly because we ourselves don't mutate this
        */
       readonly fileInputRef?: React.RefObject<HTMLInputElement>;
+      readonly toggleHelpModal?: () => void;
     }
   ) {
     this.canvas = this.pages.canvas;
@@ -167,6 +169,7 @@ export default class ActionHandler {
 
       resetStyles: () =>
         this.setStyle(Dash.Solid, Stroke.Black, Fill.Transparent),
+      help: () => globalState.toggleHelpModal?.(),
       fullScreen: () =>
         this.doAction(
           !document.fullscreenElement

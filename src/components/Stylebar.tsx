@@ -19,7 +19,7 @@ const Stylebar = (props: {
   const fileActions = [Action.Open, Action.Save, Action.Export];
 
   const otherActions = [Action.Copy, Action.Paste];
-  const mobileActions = props.isMobile ? [Action.FullScreen] : [];
+  const mobileActions = props.isMobile ? [Action.FullScreen] : [Action.Help];
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 

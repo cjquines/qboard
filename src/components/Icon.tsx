@@ -35,6 +35,7 @@ const Icon = {
 
   duplicate: fasIcon("clone"),
 
+  help: fasIcon("question"),
   fullScreen: fasIcon("expand"),
   enterFullScreen: fasIcon("expand"),
   exitFullScreen: fasIcon("compress"),

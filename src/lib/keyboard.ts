@@ -45,6 +45,11 @@ export const defaultKeys: KeyMap = {
   "ctrl + z": Action.Undo,
   "ctrl + x": Action.Cut,
   "ctrl + c": Action.Copy,
+
+  "1": Action.Help,
+  "0": Action.Help,
+  "/": Action.Help,
+  "shift + /": Action.Help,
 };
 
 const mirrorMap: MirrorMap = {
@@ -96,6 +101,16 @@ export default class KeyboardHandler {
     } else {
       this.keyMap = JSON.parse(keyMap);
       this.bindAll();
+
+      // for backwards compatibility, ensure help is bound
+      if (
+        Object.values(this.keyMap).every((action) => action !== Action.Help)
+      ) {
+        this.bind("0", Action.Help);
+        this.bind("1", Action.Help);
+        this.bind("/", Action.Help);
+        this.bind("shift + /", Action.Help);
+      }
     }
   }
 
