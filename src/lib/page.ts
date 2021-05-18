@@ -89,10 +89,13 @@ export default class Page extends fabric.Canvas {
       });
     });
 
-  placeObject = (obj: any, {
+  placeObject = (
+    obj: any,
+    {
       x = this.canvasWidth / 2,
       y = this.canvasHeight / 2,
-    }: Partial<Cursor> = this.cursor ?? {}): fabric.Object[] => {
+    }: Partial<Cursor> = this.cursor ?? {}
+  ): fabric.Object[] => {
     this.discardActiveObject();
     const id = this.getNextId();
 
@@ -116,5 +119,5 @@ export default class Page extends fabric.Canvas {
     this.setActiveObject(obj);
     this.requestRenderAll();
     return obj._objects || [obj];
-  }
+  };
 }
