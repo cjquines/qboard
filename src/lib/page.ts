@@ -89,26 +89,32 @@ export default class Page extends fabric.Canvas {
       });
     });
 
-  placeObject<T extends fabric.Object>(
-    obj: T,
-    {
+  placeObject = (obj: any, {
       x = this.canvasWidth / 2,
       y = this.canvasHeight / 2,
-    }: Partial<Cursor> = this.cursor ?? {}
-  ): T {
+    }: Partial<Cursor> = this.cursor ?? {}): fabric.Object[] => {
     this.discardActiveObject();
     const id = this.getNextId();
 
-    obj.set(({
+    obj.set({
       id,
       left: x,
       top: y,
       originX: "center",
       originY: "center",
-    } as Partial<fabric.Object>) as Partial<T>);
-    this.add(obj);
+    } as Partial<fabric.ActiveSelection>);
+    if (obj._objects) {
+      obj.canvas = this;
+      obj.forEachObject((object) => {
+        (object as ObjectId).id = this.getNextId();
+        this.add(object);
+      });
+      obj.setCoords();
+    } else {
+      this.add(obj);
+    }
     this.setActiveObject(obj);
     this.requestRenderAll();
-    return obj;
+    return obj._objects || [obj];
   }
 }

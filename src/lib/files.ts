@@ -174,7 +174,7 @@ export default class FileHandler {
     new Promise<fabric.Object>((resolve) =>
       AsyncReader.readAsDataURL(file).then((result) =>
         fabric.Image.fromURL(result.toString(), (obj: fabric.Image) => {
-          resolve(this.pages.canvas.placeObject(obj, cursor));
+          resolve(this.pages.canvas.placeObject(obj, cursor)[0]);
         })
       )
     );
