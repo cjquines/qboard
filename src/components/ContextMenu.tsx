@@ -14,7 +14,10 @@ const ContextMenu = (props: {
   useEffect(() => {
     document.addEventListener("contextmenu", (e: MouseEvent) => {
       e.preventDefault();
-      setCoords((oldCoords) => (oldCoords ? null : [e.clientX, e.clientY]));
+      if ((e.target as HTMLElement).classList.contains("upper-canvas")) {
+        e.stopPropagation();
+        setCoords((oldCoords) => (oldCoords ? null : [e.clientX, e.clientY]));
+      }
     });
     document.addEventListener("click", () => setCoords(null));
   }, []);
