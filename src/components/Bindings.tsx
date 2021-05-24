@@ -9,7 +9,14 @@ import BindingModal from "./BindingModal";
 
 Modal.setAppElement("#Overlay");
 
-const HeaderKey = (props: {
+/**
+ * For keys whose bounding behavior cannot be changed;
+ * these keys are already mapped to certain app events,
+ * so the key diagram in the UI should not be a button.
+ *
+ * Use if it is meaningful to indicate the app behavior of this key.
+ */
+const UnbindableKey = (props: {
   letter: string;
   label?: string;
   width: string;
@@ -66,7 +73,7 @@ const Bindings = (props: {
   const rows = [
     {
       header: (
-        <HeaderKey
+        <UnbindableKey
           letter="tab"
           label="Hide Toolbar"
           width="4.5em"
@@ -77,7 +84,7 @@ const Bindings = (props: {
     },
     {
       header: (
-        <HeaderKey
+        <UnbindableKey
           letter="esc"
           label="Deselect"
           width="6em"
@@ -88,7 +95,7 @@ const Bindings = (props: {
     },
     {
       header: (
-        <HeaderKey
+        <UnbindableKey
           letter="shift"
           label="Snap"
           width="7.5em"
