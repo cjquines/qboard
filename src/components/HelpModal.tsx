@@ -37,27 +37,25 @@ const HelpModal = (props: {
       </span>
     </p>
     <Bindings bind={props.bind} unbind={props.unbind} keyMap={props.keyMap} />
-    <p>
-      Click a key to change the binding.{" "}
-      <button onClick={() => props.reset()}>reset to default</button>
-    </p>
-    <p
-      style={{
-        bottom: "0",
-        color: "#666",
-        position: "absolute",
-        right: "0",
-        textAlign: "right",
-      }}
-    >
-      By <a href="https://cjquines.com/">CJ Quines</a> and{" "}
-      <a href="https://pihart.github.io/">Avi Mehra</a>. View on{" "}
-      <a href="https://github.com/cjquines/qboard">Github</a>.
-      {/* Use{" "}
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <p>
+        Click a key to change the binding.{" "}
+        <button onClick={() => props.reset()}>reset to default</button>
+      </p>
+      <p
+        style={{
+          color: "#666",
+        }}
+      >
+        By <a href="https://cjquines.com/">CJ Quines</a> and{" "}
+        <a href="https://pihart.github.io/">Avi Mehra</a>. View on{" "}
+        <a href="https://github.com/cjquines/qboard">Github</a>.
+        {/* Use{" "}
         <a onClick={() => props.toggleMobility()} tabIndex={0}>
           {props.isMobile ? "desktop" : "mobile"} site
         </a>.*/}
-    </p>
+      </p>
+    </div>
   </Modal>
 );
 
