@@ -21,7 +21,7 @@ export const ClosableModal = ({
     overlayClassName={`modal-overlay ${overlayClassName}`}
     {...attrs}
   >
-    <button className="close" onClick={() => close()}>
+    <button aria-label="close" className="close" onClick={() => close()}>
       {icon}
     </button>
     {children}
