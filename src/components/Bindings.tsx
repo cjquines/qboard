@@ -23,36 +23,30 @@ const Bindings = (props: {
     null
   );
 
+  const Keys = (keys: string[]) =>
+    keys.map((key) => ({
+      key,
+      action: props.keyMap[key],
+    }));
+
   const rows: Readonly<
     NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
   > = [
     [
       { key: "`", action: props.keyMap["`"] }, // this is on its own line so I don't need to fight with typescript for it to know that the array is NonEmptyArray
-      ...["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((key) => ({
-        key,
-        action: props.keyMap[key],
-      })),
+      ...Keys(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]),
     ],
     [
       { type: "readonly", key: "tab", value: "Hide Toolbar", width: "4.5em" },
-      ...["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"].map((key) => ({
-        key,
-        action: props.keyMap[key],
-      })),
+      ...Keys(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]),
     ],
     [
       { type: "readonly", key: "esc", value: "Deselect", width: "6em" },
-      ...["a", "s", "d", "f", "g", "h", "j", "k", "l"].map((key) => ({
-        key,
-        action: props.keyMap[key],
-      })),
+      ...Keys(["a", "s", "d", "f", "g", "h", "j", "k", "l"]),
     ],
     [
       { type: "modifier", key: "shift", value: "Snap", width: "7.5em" },
-      ...["z", "x", "c", "v", "b", "n", "m", "?"].map((key) => ({
-        key,
-        action: props.keyMap[key],
-      })),
+      ...Keys(["z", "x", "c", "v", "b", "n", "m", "?"]),
       { type: "modifier", key: "ctrl", width: "6em" },
     ],
   ];
