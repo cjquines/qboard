@@ -6,6 +6,7 @@ import { KeyMap } from "../lib/keyboard";
 
 import Bindings from "./Bindings";
 import Icon from "./Icon";
+import ClosableModal from "./Modal";
 
 Modal.setAppElement("#Overlay");
 
@@ -40,14 +41,11 @@ const HelpModal = (props: {
   }, []);
 
   return (
-    <Modal
-      className="modal"
-      overlayClassName="modal-overlay help-modal"
+    <ClosableModal
+      overlayClassName="help-modal"
       isOpen={props.isOpen}
+      close={props.toggleOpen}
     >
-      <button className="close" onClick={() => props.toggleOpen()}>
-        {Icon.close}
-      </button>
       <p>
         <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
         <span style={{ color: "#666", marginLeft: "0.2em" }}>
@@ -100,7 +98,7 @@ const HelpModal = (props: {
           {props.isMobile ? "desktop" : "mobile"} site
         </a>.*/}
       </p>
-    </Modal>
+    </ClosableModal>
   );
 };
 
