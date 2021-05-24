@@ -20,24 +20,6 @@ const HelpModal = (props: {
   // toggleMobility: () => void;
 }): JSX.Element => {
   const [keyModifier, setKeyModifier] = useState("");
-  const [leftHanded, setLeftHanded] = useState(false);
-
-  const toggleHand = (): void => {
-    setLeftHanded((wasLeftHanded: boolean) => {
-      window.localStorage.setItem(
-        "leftHanded",
-        wasLeftHanded ? "false" : "true"
-      );
-
-      return !wasLeftHanded;
-    });
-  };
-
-  useEffect(() => {
-    if (window.localStorage.getItem("leftHanded") === "true") {
-      setLeftHanded(true);
-    }
-  }, []);
 
   return (
     <Modal
@@ -57,12 +39,7 @@ const HelpModal = (props: {
       <p>
         Press <b>?</b> to show or hide this screen.
       </p>
-      <Bindings
-        bind={props.bind}
-        unbind={props.unbind}
-        keyMap={props.keyMap}
-        leftHanded={leftHanded}
-      />
+      <Bindings bind={props.bind} unbind={props.unbind} keyMap={props.keyMap} />
       <p>
         Click a key to change the binding.{" "}
         <button onClick={() => props.reset()}>reset to default</button>
