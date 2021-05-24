@@ -22,11 +22,18 @@ const Bindings = (props: {
   const [bindingModalAction, setBindingModalAction] = useState<Action | null>(
     null
   );
+  const [modifiers, setModifiers] = useState(new Set<string>());
+
+  const modify = (key: string) =>
+    [
+      ...Array.from(modifiers).sort(), // these are such small arrays that performance doesn't really matter
+      key,
+    ].join(" + ");
 
   const Keys = (keys: string[]) =>
     keys.map((key) => ({
       key,
-      action: props.keyMap[key],
+      action: props.keyMap[modify(key)],
     }));
 
   const rows: Readonly<
@@ -51,24 +58,21 @@ const Bindings = (props: {
     ],
   ];
 
-  const keyHandler = ({
-    key,
-    modifiers,
-  }: {
-    key: string;
-    modifiers: Set<string>;
-  }): void => {
-    const modified = [
-      ...Array.from(modifiers).sort(), // these are such small arrays that performance doesn't really matter
-      key,
-    ].join(" + ");
+  const keyHandler = (key: string): void => {
+    const modified = modify(key);
     setBindingModalKeys(modified);
     setBindingModalAction(props.keyMap[modified]);
   };
 
   return (
     <>
-      <Keyboard rows={rows} className={"bindings"} onclick={keyHandler} />
+      <Keyboard
+        rows={rows}
+        className={"bindings"}
+        onclick={keyHandler}
+        activeModifiers={modifiers}
+        setActiveModifiers={setModifiers}
+      />
       <BindingModal
         letter={bindingModalKeys}
         action={bindingModalAction}

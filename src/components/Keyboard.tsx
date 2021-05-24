@@ -32,6 +32,9 @@ const UnbindableKey = ({
 const ModifierKey = (props: {
   letter: string;
   set: Set<string>;
+  replaceSet: (
+    value: ((prevState: Set<string>) => Set<string>) | Set<string>
+  ) => void;
   label?: string;
   width?: string;
 }) => {
@@ -42,6 +45,10 @@ const ModifierKey = (props: {
       onClick={() => {
         if (held) props.set.delete(props.letter);
         else props.set.add(props.letter);
+
+        // this is yucky; i wonder whether there's a nice way around this
+        props.replaceSet(new Set(props.set));
+
         setHeld(!held);
       }}
       style={{ width: props.width }}
@@ -105,6 +112,8 @@ export type UIKeyDescriptor = {
 export const Keyboard = ({
   rows,
   onclick,
+  activeModifiers: modifiers,
+  setActiveModifiers,
   ...attrs
 }: {
   /** A double array of keys, specifying the layout and behavior */
@@ -115,14 +124,12 @@ export const Keyboard = ({
    * Technically, we shouldn't require this if every key is readonly.
    * I don't care.
    */
-  onclick: (a: {
-    key: string;
-    modifiers: Set<string>;
-    event: React.MouseEvent<HTMLButtonElement>;
-  }) => void;
+  onclick: (key: string, event: React.MouseEvent<HTMLButtonElement>) => void;
+  activeModifiers: Set<string>;
+  setActiveModifiers: (
+    value: ((prevState: Set<string>) => Set<string>) | Set<string>
+  ) => void;
 } & React.HTMLAttributes<HTMLDivElement>): JSX.Element => {
-  const modifiers = new Set<string>();
-
   return (
     <div {...attrs}>
       {rows.map((row, index) => (
@@ -141,6 +148,7 @@ export const Keyboard = ({
                 letter={keyData.key}
                 label={keyData.value}
                 set={modifiers}
+                replaceSet={setActiveModifiers}
                 width={keyData.width}
               />
             ) : (
@@ -149,7 +157,7 @@ export const Keyboard = ({
                 letter={keyData.key}
                 action={keyData.action}
                 width={keyData.width}
-                onclick={(key, event) => onclick({ key, modifiers, event })}
+                onclick={(key, event) => onclick(key, event)}
               />
             )
           )}
