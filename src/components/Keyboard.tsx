@@ -54,7 +54,7 @@ const ModifierKey = (props: {
   );
 };
 
-export const Key = (props: {
+const Key = (props: {
   letter: string;
   action?: Action;
   onclick: (key: string, event: React.MouseEvent<HTMLButtonElement>) => void;

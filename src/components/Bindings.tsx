@@ -4,7 +4,6 @@ import Modal from "react-modal";
 import { Action } from "../lib/action";
 import { KeyMap } from "../lib/keyboard";
 
-import { Key, UnbindableKey } from "./Keyboard";
 import BindingModal from "./BindingModal";
 import { Keyboard, UIKeyDescriptor } from "./Keyboard";
 import { NonEmptyArray } from "@mehra/ts";
@@ -26,21 +25,7 @@ const Bindings = (props: {
     null
   );
 
-  const rows = [
-    {
-      header: <UnbindableKey letter="tab" label="Hide Toolbar" width="4.5em" />,
-      letters: "qwert".split(""),
-    },
-    {
-      header: <UnbindableKey letter="esc" label="Deselect" width="6em" />,
-      letters: "asdfg".split(""),
-    },
-    {
-      header: <UnbindableKey letter="shift" label="Snap" width="7.5em" />,
-      letters: "zxcvb".split(""),
-    },
-  ];
-  const rows_new: Readonly<
+  const rows: Readonly<
     NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
   > = [
     [
@@ -83,7 +68,7 @@ const Bindings = (props: {
 
   return (
     <>
-      <Keyboard rows={rows_new} className={"bindings"} onclick={keyHandler} />
+      <Keyboard rows={rows} className={"bindings"} onclick={keyHandler} />
       <BindingModal
         letter={bindingModalKeys}
         action={bindingModalAction}
