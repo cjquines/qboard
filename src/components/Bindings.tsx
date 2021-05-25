@@ -30,21 +30,21 @@ const Bindings = (props: {
   > = [
     [
       { type: "readonly", key: "tab", value: "Hide Toolbar", width: "4.5em" },
-      ...["q", "w", "e", "r", "t"].map((key) => ({
+      ...["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"].map((key) => ({
         key,
         action: props.keyMap[key],
       })),
     ],
     [
       { type: "readonly", key: "esc", value: "Deselect", width: "6em" },
-      ...["a", "s", "d", "f", "g"].map((key) => ({
+      ...["a", "s", "d", "f", "g", "h", "j", "k", "l"].map((key) => ({
         key,
         action: props.keyMap[key],
       })),
     ],
     [
       { type: "modifier", key: "shift", value: "Snap", width: "7.5em" },
-      ...["z", "x", "c", "v", "b"].map((key) => ({
+      ...["z", "x", "c", "v", "b", "n", "m", "?"].map((key) => ({
         key,
         action: props.keyMap[key],
       })),
