@@ -83,7 +83,13 @@ We're using Typescript.
 The main app is mostly powered through [Fabric.js](http://fabricjs.com/), with [KeyboardJS](https://github.com/RobertWHurst/KeyboardJS) handling keybindings, and [pdfmake](http://pdfmake.org/#/) handling exporting to PDF.
 
 We extend the Fabric canvas to a [Page class](src/lib/pages.ts) with some convenience functions.
-The Pages class stores pages in a JSON array; whenever we switch pages, we remove all the objects in the canvas and reload from memory.
+The Pages class stores pages in a JSON array;
+whenever we switch pages, we remove all the objects in the canvas and reload from memory.
+In other words, we only store the live objects for the current page;
+all other pages are stored serialized.
+Boards are serialized to JSON just by collecting the serialized array, and adding a small amount of metadata for compatibility.
+A saved qboard file is thus entirely human-readable, though since it also store paths, it may be unwieldy.
+
 
 We also work with _two_ canvas elements.
 The top canvas is a temporary one that renders lines, ellipses, and rectangles as they're being drawn, and after they're drawn, they're removed and added to the base canvas.
