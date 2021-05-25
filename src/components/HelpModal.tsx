@@ -61,7 +61,6 @@ const HelpModal = (props: {
         bind={props.bind}
         unbind={props.unbind}
         keyMap={props.keyMap}
-        modifier={keyModifier}
         leftHanded={leftHanded}
       />
       <p>

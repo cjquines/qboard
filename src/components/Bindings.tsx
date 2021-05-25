@@ -14,7 +14,6 @@ const Bindings = (props: {
   bind: (key: string, action: Action) => void;
   unbind: (key: string) => void;
   keyMap: KeyMap;
-  modifier: string;
   leftHanded: boolean;
 }): JSX.Element => {
   const [bindingModalKeys, setBindingModalKeys]: [
