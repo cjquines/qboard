@@ -43,7 +43,7 @@ const Bindings = (props: {
       ...Keys(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]),
     ],
     [
-      { type: "readonly", key: "esc", value: "Deselect", width: "6em" },
+      { key: "esc", action: props.keyMap["esc"], width: "6em" },
       ...Keys(["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"]),
     ],
     [
