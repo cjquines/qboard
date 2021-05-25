@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 
 import { Action, actionName } from "../lib/action";
-import { KeyMap, mirror } from "../lib/keyboard";
+import { KeyMap } from "../lib/keyboard";
 
 import Icon from "./Icon";
 import BindingModal from "./BindingModal";
@@ -16,19 +16,20 @@ Modal.setAppElement("#Overlay");
  *
  * Use if it is meaningful to indicate the app behavior of this key.
  */
-const UnbindableKey = (props: {
+const UnbindableKey = ({
+  label = "",
+  letter,
+  width,
+}: {
   letter: string;
   label?: string;
-  width: string;
-  leftHanded: boolean;
+  width?: string;
 }) => {
   return (
-    <div className="key" style={{ width: props.width }}>
-      <span className="letter">
-        {props.leftHanded ? mirror(props.letter) : props.letter}
-      </span>
+    <div className="key" style={{ width: width }}>
+      <span className="letter">{letter}</span>
       <div className="action">
-        <span className="unassigned">{props.label || ""}</span>
+        <span className="unassigned">{label}</span>
       </div>
     </div>
   );
@@ -38,7 +39,6 @@ const Key = (props: {
   letter: string;
   action?: Action;
   callback: (key: string) => void;
-  leftHanded: boolean;
 }) => {
   return (
     <button className="key" onClick={() => props.callback(props.letter)}>
@@ -48,9 +48,7 @@ const Key = (props: {
           {props.action === undefined ? "none" : actionName(props.action)}
         </span>
       </div>
-      <span className="letter">
-        {props.leftHanded ? mirror(props.letter) : props.letter}
-      </span>
+      <span className="letter">{props.letter}</span>
     </button>
   );
 };
@@ -72,36 +70,15 @@ const Bindings = (props: {
 
   const rows = [
     {
-      header: (
-        <UnbindableKey
-          letter="tab"
-          label="Hide Toolbar"
-          width="4.5em"
-          leftHanded={props.leftHanded}
-        />
-      ),
+      header: <UnbindableKey letter="tab" label="Hide Toolbar" width="4.5em" />,
       letters: "qwert".split(""),
     },
     {
-      header: (
-        <UnbindableKey
-          letter="esc"
-          label="Deselect"
-          width="6em"
-          leftHanded={props.leftHanded}
-        />
-      ),
+      header: <UnbindableKey letter="esc" label="Deselect" width="6em" />,
       letters: "asdfg".split(""),
     },
     {
-      header: (
-        <UnbindableKey
-          letter="shift"
-          label="Snap"
-          width="7.5em"
-          leftHanded={props.leftHanded}
-        />
-      ),
+      header: <UnbindableKey letter="shift" label="Snap" width="7.5em" />,
       letters: "zxcvb".split(""),
     },
   ];
@@ -126,7 +103,6 @@ const Bindings = (props: {
                 letter={letter}
                 action={props.keyMap[getModified(letter)]}
                 callback={keyHandler}
-                leftHanded={props.leftHanded}
               />
             ))}
             {props.leftHanded && header}
