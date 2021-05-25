@@ -315,5 +315,9 @@ export default class QBoard {
       `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`
     );
     this.history.execute({ add: [img] });
+
+    // apparently this does something?
+    await this.history.undo();
+    await this.history.redo();
   };
 }
