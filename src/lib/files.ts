@@ -240,7 +240,24 @@ export default class FileHandler {
           resolve(this.pages.canvas.placeObject(obj, cursor)[0]);
         })
       )
-    );
+    ).then((img) => {
+      const maxWidth = 0.8;
+      const maxHeight = 0.8;
+
+      const [w_i = 0, w_c = 0, h_i = 0, h_c = 0] = [
+        img.width,
+        this.pages.canvas.width,
+        img.height,
+        this.pages.canvas.height,
+      ];
+
+      if (w_i > maxWidth * w_c || h_i > maxHeight * h_c)
+        img.scaleToWidth(
+          Math.min(maxWidth * w_c, (maxHeight * h_c * w_i) / h_i)
+        );
+
+      return img;
+    });
 
   private handleJSON = async (file: File): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
