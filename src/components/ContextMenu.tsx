@@ -13,8 +13,8 @@ const ContextMenu = (props: {
 
   useEffect(() => {
     document.addEventListener("contextmenu", (e: MouseEvent) => {
-      e.preventDefault();
       if ((e.target as HTMLElement).classList.contains("upper-canvas")) {
+        e.preventDefault();
         e.stopPropagation();
         setCoords((oldCoords) => (oldCoords ? null : [e.clientX, e.clientY]));
       }
