@@ -75,3 +75,18 @@ export const Key = (props: {
     </button>
   );
 };
+
+interface ReadonlyKeyDescriptor {
+  readonly type: "readonly";
+  readonly value?: string;
+}
+
+interface ModifierKeyDescriptor {
+  readonly type: "modifier";
+  readonly value?: string;
+}
+
+interface ActionKeyDescriptor {
+  readonly type?: "action";
+  readonly action?: Action;
+}
