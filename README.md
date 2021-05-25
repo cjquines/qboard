@@ -16,7 +16,6 @@ Here are the default keybindings:
 
 ![Image showing default key bindings](public/bindings.png)
 
-Image assumes Caps Lock is mapped to Escape.
 Tab cycles through three toolbar visibilities: the full toolbar, a status pane, and completely hidden.
 Shift snaps lines to multiples of 45°, and makes squares and circles.
 
