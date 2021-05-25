@@ -32,6 +32,9 @@ Other neat things you can do:
   The save button exports to a JSON file, which you can later load back in to qboard.
 - Use your browser's paste function (usually Ctrl+V or Cmd+V on Mac) to paste images from the system clipboard.
   You can also drag images onto the board.
+- Open your saved JSON files with the file picker to replace your current board with one from a file.
+  Alternatively, drag and drop your saved JSON files;
+  instead of overwriting your current board, this will insert the contents of the files into the board after the current page!
 - Right-click to bring up a context menu to change the style.
 
 ## Design principles
