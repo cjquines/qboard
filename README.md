@@ -37,6 +37,16 @@ Other neat things you can do:
   instead of overwriting your current board, this will insert the contents of the files into the board after the current page!
 - Right-click to bring up a context menu to change the style.
 
+The app protects you from losing your work.
+If you have an unsaved board, defined as a board that does both of the following, you will receive a prompt asking you whether you're sure you overwrite it:
+
+- The document is not blank in that it has at least one object
+- The document has been modified after either
+  - Opening a document from JSON
+  - Saving the document to JSON
+
+See [#81](https://github.com/cjquines/qboard/issues/81) for more details.
+
 ## Design principles
 
 qboard is made for seamless lecturing.
