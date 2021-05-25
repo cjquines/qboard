@@ -29,6 +29,13 @@ const Bindings = (props: {
     NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
   > = [
     [
+      { key: "`", action: props.keyMap["`"] }, // this is on its own line so I don't need to fight with typescript for it to know that the array is NonEmptyArray
+      ...["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((key) => ({
+        key,
+        action: props.keyMap[key],
+      })),
+    ],
+    [
       { type: "readonly", key: "tab", value: "Hide Toolbar", width: "4.5em" },
       ...["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"].map((key) => ({
         key,
