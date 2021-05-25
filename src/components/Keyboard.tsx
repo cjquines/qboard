@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NonEmptyArray } from "@mehra/ts";
 import { Action, actionName } from "../lib/action";
 import Icon from "./Icon";
 
@@ -98,3 +99,62 @@ export type UIKeyDescriptor = {
   readonly width?: `${number}${"em"}`;
 } & (ReadonlyKeyDescriptor | ModifierKeyDescriptor | ActionKeyDescriptor);
 
+/**
+ * A keyboard UI component
+ */
+export const Keyboard = ({
+  rows,
+  onclick,
+  ...attrs
+}: {
+  /** A double array of keys, specifying the layout and behavior */
+  rows: Readonly<NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>>;
+  /**
+   * Fired when a key button is pressed
+   *
+   * Technically, we shouldn't require this if every key is readonly.
+   * I don't care.
+   */
+  onclick: (a: {
+    key: string;
+    modifiers: Set<string>;
+    event: React.MouseEvent<HTMLButtonElement>;
+  }) => void;
+} & React.HTMLAttributes<HTMLDivElement>): JSX.Element => {
+  const modifiers = new Set<string>();
+
+  return (
+    <div {...attrs}>
+      {rows.map((row, index) => (
+        <div className={"row"} key={index}>
+          {row.map((keyData) =>
+            keyData.type === "readonly" ? (
+              <UnbindableKey
+                key={keyData.key}
+                letter={keyData.key}
+                label={keyData.value}
+                width={keyData.width}
+              />
+            ) : keyData.type === "modifier" ? (
+              <ModifierKey
+                key={keyData.key}
+                letter={keyData.key}
+                label={keyData.value}
+                set={modifiers}
+                width={keyData.width}
+              />
+            ) : (
+              <Key
+                key={keyData.key}
+                letter={keyData.key}
+                action={keyData.action}
+                width={keyData.width}
+                onclick={(key, event) => onclick({ key, modifiers, event })}
+              />
+            )
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
