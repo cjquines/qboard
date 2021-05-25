@@ -86,7 +86,7 @@ In case you do, you can make it compatible with the modern qboard app by taking 
 ```json
 {
       "qboard-version": 1,
-      pages: OLD_FILE_CONTENTS_GO_HERE,
+      "pages": OLD_FILE_CONTENTS_GO_HERE,
 }
 ```
 
