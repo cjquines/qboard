@@ -23,7 +23,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
-    "react-tooltip": "^4.2.10"
+    "react-tooltip": "^4.2.10",
+    "tex-to-svg": "^0.2.0"
   },
   "devDependencies": {
     "@types/fabric": "^3.6.8",
