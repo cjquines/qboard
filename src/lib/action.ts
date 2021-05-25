@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import React from "react";
 import { PartialRecord } from "@mehra/ts";
 
 import { Tool, Tools } from "./tools";
@@ -7,7 +8,6 @@ import FileHandler from "./files";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
-import React from "react";
 
 export enum Action {
   PreviousPage = "previousPage",
