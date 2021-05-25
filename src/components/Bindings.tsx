@@ -38,10 +38,15 @@ const UnbindableKey = ({
 const Key = (props: {
   letter: string;
   action?: Action;
-  callback: (key: string) => void;
+  onclick: (key: string, event: React.MouseEvent<HTMLButtonElement>) => void;
+  width?: string;
 }) => {
   return (
-    <button className="key" onClick={() => props.callback(props.letter)}>
+    <button
+      className="key"
+      onClick={(event) => props.onclick(props.letter, event)}
+      style={{ width: props.width }}
+    >
       <div className="action">
         {props.action && Icon[props.action]}
         <span className={props.action === undefined ? "unassigned" : undefined}>
@@ -102,7 +107,7 @@ const Bindings = (props: {
                 key={letter}
                 letter={letter}
                 action={props.keyMap[getModified(letter)]}
-                callback={keyHandler}
+                onclick={keyHandler}
               />
             ))}
             {props.leftHanded && header}
