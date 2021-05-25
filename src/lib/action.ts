@@ -212,8 +212,8 @@ export default class ActionHandler {
     }
   };
 
-  requestTeX = async () => {
-    const text = prompt("Hi");
+  requestTeX = async (): Promise<void> => {
+    const text = prompt("Enter LaTeX source");
     if (text === null) return;
 
     const img = await this.canvas.addImage(
