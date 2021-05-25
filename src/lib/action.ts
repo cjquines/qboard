@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import { PartialRecord } from "@mehra/ts";
 
 import { Tool, Tools } from "./tools";
 import Pages from "./pages";
@@ -57,7 +58,7 @@ export enum Action {
   ExitFullScreen = "exitFullScreen",
 }
 
-const nameMap = {
+const nameMap: PartialRecord<Action, string> = {
   previousPage: "–Page",
   nextPage: "+Page",
   addPageStart: "-Page",
@@ -75,8 +76,8 @@ const nameMap = {
 };
 
 export const actionName = (action: Action): string => {
-  const name = nameMap[action] || action;
-  return name && name[0].toUpperCase() + name.slice(1);
+  const name = nameMap[action] ?? action;
+  return name[0].toUpperCase() + name.slice(1);
 };
 
 export default class ActionHandler {
