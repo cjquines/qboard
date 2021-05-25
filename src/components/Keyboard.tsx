@@ -10,7 +10,7 @@ import Icon from "./Icon";
  *
  * Use if it is meaningful to indicate the app behavior of this key.
  */
-export const UnbindableKey = ({
+const UnbindableKey = ({
   label = "",
   letter,
   width,

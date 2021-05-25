@@ -6,6 +6,8 @@ import { KeyMap } from "../lib/keyboard";
 
 import { Key, UnbindableKey } from "./Keyboard";
 import BindingModal from "./BindingModal";
+import { Keyboard, UIKeyDescriptor } from "./Keyboard";
+import { NonEmptyArray } from "@mehra/ts";
 
 Modal.setAppElement("#Overlay");
 
@@ -64,32 +66,24 @@ const Bindings = (props: {
     ],
   ];
 
-  const getModified = (letter: string): string =>
-    props.modifier === "" ? letter : `${props.modifier} + ${letter}`;
-
-  const keyHandler = (letter: string): void => {
-    setBindingModalKeys(getModified(letter));
-    setBindingModalAction(props.keyMap[getModified(letter)]);
+  const keyHandler = ({
+    key,
+    modifiers,
+  }: {
+    key: string;
+    modifiers: Set<string>;
+  }): void => {
+    const modified = [
+      ...Array.from(modifiers).sort(), // these are such small arrays that performance doesn't really matter
+      key,
+    ].join(" + ");
+    setBindingModalKeys(modified);
+    setBindingModalAction(props.keyMap[modified]);
   };
 
   return (
     <>
-      <div className="bindings">
-        {rows.map(({ header, letters }, index) => (
-          <div className={`row ${props.leftHanded ? "left" : ""}`} key={index}>
-            {!props.leftHanded && header}
-            {(props.leftHanded ? letters.reverse() : letters).map((letter) => (
-              <Key
-                key={letter}
-                letter={letter}
-                action={props.keyMap[getModified(letter)]}
-                onclick={keyHandler}
-              />
-            ))}
-            {props.leftHanded && header}
-          </div>
-        ))}
-      </div>
+      <Keyboard rows={rows_new} className={"bindings"} onclick={keyHandler} />
       <BindingModal
         letter={bindingModalKeys}
         action={bindingModalAction}
