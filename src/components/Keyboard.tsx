@@ -90,3 +90,11 @@ interface ActionKeyDescriptor {
   readonly type?: "action";
   readonly action?: Action;
 }
+
+export type UIKeyDescriptor = {
+  /** The symbol or word to be shown as the label for the key */
+  readonly key: string;
+  /** The hard-coded width of the key. Currently only care about `em` units. */
+  readonly width?: `${number}${"em"}`;
+} & (ReadonlyKeyDescriptor | ModifierKeyDescriptor | ActionKeyDescriptor);
+
