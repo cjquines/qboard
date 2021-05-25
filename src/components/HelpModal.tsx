@@ -57,29 +57,6 @@ const HelpModal = (props: {
       <p>
         Press <b>?</b> to show or hide this screen.
       </p>
-      <p>
-        <button
-          className={keyModifier === "" ? "active" : undefined}
-          onClick={() => setKeyModifier("")}
-        >
-          unmodified
-        </button>
-        <button
-          className={keyModifier === "shift" ? "active" : undefined}
-          onClick={() => setKeyModifier("shift")}
-        >
-          with shift
-        </button>
-        <button
-          className={keyModifier === "ctrl" ? "active" : undefined}
-          onClick={() => setKeyModifier("ctrl")}
-        >
-          with ctrl
-        </button>
-        <button onClick={() => toggleHand()}>
-          {leftHanded ? "show left side" : "show right side"}
-        </button>
-      </p>
       <Bindings
         bind={props.bind}
         unbind={props.unbind}
