@@ -7,6 +7,8 @@ import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
 import React from "react";
+import TeXToSVG from "tex-to-svg";
+import Page from "./page";
 
 export enum Action {
   PreviousPage = "previousPage",
@@ -35,6 +37,7 @@ export enum Action {
   Line = "line",
   Ellipse = "ellipse",
   Rectangle = "rectangle",
+  LaTeX = "latex",
 
   Dotted = "dotted",
   Dashed = "dashed",
@@ -66,6 +69,7 @@ const nameMap = {
   duplicate: "Clone",
   eraser: "Cut / Eraser",
   rectangle: "Rect.",
+  latex: "LaTeX",
   transparent: "Unfilled",
   halfFilled: "Half Fill",
   resetStyles: "Reset Styles",
@@ -80,7 +84,7 @@ export const actionName = (action: Action): string => {
 };
 
 export default class ActionHandler {
-  canvas: fabric.Canvas;
+  canvas: Page;
   readonly actionMap: Record<Action, () => void>;
 
   constructor(
@@ -152,6 +156,7 @@ export default class ActionHandler {
       line: () => this.switchTool(tools.Line),
       ellipse: () => this.switchTool(tools.Ellipse),
       rectangle: () => this.switchTool(tools.Rectangle),
+      latex: this.requestTeX,
 
       dotted: () => this.setDash(Dash.Dotted),
       dashed: () => this.setDash(Dash.Dashed),
@@ -205,5 +210,21 @@ export default class ActionHandler {
     } else {
       this.setStyle(null, null, fill);
     }
+  };
+
+  requestTeX = async () => {
+    const text = prompt("Hi");
+    if (text === null) return;
+
+    const img = await this.canvas.addImage(
+      `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`,
+      {},
+      { scaleX: 3, scaleY: 3 }
+    );
+    this.history.add([img]);
+
+    // apparently this does something?
+    await this.history.undo();
+    await this.history.redo();
   };
 }
