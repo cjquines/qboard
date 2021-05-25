@@ -306,20 +306,4 @@ export default class QBoard {
     const { x, y } = this.baseCanvas.getPointer(iEvent.e);
     this.baseCanvas.cursor = { x, y };
   };
-
-  requestTex = async () => {
-    const text = prompt("Hi");
-    if (text === null) return;
-
-    const img = await this.canvas.addImage(
-      `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`,
-      {},
-      { scaleX: 3, scaleY: 3 }
-    );
-    this.history.add([img]);
-
-    // apparently this does something?
-    await this.history.undo();
-    await this.history.redo();
-  };
 }
