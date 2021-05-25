@@ -76,6 +76,21 @@ There are _some_ sense to the default keybindings:
 Although initially designed for giving lectures, the whiteboard controls are pretty good.
 I might add support for extending infinitely in several directions, in the style of a regular whiteboard app.
 
+## Frequently Asked Questions
+
+> My saved file won't open. Help!
+
+There was a short period of time when we used a different file format for our JSON files.
+It's very unlikely that you have such a file.
+In case you do, you can make it compatible with the modern qboard app by taking the file and wrapping the contents like so:
+
+```json
+{
+      "qboard-version": 1,
+      pages: OLD_FILE_CONTENTS_GO_HERE,
+}
+```
+
 ## Implementation details
 
 It's build on the [nwb](https://github.com/insin/nwb) toolkit, which handles React, Webpack, and Babel.
@@ -89,7 +104,6 @@ In other words, we only store the live objects for the current page;
 all other pages are stored serialized.
 Boards are serialized to JSON just by collecting the serialized array, and adding a small amount of metadata for compatibility.
 A saved qboard file is thus entirely human-readable, though since it also store paths, it may be unwieldy.
-
 
 We also work with _two_ canvas elements.
 The top canvas is a temporary one that renders lines, ellipses, and rectangles as they're being drawn, and after they're drawn, they're removed and added to the base canvas.
