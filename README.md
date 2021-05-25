@@ -44,8 +44,9 @@ This guides some of its principles:
 - It should be possible to do everything that isn't drawing just with keys.
   Ideally, only with the keys on one half of the keyboard, to make presentations flow smoothly.
   You shouldn't need to move your mouse all the way to the left to change tools, or to move your hand to the right to switch to the pen tool.
-- By default, it has pages, rather than extending in different directions.
+- It has pages, rather than extending in different directions.
   It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
+  - We are considering changing this to allow an infinite scroll mode (see [#6](https://github.com/cjquines/qboard/issues/6#issue-688305306)).
 - Pages are fixed at a 16:9 ratio, so when they're later saved to a PDF, it's in the same dimensions as a slideshow.
 
 There are _some_ sense to the default keybindings:
