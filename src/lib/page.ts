@@ -91,12 +91,17 @@ export default class Page extends fabric.Canvas {
 
   addImage = async (
     imageURL: string,
-    cursor?: Cursor
+    cursor?: Partial<Cursor>,
+    options?: fabric.IImageOptions
   ): Promise<fabric.Object> =>
     new Promise<fabric.Object>((resolve) =>
-      fabric.Image.fromURL(imageURL, (obj) => {
-        resolve(this.placeObject(obj, cursor)[0]);
-      })
+      fabric.Image.fromURL(
+        imageURL,
+        (obj) => {
+          resolve(this.placeObject(obj, cursor)[0]);
+        },
+        options
+      )
     );
 
   placeObject = (

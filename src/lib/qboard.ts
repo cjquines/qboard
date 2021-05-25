@@ -312,7 +312,9 @@ export default class QBoard {
     if (text === null) return;
 
     const img = await this.canvas.addImage(
-      `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`
+      `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`,
+      {},
+      { scaleX: 3, scaleY: 3 }
     );
     this.history.add([img]);
 
