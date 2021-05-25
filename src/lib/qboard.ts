@@ -22,6 +22,7 @@ type Async<T = void> = T | Promise<T>;
 
 type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
 import AssertType from "../types/assert";
+import TeXToSVG from "tex-to-svg";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -304,5 +305,15 @@ export default class QBoard {
   updateCursor: FabricHandler = (iEvent) => {
     const { x, y } = this.baseCanvas.getPointer(iEvent.e);
     this.baseCanvas.cursor = { x, y };
+  };
+
+  requestTex = async () => {
+    const text = prompt("Hi");
+    if (text === null) return;
+
+    const img = await this.canvas.addImage(
+      `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`
+    );
+    this.history.execute({ add: [img] });
   };
 }
