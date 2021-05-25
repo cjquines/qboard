@@ -18,10 +18,14 @@ const Stylebar = (props: {
   const fileButton = <button className="inactive">{Icon.file}</button>;
   const fileActions = [Action.Open, Action.Save, Action.Export];
 
-  const otherActions = [Action.Copy, Action.Paste];
-  const mobileActions = props.isMobile ? [Action.FullScreen] : [Action.Help];
-
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const otherActions = [
+    Action.Copy,
+    Action.Paste,
+    Action.Help,
+    !isFullscreen ? Action.EnterFullScreen : Action.ExitFullScreen,
+  ];
 
   useEffect(() => {
     setIsFullscreen(Boolean(document.fullscreenElement));
@@ -38,22 +42,11 @@ const Stylebar = (props: {
         cName="file-actions"
         outerButton={fileButton}
       />
+      <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
       <ButtonRow
         actions={otherActions}
         cName="other-actions vertical"
         callback={props.doAction}
-      />
-      <StyleMenu currentStyle={props.currentStyle} doAction={props.doAction} />
-      <ButtonRow
-        actions={mobileActions.map((action) =>
-          action === Action.FullScreen
-            ? !isFullscreen
-              ? Action.EnterFullScreen
-              : Action.ExitFullScreen
-            : action
-        )}
-        callback={props.doAction}
-        cName="mobile-actions vertical"
       />
     </div>
   );
