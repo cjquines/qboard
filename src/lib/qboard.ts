@@ -314,7 +314,7 @@ export default class QBoard {
     const img = await this.canvas.addImage(
       `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`
     );
-    this.history.execute({ add: [img] });
+    this.history.add([img]);
 
     // apparently this does something?
     await this.history.undo();
