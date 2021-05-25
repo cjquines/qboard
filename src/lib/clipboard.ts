@@ -64,6 +64,5 @@ export default class ClipboardHandler {
       e.clipboardData!.files
     );
     this.history.execute(historyCommand);
-    this.paste();
   };
 }
