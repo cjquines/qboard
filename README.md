@@ -106,9 +106,17 @@ Everything else is delegated to handlers, which are in individual files:
 - [styles.ts](src/lib/styles.ts), which gives an interface for changing pen style.
 - [tools.ts](src/lib/tools.ts), which implements each non-free-drawing tool.
 
-Running `npm start` will start the development server.
-Run `npm run build` to bundle it.
-There's also a [Dockerfile](Dockerfile); build the image with `docker build -t qboard .`, then run with `docker run -d --name qboard qboard`.
+### Development
+
+Running `npm start` will start a development server, which watches source files for changes.
+Run `npm run build` to generate the static application files, suitable for hosting or offline use.
+We have linters;
+run the full suite with `npm run lint`, and automatically fix most warnings/errors with `npm run lint:fix`.
+If you maintain a top-level `deploy.js` file, you can build the files and deploy in one step by running `npm run deploy`.
+We also have a [Dockerfile](Dockerfile) which runs the development server in a container;
+build the image with `docker build -t qboard .`, then run with `docker run -d --name qboard qboard`.
+**Note that this server is not suitable for production use;
+just host the static files instead.**
 
 The FabricJS file is huge and it doesn't support tree shaking, so the [qboard demo at cjquines.com](https://cjquines.com/qboard/) uses a [custom build](http://fabricjs.com/build/).
 It includes gestures, animation, free drawing, interaction, serialization, fabric.Rect, fabric.Ellipse, fabric.Image, fabric.Line, and window.fabric, which I think is the absolute minimum needed for it to work.
