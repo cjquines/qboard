@@ -5,7 +5,7 @@
 
 _The efficient digital whiteboard._
 
-**qboard** is a whiteboard app with efficient keyboard shortcuts, to make drawing feel as seamless as possible.
+**qboard** is a wholly client-side whiteboard app with efficient keyboard shortcuts, to make drawing feel as seamless as possible.
 In the spirit of Vim, it's possible to do everything that isn't drawing without moving your hands.
 It's hosted on [my website](https://cjquines.com/qboard/).
 Here's a [demo video](https://youtu.be/8NvXHukL8ic).
