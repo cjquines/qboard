@@ -90,6 +90,8 @@ In case you do, you can make it compatible with the modern qboard app by taking 
 }
 ```
 
+If we have released a new file version beyond version 1, just opening any old files and saving them again will update them to the latest version.
+
 ## Implementation details
 
 It's build on the [nwb](https://github.com/insin/nwb) toolkit, which handles React, Webpack, and Babel.
