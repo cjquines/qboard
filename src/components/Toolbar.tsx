@@ -32,6 +32,11 @@ const Toolbar = (props: {
           key={action}
         />
       ))}
+      <OverlayButton
+        action={Action.LaTeX}
+        callback={props.doAction}
+        // className={}
+      />
     </div>
   );
 };
