@@ -32,7 +32,7 @@ Other neat things you can do:
   The export button exports to a JSON file, which you can later open and edit.
 - Use your browser's paste function (usually Ctrl+V or Cmd+V on Mac) to paste images from the system clipboard.
   You can also drag images onto the board.
-- Right-clicking to bring up a context menu to change the style.
+- Right-click to bring up a context menu to change the style.
 
 ## Design principles
 
