@@ -28,6 +28,31 @@ export const UnbindableKey = ({
   );
 };
 
+const ModifierKey = (props: {
+  letter: string;
+  set: Set<string>;
+  label?: string;
+  width?: string;
+}) => {
+  const [held, setHeld] = useState<boolean>(false);
+  return (
+    <button
+      className={`key modifier ${held ? "active" : ""}`}
+      onClick={() => {
+        if (held) props.set.delete(props.letter);
+        else props.set.add(props.letter);
+        setHeld(!held);
+      }}
+      style={{ width: props.width }}
+    >
+      <div className="action">
+        <span className="unassigned">{props.label}</span>
+      </div>
+      <span className="letter">{props.letter}</span>
+    </button>
+  );
+};
+
 export const Key = (props: {
   letter: string;
   action?: Action;
