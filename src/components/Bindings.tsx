@@ -48,6 +48,7 @@ const Bindings = (props: {
         key,
         action: props.keyMap[key],
       })),
+      { type: "modifier", key: "ctrl", width: "6em" },
     ],
   ];
 
