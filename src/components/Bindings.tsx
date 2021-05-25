@@ -38,6 +38,31 @@ const Bindings = (props: {
       letters: "zxcvb".split(""),
     },
   ];
+  const rows_new: Readonly<
+    NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
+  > = [
+    [
+      { type: "readonly", key: "tab", value: "Hide Toolbar", width: "4.5em" },
+      ...["q", "w", "e", "r", "t"].map((key) => ({
+        key,
+        action: props.keyMap[key],
+      })),
+    ],
+    [
+      { type: "readonly", key: "esc", value: "Deselect", width: "6em" },
+      ...["a", "s", "d", "f", "g"].map((key) => ({
+        key,
+        action: props.keyMap[key],
+      })),
+    ],
+    [
+      { type: "modifier", key: "shift", value: "Snap", width: "7.5em" },
+      ...["z", "x", "c", "v", "b"].map((key) => ({
+        key,
+        action: props.keyMap[key],
+      })),
+    ],
+  ];
 
   const getModified = (letter: string): string =>
     props.modifier === "" ? letter : `${props.modifier} + ${letter}`;
