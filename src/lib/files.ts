@@ -34,7 +34,14 @@ export class AsyncReader {
  * Common to _all_ versions of exports
  */
 interface QboardFile {
+  // It is objective truth that every past and future qboard file will be an object containing this field
   "qboard-version": number;
+
+  // If a future version removes this field, this is actually okay;
+  // just remove the field from this interface declaration.
+  // The reason for this field existing right now is that we _know_ that every qboard file has it,
+  // so we include it for convenience.
+  // However, it's not necessarily true that this field will remain the same forever.
   pages: PageJSON[];
 }
 
