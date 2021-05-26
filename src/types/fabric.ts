@@ -13,9 +13,11 @@ export interface ObjectId extends fabric.Object {
   id: number;
 }
 
-export type FabricObject = fabric.Object & {
-  _objects: FabricObject[]; // not sure this is necessary
-};
+export interface FabricObject extends fabric.Object {
+  // not sure this is necessary
+  _objects: FabricObject[];
+  clone(callback: (obj: this) => unknown, propertiesToInclude?: string[]): void;
+}
 
 export type FabricIEvent = fabric.IEvent & {
   selected: FabricObject[];
