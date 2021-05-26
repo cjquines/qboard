@@ -16,7 +16,7 @@
     "start": "nwb serve-react-app"
   },
   "dependencies": {
-    "@mehra/ts": "^5.0.1",
+    "@mehra/ts": "^5.2.0",
     "fabric": "^4.2.0",
     "keyboardjs": "^2.6.4",
     "pdfmake": "^0.1.70",
