@@ -69,6 +69,8 @@ interface CurrentQboardFile {
 
 /**
  * @Test Ensure that [[`CurrentQboardFile`]] is a subtype of [[`QboardFile`]]
+ *
+ * This means that every qboard file format (tested by strong induction) actually satisfies the contract we expect it to.
  */
 {
   // We need to write our own test because ts doesn't let an interface implement another interface
