@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 
 import { Action } from "../lib/action";
@@ -28,20 +28,28 @@ const HelpModal = (props: {
       {Icon.close}
     </button>
     <p>
-      <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>{" "}
-      <span style={{ color: "#666", marginLeft: "0.2em" }}>
+      <span style={{ fontSize: "1.5em", fontWeight: "bold" }}>qboard</span>
+      <span style={{ color: "#666", marginLeft: "0.5em" }}>
         The efficient digital whiteboard.
       </span>
-    </p>
-    <p>
-      Press <b>?</b> to show or hide this screen.
+      <span style={{ color: "#000", marginLeft: "0.5em" }}>
+        Press <b>?</b> to show or hide this screen.
+      </span>
     </p>
     <Bindings bind={props.bind} unbind={props.unbind} keyMap={props.keyMap} />
     <p>
       Click a key to change the binding.{" "}
       <button onClick={() => props.reset()}>reset to default</button>
     </p>
-    <p style={{ color: "#666" }}>
+    <p
+      style={{
+        bottom: "0",
+        color: "#666",
+        position: "absolute",
+        right: "0",
+        textAlign: "right",
+      }}
+    >
       By <a href="https://cjquines.com/">CJ Quines</a> and{" "}
       <a href="https://pihart.github.io/">Avi Mehra</a>. View on{" "}
       <a href="https://github.com/cjquines/qboard">Github</a>.
