@@ -41,7 +41,7 @@ const ModifierKey = (props: {
   const [held, setHeld] = useState<boolean>(false);
   return (
     <button
-      className={`key modifier ${held ? "active" : ""}`}
+      className={`key modifier ${held ? "held" : ""}`}
       onClick={() => {
         if (held) props.set.delete(props.letter);
         else props.set.add(props.letter);

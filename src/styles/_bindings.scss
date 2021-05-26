@@ -47,7 +47,7 @@
   }
 
   .key {
-    background: transparent;
+    background-color: transparent;
     border: 2px solid #bbb;
     border-radius: 0.3em;
     box-sizing: content-box;
@@ -56,6 +56,10 @@
     padding: 0;
     position: relative;
     width: 4em;
+
+    &.held {
+      background-color: #aaa8;
+    }
 
     .letter {
       color: #555;
