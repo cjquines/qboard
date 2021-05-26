@@ -35,7 +35,7 @@ const Bindings = (props: {
     NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
   > = [
     [
-      { key: "`", action: props.keyMap["`"] }, // this is on its own line so I don't need to fight with typescript for it to know that the array is NonEmptyArray
+      { key: "`", action: props.keyMap["`"], width: "3em" },
       ...Keys(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]),
     ],
     [
@@ -44,12 +44,13 @@ const Bindings = (props: {
     ],
     [
       { type: "readonly", key: "esc", value: "Deselect", width: "6em" },
-      ...Keys(["a", "s", "d", "f", "g", "h", "j", "k", "l"]),
+      ...Keys(["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"]),
     ],
     [
       { type: "modifier", key: "shift", value: "Snap", width: "7.5em" },
-      ...Keys(["z", "x", "c", "v", "b", "n", "m", "?"]),
-      { type: "modifier", key: "ctrl", width: "6em" },
+      ...Keys(["z", "x", "c", "v", "b", "n", "m", "/"]),
+      { type: "modifier", key: "ctrl", width: "3.5em" },
+      { type: "modifier", key: "alt", width: "3.5em" },
     ],
   ];
 
