@@ -1,12 +1,15 @@
 import { fabric } from "fabric";
 
+import { FabricObject } from "../types/fabric";
+import AssertType from "../types/assert";
+
 import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
 import HistoryHandler from "./history";
 
 export default class ClipboardHandler {
-  clipboard: fabric.Object | undefined;
+  clipboard?: FabricObject;
 
   constructor(
     public canvas: Page,
@@ -22,6 +25,10 @@ export default class ClipboardHandler {
   copy = (): fabric.Object | null => {
     const objects: fabric.Object = this.canvas.getActiveObject();
     if (!objects) return null;
+
+    // Add missing type information
+    AssertType<FabricObject>(objects);
+
     objects.clone((clone) => {
       this.clipboard = clone;
     });
