@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { IsSubType, MalformedExpressionException } from "@mehra/ts";
+import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 
 import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
@@ -64,18 +64,10 @@ interface CurrentQboardFile {
  * @Test Ensure that [[`CurrentQboardFile`]] is a subtype of [[`QboardFile`]]
  */
 {
-  // Inline test because ts doesn't let an interface implement another interface
-  // Technically outputs to JS but it gets optimized out by both the minifier and the optimizing compiler
+  // We need to write our own test because ts doesn't let an interface implement another interface
 
-  // Could be true, false, boolean, never
-  type ExpectTrue = IsSubType<CurrentQboardFile, QboardFile>;
-
-  // Make sure not false nor boolean
-  // @ts-expect-error TS2322
-  const a: ExpectTrue = false;
-
-  // Make sure not false nor never
-  const b: ExpectTrue = true;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type T = RequireSubType<CurrentQboardFile, QboardFile>;
 }
 
 /**
