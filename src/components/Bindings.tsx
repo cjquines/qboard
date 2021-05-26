@@ -49,8 +49,8 @@ const Bindings = (props: {
     [
       { type: "modifier", key: "shift", value: "Snap", width: "7.5em" },
       ...Keys(["z", "x", "c", "v", "b", "n", "m", "/"]),
-      { type: "modifier", key: "ctrl", width: "3.5em" },
-      { type: "modifier", key: "alt", width: "3.5em" },
+      { type: "modifier", key: "ctrl" },
+      { type: "modifier", key: "alt" },
     ],
   ];
 
