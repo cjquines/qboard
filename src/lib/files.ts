@@ -234,8 +234,12 @@ export default class FileHandler {
     file: File,
     cursor?: Cursor
   ): Promise<fabric.Object> =>
-    AsyncReader.readAsDataURL(file).then((result) =>
-      this.pages.canvas.addImage(result.toString(), cursor)
+    new Promise<fabric.Object>((resolve) =>
+      AsyncReader.readAsDataURL(file).then((result) =>
+        fabric.Image.fromURL(result.toString(), (obj: fabric.Image) => {
+          resolve(this.pages.canvas.addImage(result.toString(), cursor));
+        })
+      )
     );
 
   private handleJSON = async (file: File): Promise<number> => {
