@@ -90,7 +90,7 @@ It's build on the [nwb](https://github.com/insin/nwb) toolkit, which handles Rea
 We're using Typescript.
 The main app is mostly powered through [Fabric.js](http://fabricjs.com/), with [KeyboardJS](https://github.com/RobertWHurst/KeyboardJS) handling keybindings, and [pdfmake](http://pdfmake.org/#/) handling exporting to PDF.
 
-We extend the Fabric canvas to a [Page class](src/lib/pages.ts) with some convenience functions.
+We extend the Fabric canvas to a [Page class](src/lib/page.ts) with some convenience functions.
 The Pages class stores pages in a JSON array;
 whenever we switch pages, we remove all the objects in the canvas and reload from memory.
 In other words, we only store the live objects for the current page;
