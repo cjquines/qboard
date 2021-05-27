@@ -110,6 +110,7 @@ export default class QBoard {
         Network.loadJSON(jsonLink)
           .then(JSONReader.readParsed)
           .then(this.pages.overwritePages)
+          // eslint-disable-next-line no-console
           .catch(console.error);
     }
 
