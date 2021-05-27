@@ -35,8 +35,7 @@ Other neat things you can do:
   Alternatively, drag and drop your saved JSON files;
   instead of overwriting your current board, this will insert the contents of the files into the board after the current page!
 - Right-click to bring up a context menu to change the style.
-- If you have a saved JSON file accessible via a URL, you can make a link that preloads the board with that file!
-Take any link to qboard, like <https://pihart.github.io/qboard/>, and append `?json=<your URL here>`, to get <https://pihart.github.io/qboard/?json=example.json>.
+- If you have a saved JSON file accessible via a URL, you can make a link that preloads the board with that file, like this one: <https://cjquines.com/qboard/?json=example.json>.
 
 The app protects you from losing your work.
 If you have an unsaved board, defined as a board that does both of the following, you will receive a prompt asking you whether you're sure you overwrite it:
