@@ -50,7 +50,8 @@ This guides some of its principles:
 - It has pages, rather than extending in different directions.
   It should feel like writing on multiple blackboards, and not an infinite sheet of paper.
   - We are considering changing this to allow an infinite scroll mode (see [#6](https://github.com/cjquines/qboard/issues/6#issue-688305306)).
-- Pages are fixed at a 16:9 ratio, so when they're later exported to a PDF, it's in the same dimensions as a slideshow.
+- Pages are fixed at a 16:9 ratio, so when that, in full-screen mode, most screens are perfectly filled by qboard.
+  Additionally, when pages are later exported to a PDF, they have the same dimensions as a slideshow.
 
 There are _some_ sense to the default keybindings:
 
