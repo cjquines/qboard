@@ -23,7 +23,6 @@ type Async<T = void> = T | Promise<T>;
 
 type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
 import AssertType from "../types/assert";
-import TeXToSVG from "tex-to-svg";
 
 export interface QBoardState {
   dragActive: boolean;
