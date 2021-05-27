@@ -1,12 +1,13 @@
 import React, { CSSProperties } from "react";
 
 import { Stroke } from "../lib/styles";
+import { Action } from "../lib/action";
 
 const fasIcon = (iconName: string, style?: CSSProperties) => (
   <i className={`fas fa-${iconName}`} style={style} />
 );
 
-const Icon = {
+const Icon: Record<Action, JSX.Element> & Record<string, JSX.Element> = {
   close: fasIcon("times-circle"),
 
   previousPage: fasIcon("caret-left"),
@@ -92,7 +93,9 @@ const Icon = {
   ),
   filled: fasIcon("circle"),
 
-  resetStyles: null,
+  deselect: fasIcon("object-ungroup"),
+  resetStyles: fasIcon("remove-format"),
+  selectAll: fasIcon("object-group"),
 };
 
 export default Icon;
