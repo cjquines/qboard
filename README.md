@@ -94,7 +94,7 @@ The Pages class stores pages in a JSON array;
 whenever we switch pages, we remove all the objects in the canvas and reload from memory.
 In other words, we only store the live objects for the current page;
 all other pages are stored serialized.
-Boards are serialized to JSON just by collecting the serialized array, and adding a small amount of metadata for compatibility.
+Boards are serialized to JSON just by collecting the serialized array, and adding a small amount of metadata to ensure compatibility.
 A saved qboard file is thus entirely human-readable, though since it also stores paths, it may be unwieldy.
 
 We also work with _two_ canvas elements.
