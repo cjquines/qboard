@@ -66,7 +66,7 @@ There are _some_ sense to the default keybindings:
 Although initially designed for giving lectures, the whiteboard controls are pretty good.
 I might add support for extending infinitely in several directions, in the style of a regular whiteboard app.
 
-## Frequently Asked Questions
+## Frequently asked questions
 
 > My saved file won't open. Help!
 
