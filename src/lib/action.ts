@@ -68,7 +68,7 @@ const nameMap: PartialRecord<Action, string> = {
   addPageEnd: "+Page",
   selectAll: "Select All",
   duplicate: "Clone",
-  eraser: "Erase",
+  eraser: "Cut / Eraser",
   rectangle: "Rect.",
   latex: "LaTeX",
   transparent: "Unfilled",

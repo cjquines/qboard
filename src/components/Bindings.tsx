@@ -15,8 +15,8 @@ const Bindings = (props: {
   unbind: (key: string) => void;
   keyMap: KeyMap;
 }): JSX.Element => {
-  const [keys, setKeys] = useState<string>("");
-  const [action, setAction] = useState<Action | null>(null);
+  const [bindingHotkey, setBindingHotkey] = useState<string>("");
+  const [hotkeyAction, setHotkeyAction] = useState<Action | null>(null);
   const [modifiers, setModifiers] = useState(new Set<string>());
 
   const modify = (key: string) =>
@@ -56,8 +56,8 @@ const Bindings = (props: {
 
   const keyHandler = (key: string): void => {
     const modified = modify(key);
-    setKeys(modified);
-    setAction(props.keyMap[modified]);
+    setBindingHotkey(modified);
+    setHotkeyAction(props.keyMap[modified]);
   };
 
   return (
@@ -70,13 +70,13 @@ const Bindings = (props: {
         setActiveModifiers={setModifiers}
       />
       <BindingModal
-        letter={keys}
-        action={action}
-        close={() => setKeys("")}
+        letter={bindingHotkey}
+        action={hotkeyAction}
+        close={() => setBindingHotkey("")}
         callback={(action) => {
-          props.unbind(keys);
-          if (action) props.bind(keys, action);
-          setKeys("");
+          props.unbind(bindingHotkey);
+          if (action) props.bind(bindingHotkey, action);
+          setBindingHotkey("");
         }}
       />
     </>
