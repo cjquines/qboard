@@ -14,6 +14,7 @@ import { HTMLChildElement } from "../types/html";
 import {
   FabricIEvent,
   GuaranteedIObjectOptions,
+  isFabricCollection,
   ObjectId,
   PathEvent,
 } from "../types/fabric";
@@ -22,6 +23,7 @@ type Async<T = void> = T | Promise<T>;
 
 type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
 import AssertType from "../types/assert";
+import TeXToSVG from "tex-to-svg";
 
 export interface QBoardState {
   dragActive: boolean;
@@ -297,8 +299,11 @@ export default class QBoard {
   };
 
   objectModified: FabricHandler<FabricIEvent> = (e) => {
-    this.history.modify(e.target._objects || [e.target]);
-    this.history.store(e.target._objects || [e.target]);
+    const objects = isFabricCollection(e.target)
+      ? e.target.getObjects()
+      : [e.target];
+    this.history.modify(objects);
+    this.history.store(objects);
   };
 
   updateCursor: FabricHandler = (iEvent) => {

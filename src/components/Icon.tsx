@@ -24,6 +24,7 @@ const Icon = {
   line: fasIcon("minus", { transform: "rotate(-45deg)" }),
   ellipse: fasIcon("circle"),
   rectangle: fasIcon("square"),
+  latex: fasIcon("font"),
 
   file: fasIcon("file"),
   open: fasIcon("folder-open"),

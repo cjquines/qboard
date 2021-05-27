@@ -9,13 +9,13 @@ export type GuaranteedIObjectOptions = fabric.IObjectOptions & {
   strokeUniform: boolean;
 };
 
-export interface ObjectId extends fabric.Object {
-  id: number;
+export interface FabricObject extends fabric.Object {
+  clone(callback: (obj: this) => unknown, propertiesToInclude?: string[]): void;
 }
 
-export type FabricObject = fabric.Object & {
-  _objects: FabricObject[]; // not sure this is necessary
-};
+export interface ObjectId extends FabricObject {
+  id: number;
+}
 
 export type FabricIEvent = fabric.IEvent & {
   selected: FabricObject[];
@@ -30,3 +30,9 @@ type PathType = FabricObject & {
 export type PathEvent = FabricIEvent & {
   path: PathType;
 };
+
+export function isFabricCollection(
+  obj: fabric.Object
+): obj is fabric.Object & fabric.ICollection<unknown> {
+  return "_objects" in obj;
+}

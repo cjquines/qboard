@@ -1,12 +1,15 @@
 import { fabric } from "fabric";
 
+import { FabricObject, isFabricCollection } from "../types/fabric";
+import AssertType from "../types/assert";
+
 import Page from "./page";
 import Pages from "./pages";
 import FileHandler from "./files";
 import HistoryHandler from "./history";
 
 export default class ClipboardHandler {
-  clipboard: fabric.Object | undefined;
+  clipboard?: FabricObject;
 
   constructor(
     public canvas: Page,
@@ -20,12 +23,16 @@ export default class ClipboardHandler {
   }
 
   copy = (): fabric.Object | null => {
-    const objects: fabric.Object = this.canvas.getActiveObject();
-    if (!objects) return null;
-    objects.clone((clone) => {
+    const activeObject = this.canvas.getActiveObject();
+    if (!activeObject) return null;
+
+    // Add missing type information
+    AssertType<FabricObject>(activeObject);
+
+    activeObject.clone((clone) => {
       this.clipboard = clone;
     });
-    return objects;
+    return activeObject;
   };
 
   /**
@@ -33,18 +40,18 @@ export default class ClipboardHandler {
    * @return Whether there were objects to cut
    */
   cut = (): boolean => {
-    const objects = this.copy() as fabric.ActiveSelection;
-    if (!objects) return false;
+    const activeObject = this.copy();
+    if (!activeObject) return false;
 
     this.canvas.discardActiveObject();
-    if (objects.type === "activeSelection") {
-      objects.forEachObject((object) => {
+    if (isFabricCollection(activeObject)) {
+      activeObject.forEachObject((object) => {
         this.canvas.remove(object);
       });
-      this.history.remove(objects._objects);
+      this.history.remove(activeObject.getObjects());
     } else {
-      this.canvas.remove(objects);
-      this.history.remove([objects]);
+      this.canvas.remove(activeObject);
+      this.history.remove([activeObject]);
     }
     this.canvas.requestRenderAll();
 
@@ -64,6 +71,5 @@ export default class ClipboardHandler {
       e.clipboardData!.files
     );
     this.history.execute(historyCommand);
-    this.paste();
   };
 }

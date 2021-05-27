@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { IsSubType, MalformedExpressionException } from "@mehra/ts";
+import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 
 import { HistoryCommand } from "./history";
 import Pages, { PageJSON } from "./pages";
@@ -34,7 +34,14 @@ export class AsyncReader {
  * Common to _all_ versions of exports
  */
 interface QboardFile {
+  // It is objective truth that every past and future qboard file will be an object containing this field
   "qboard-version": number;
+
+  // If a future version removes this field, this is actually okay;
+  // just remove the field from this interface declaration.
+  // The reason for this field existing right now is that we _know_ that every qboard file has it,
+  // so we include it for convenience.
+  // However, it's not necessarily true that this field will remain the same forever.
   pages: PageJSON[];
 }
 
@@ -62,20 +69,14 @@ interface CurrentQboardFile {
 
 /**
  * @Test Ensure that [[`CurrentQboardFile`]] is a subtype of [[`QboardFile`]]
+ *
+ * This means that every qboard file format (tested by strong induction) actually satisfies the contract we expect it to.
  */
 {
-  // Inline test because ts doesn't let an interface implement another interface
-  // Technically outputs to JS but it gets optimized out by both the minifier and the optimizing compiler
+  // We need to write our own test because ts doesn't let an interface implement another interface
 
-  // Could be true, false, boolean, never
-  type ExpectTrue = IsSubType<CurrentQboardFile, QboardFile>;
-
-  // Make sure not false nor boolean
-  // @ts-expect-error TS2322
-  const a: ExpectTrue = false;
-
-  // Make sure not false nor never
-  const b: ExpectTrue = true;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type T = RequireSubType<CurrentQboardFile, QboardFile>;
 }
 
 /**
@@ -237,10 +238,27 @@ export default class FileHandler {
     new Promise<fabric.Object>((resolve) =>
       AsyncReader.readAsDataURL(file).then((result) =>
         fabric.Image.fromURL(result.toString(), (obj: fabric.Image) => {
-          resolve(this.pages.canvas.placeObject(obj, cursor)[0]);
+          resolve(this.pages.canvas.addImage(result.toString(), cursor));
         })
       )
-    );
+    ).then((img) => {
+      const maxWidth = 0.8;
+      const maxHeight = 0.8;
+
+      const [w_i = 0, w_c = 0, h_i = 0, h_c = 0] = [
+        img.width,
+        this.pages.canvas.width,
+        img.height,
+        this.pages.canvas.height,
+      ];
+
+      if (w_i > maxWidth * w_c || h_i > maxHeight * h_c)
+        img.scaleToWidth(
+          Math.min(maxWidth * w_c, (maxHeight * h_c * w_i) / h_i)
+        );
+
+      return img;
+    });
 
   private handleJSON = async (file: File): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));

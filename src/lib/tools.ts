@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+
 import Page from "./page";
 import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";

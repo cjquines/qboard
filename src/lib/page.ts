@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { ObjectId } from "../types/fabric";
+import { FabricObject, isFabricCollection, ObjectId } from "../types/fabric";
 
 export type Cursor = { x: number; y: number };
 
@@ -89,8 +89,23 @@ export default class Page extends fabric.Canvas {
       });
     });
 
+  addImage = async (
+    imageURL: string,
+    cursor?: Partial<Cursor>,
+    options?: fabric.IImageOptions
+  ): Promise<fabric.Object> =>
+    new Promise<fabric.Object>((resolve) =>
+      fabric.Image.fromURL(
+        imageURL,
+        (obj) => {
+          resolve(this.placeObject(obj, cursor)[0]);
+        },
+        options
+      )
+    );
+
   placeObject = (
-    obj: any,
+    obj: FabricObject,
     {
       x = this.canvasWidth / 2,
       y = this.canvasHeight / 2,
@@ -99,25 +114,30 @@ export default class Page extends fabric.Canvas {
     this.discardActiveObject();
     const id = this.getNextId();
 
-    obj.set({
+    (obj as ObjectId).set({
       id,
       left: x,
       top: y,
       originX: "center",
       originY: "center",
-    } as Partial<fabric.ActiveSelection>);
-    if (obj._objects) {
+    });
+
+    let returnObjects = [obj];
+
+    if (isFabricCollection(obj)) {
       obj.canvas = this;
       obj.forEachObject((object) => {
         (object as ObjectId).id = this.getNextId();
         this.add(object);
       });
       obj.setCoords();
+
+      returnObjects = obj.getObjects();
     } else {
       this.add(obj);
     }
     this.setActiveObject(obj);
     this.requestRenderAll();
-    return obj._objects || [obj];
+    return returnObjects;
   };
 }
