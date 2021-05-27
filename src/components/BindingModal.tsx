@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import { Action, actionName } from "../lib/action";
 
 import Icon from "./Icon";
+import ClosableModal from "./Modal";
 
 Modal.setAppElement("#Overlay");
 
@@ -19,15 +20,12 @@ const BindingModal = (props: {
   action: Action | null;
   close: () => void;
   callback: (action: Action | null) => void;
-}): Partial<Modal> & JSX.Element => (
-  <Modal
-    className="modal"
-    overlayClassName="modal-overlay binding-modal"
+}): JSX.Element => (
+  <ClosableModal
+    overlayClassName="binding-modal"
     isOpen={props.letter !== ""}
+    close={props.close}
   >
-    <button className="close" onClick={() => props.close()}>
-      {Icon.close}
-    </button>
     <p>
       Changing <span className="binding">{props.letter}</span> binding…
     </p>
@@ -53,7 +51,7 @@ const BindingModal = (props: {
           </button>
         ))}
     </div>
-  </Modal>
+  </ClosableModal>
 );
 
 export default BindingModal;
