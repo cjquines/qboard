@@ -7,7 +7,7 @@ _The efficient digital whiteboard._
 
 **qboard** is a wholly client-side whiteboard app with efficient keyboard shortcuts, to make drawing feel as seamless as possible.
 In the spirit of Vim, it's possible to do everything that isn't drawing without moving your hands.
-It's hosted on [my website](https://cjquines.com/qboard/).
+It's hosted on [my website][cjquines.com].
 Here's a [demo video](https://youtu.be/8NvXHukL8ic).
 
 ## Features
@@ -125,7 +125,11 @@ build the image with `docker build -t qboard .`, then run with `docker run -d --
 **Note that this server is not suitable for production use;
 just host the static files instead.**
 
-The FabricJS file is huge and it doesn't support tree shaking, so the [qboard demo at cjquines.com](https://cjquines.com/qboard/) uses a [custom build](http://fabricjs.com/build/).
+The FabricJS file is huge and it doesn't support tree shaking, so the [qboard demo at cjquines.com] uses a [custom build](http://fabricjs.com/build/).
 It includes gestures, animation, free drawing, interaction, serialization, fabric.Rect, fabric.Ellipse, fabric.Image, fabric.Line, and window.fabric, which I think is the absolute minimum needed for it to work.
 (Do note that custom build currently [has issues](https://github.com/fabricjs/fabric.js/issues/6624), though.
-If you encounter errors, you may wish to try [this demo](https://pihart.github.io/qboard), which uses the full build.)
+If you encounter errors, you may wish to try [this demo][qboard demo at pihart.github.io], which uses the full build.)
+
+[cjquines.com]: https://cjquines.com/
+[qboard demo at cjquines.com]: https://cjquines.com/qboard/
+[qboard demo at pihart.github.io]: https://pihart.github.io/qboard
