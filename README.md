@@ -37,16 +37,6 @@ Other neat things you can do:
 - Right-click to bring up a context menu to change the style.
 - If you have a saved JSON file accessible via a URL, you can make a link that preloads the board with that file, like this one: <https://cjquines.com/qboard/?json=example.json>.
 
-The app protects you from losing your work.
-If you have an unsaved board, defined as a board that does both of the following, you will receive a prompt asking you whether you're sure you overwrite it:
-
-- The document is not blank in that it has at least one object
-- The document has been modified after either
-  - Opening a document from JSON
-  - Saving the document to JSON
-
-See [#81](https://github.com/cjquines/qboard/issues/81) for more details.
-
 ## Design principles
 
 qboard is made for seamless lecturing.
@@ -86,8 +76,8 @@ In case you do, you can make it compatible with the modern qboard app by taking 
 
 ```json
 {
-      "qboard-version": 1,
-      "pages": OLD_FILE_CONTENTS_GO_HERE,
+  "qboard-version": 1,
+  "pages": OLD_FILE_CONTENTS_GO_HERE
 }
 ```
 
