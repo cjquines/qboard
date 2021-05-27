@@ -9,14 +9,14 @@ export type GuaranteedIObjectOptions = fabric.IObjectOptions & {
   strokeUniform: boolean;
 };
 
-export interface ObjectId extends fabric.Object {
-  id: number;
-}
-
 export interface FabricObject extends fabric.Object {
   // not sure this is necessary
   _objects: FabricObject[];
   clone(callback: (obj: this) => unknown, propertiesToInclude?: string[]): void;
+}
+
+export interface ObjectId extends FabricObject {
+  id: number;
 }
 
 export type FabricIEvent = fabric.IEvent & {
