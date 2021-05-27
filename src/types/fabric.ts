@@ -10,8 +10,6 @@ export type GuaranteedIObjectOptions = fabric.IObjectOptions & {
 };
 
 export interface FabricObject extends fabric.Object {
-  // not sure this is necessary
-  _objects: FabricObject[];
   clone(callback: (obj: this) => unknown, propertiesToInclude?: string[]): void;
 }
 
@@ -32,3 +30,9 @@ type PathType = FabricObject & {
 export type PathEvent = FabricIEvent & {
   path: PathType;
 };
+
+export function isFabricCollection(
+  obj: fabric.Object
+): obj is fabric.Object & fabric.ICollection<unknown> {
+  return "_objects" in obj;
+}
