@@ -47,18 +47,22 @@
   }
 
   .key {
-    background: transparent;
-    border: 2px solid #bbb;
+    background-color: transparent;
+    border: 2px solid #ccc;
     border-radius: 0.3em;
     box-sizing: content-box;
-    height: 4em;
+    height: 4.5rem;
     margin: 0.25em;
     padding: 0;
     position: relative;
-    width: 4em;
+    width: 4.5rem;
+
+    &.held {
+      background-color: #ddd8;
+    }
 
     .letter {
-      color: #555;
+      color: #777;
       font-size: 0.9em;
       left: 0.25em;
       position: absolute;
@@ -67,13 +71,13 @@
     }
 
     .action {
-      bottom: 0.25em;
+      bottom: 0.1rem;
+      color: #444;
       font-size: 0.9em;
-      font-weight: bold;
       position: absolute;
-      right: 0.3em;
+      right: 0.3rem;
       text-align: right;
-      width: 3.9em;
+      width: 4rem;
     }
 
     i {
@@ -104,7 +108,7 @@
     }
 
     .unassigned {
-      color: #555;
+      color: #777;
       font-weight: normal;
     }
   }
