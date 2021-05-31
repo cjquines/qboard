@@ -213,19 +213,44 @@ export default class ActionHandler {
     }
   };
 
-  requestTeX = async (): Promise<void> => {
+  requestTeX = async (): Promise<
+    "success" | "no latex entered" | "invalid latex"
+  > => {
     const text = window.prompt("Enter LaTeX source");
-    if (text === null) return;
+    if (text === null) return "no latex entered";
+
+    const SVG = TeXToSVG(`\\text{${text}}`);
+
+    const MathJaxErrorNode = new window.DOMParser()
+      .parseFromString(SVG, "image/svg+xml")
+      .querySelector('[data-mml-node="merror"]');
+
+    if (MathJaxErrorNode !== null) {
+      const errorText = MathJaxErrorNode.getAttribute("title")!;
+      // eslint-disable-next-line no-console
+      console.error(`LaTeX error: ${errorText}`, MathJaxErrorNode);
+
+      window.alert(
+        `Error in LaTeX: ${errorText}
+
+More details printed to console.`
+      );
+
+      return "invalid latex";
+    }
 
     const img = await this.canvas.addImage(
-      `data:image/svg+xml,${encodeURIComponent(TeXToSVG(`\\text{${text}}`))}`,
+      `data:image/svg+xml,${encodeURIComponent(SVG)}`,
       {},
       { scaleX: 3, scaleY: 3 }
     );
+
     this.history.add([img]);
 
     // apparently this does something?
     await this.history.undo();
     await this.history.redo();
+
+    return "success";
   };
 }
