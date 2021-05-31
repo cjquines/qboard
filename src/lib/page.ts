@@ -93,8 +93,8 @@ export default class Page extends fabric.Canvas {
     imageURL: string,
     cursor?: Partial<Cursor>,
     options?: fabric.IImageOptions
-  ): Promise<fabric.Object> =>
-    new Promise<fabric.Object>((resolve) =>
+  ): Promise<fabric.Image> =>
+    new Promise<fabric.Image>((resolve) =>
       fabric.Image.fromURL(
         imageURL,
         (obj) => {
