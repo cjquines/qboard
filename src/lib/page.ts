@@ -104,17 +104,17 @@ export default class Page extends fabric.Canvas {
       )
     );
 
-  placeObject = (
-    obj: FabricObject,
+  placeObject = <T extends FabricObject>(
+    obj: T,
     {
       x = this.canvasWidth / 2,
       y = this.canvasHeight / 2,
     }: Partial<Cursor> = this.cursor ?? {}
-  ): fabric.Object[] => {
+  ): T extends fabric.ICollection<unknown> ? fabric.Object[] : [T] => {
     this.discardActiveObject();
     const id = this.getNextId();
 
-    (obj as ObjectId).set({
+    ((obj as FabricObject) as ObjectId).set({
       id,
       left: x,
       top: y,
@@ -122,7 +122,7 @@ export default class Page extends fabric.Canvas {
       originY: "center",
     });
 
-    let returnObjects = [obj];
+    let returnObjects;
 
     if (isFabricCollection(obj)) {
       obj.canvas = this;
@@ -135,6 +135,8 @@ export default class Page extends fabric.Canvas {
       returnObjects = obj.getObjects();
     } else {
       this.add(obj);
+
+      returnObjects = [obj];
     }
     this.setActiveObject(obj);
     this.requestRenderAll();
