@@ -84,7 +84,17 @@ export const actionName = (action: Action): string => {
   return name[0].toUpperCase() + name.slice(1);
 };
 
-class LaTeXError extends MalformedExpressionException {}
+class LaTeXError extends MalformedExpressionException {
+  constructor(message: string, sourceTeX?: string) {
+    super(
+      sourceTeX === undefined
+        ? message
+        : `${message}
+
+in LaTeX ${sourceTeX}`
+    );
+  }
+}
 
 export default class ActionHandler {
   canvas: Page;
@@ -230,7 +240,14 @@ export default class ActionHandler {
     if (MathJaxErrorNode !== null) {
       const errorText = MathJaxErrorNode.getAttribute("title")!;
       // eslint-disable-next-line no-console
-      console.error(new LaTeXError(errorText), MathJaxErrorNode);
+      console.error(
+        new LaTeXError(
+          errorText,
+          MathJaxErrorNode.querySelector('[data-mml-node="mtext"] text')
+            ?.textContent ?? undefined
+        ),
+        MathJaxErrorNode
+      );
 
       window.alert(
         `Error in LaTeX: ${errorText}
