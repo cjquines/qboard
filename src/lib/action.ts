@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 import React from "react";
-import { PartialRecord } from "@mehra/ts";
+import { MalformedExpressionException, PartialRecord } from "@mehra/ts";
 import TeXToSVG from "tex-to-svg";
 
 import { Tool, Tools } from "./tools";
@@ -83,6 +83,8 @@ export const actionName = (action: Action): string => {
   const name = nameMap[action] ?? action;
   return name[0].toUpperCase() + name.slice(1);
 };
+
+class LaTeXError extends MalformedExpressionException {}
 
 export default class ActionHandler {
   canvas: Page;
@@ -228,7 +230,7 @@ export default class ActionHandler {
     if (MathJaxErrorNode !== null) {
       const errorText = MathJaxErrorNode.getAttribute("title")!;
       // eslint-disable-next-line no-console
-      console.error(`LaTeX error: ${errorText}`, MathJaxErrorNode);
+      console.error(new LaTeXError(errorText), MathJaxErrorNode);
 
       window.alert(
         `Error in LaTeX: ${errorText}
