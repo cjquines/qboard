@@ -54,7 +54,7 @@ export enum Action {
   HalfFilled = "halfFilled",
   Filled = "filled",
 
-  Help = "help",
+  Bindings = "help",
   ResetStyles = "resetStyles",
   FullScreen = "fullScreen",
   EnterFullScreen = "enterFullScreen",

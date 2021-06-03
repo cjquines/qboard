@@ -23,7 +23,7 @@ const Stylebar = (props: {
   const otherActions = [
     Action.Copy,
     Action.Paste,
-    Action.Help,
+    Action.Bindings,
     !isFullscreen ? Action.EnterFullScreen : Action.ExitFullScreen,
   ];
 
