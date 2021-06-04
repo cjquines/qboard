@@ -30,26 +30,26 @@ const Bindings = (props: {
     action: props.keyMap[modify(key)],
   });
 
-  const Keys = (keys: string[]) => keys.map(Key);
+  const Keys = (...keys: string[]) => keys.map(Key);
 
   const rows: Readonly<
     NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
   > = [
     [
       { ...Key("`"), width: "3em" },
-      ...Keys(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]),
+      ...Keys("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"),
     ],
     [
       { type: "readonly", key: "tab", value: "Hide Toolbar", width: "4.5em" },
-      ...Keys(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]),
+      ...Keys("q", "w", "e", "r", "t", "y", "u", "i", "o", "p"),
     ],
     [
       { ...Key("esc"), width: "6em" },
-      ...Keys(["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"]),
+      ...Keys("a", "s", "d", "f", "g", "h", "j", "k", "l", ";"),
     ],
     [
       { type: "modifier", key: "shift", value: "Snap", width: "7.5em" },
-      ...Keys(["z", "x", "c", "v", "b", "n", "m", "/"]),
+      ...Keys("z", "x", "c", "v", "b", "n", "m", "/"),
       { type: "modifier", key: "ctrl" },
       { type: "modifier", key: "alt" },
     ],
