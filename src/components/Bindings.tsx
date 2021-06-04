@@ -25,17 +25,18 @@ const Bindings = (props: {
       key,
     ].join(" + ");
 
-  const Keys = (keys: string[]) =>
-    keys.map((key) => ({
-      key,
-      action: props.keyMap[modify(key)],
-    }));
+  const Key = (key: string) => ({
+    key,
+    action: props.keyMap[modify(key)],
+  });
+
+  const Keys = (keys: string[]) => keys.map(Key);
 
   const rows: Readonly<
     NonEmptyArray<Readonly<NonEmptyArray<UIKeyDescriptor>>>
   > = [
     [
-      { key: "`", action: props.keyMap["`"], width: "3em" },
+      { ...Key("`"), width: "3em" },
       ...Keys(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]),
     ],
     [
@@ -43,7 +44,7 @@ const Bindings = (props: {
       ...Keys(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]),
     ],
     [
-      { key: "esc", action: props.keyMap["esc"], width: "6em" },
+      { ...Key("esc"), width: "6em" },
       ...Keys(["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"]),
     ],
     [
