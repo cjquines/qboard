@@ -60,7 +60,9 @@ export default class Page extends fabric.Canvas {
         new fabric.ActiveSelection(selection, { canvas: this })
       );
     }
-    return objects.map((obj) => obj.toObject(["strokeUniform"]));
+    return objects.map((obj) =>
+      (this as any)._toObject(obj, "toObject", ["strokeUniform"])
+    );
   };
 
   apply = (ids: number[], newObjects: fabric.Object[] | null): void => {
