@@ -89,6 +89,13 @@ export default class KeyboardHandler {
     window.localStorage.setItem("keyMap", JSON.stringify(this.keyMap));
   };
 
+  /**
+   * Removes the map from `localStorage`
+   */
+  clear = (): void => {
+    window.localStorage.removeItem("keyMap");
+  };
+
   bindAll = (): void => {
     for (const [key, value] of Object.entries(this.keyMap)) {
       this.bind(key, value);
@@ -116,6 +123,6 @@ export default class KeyboardHandler {
     }
     this.keyMap = { ...defaultKeys };
     this.bindAll();
-    this.save();
+    this.clear();
   };
 }
