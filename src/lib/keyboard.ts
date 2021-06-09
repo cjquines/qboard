@@ -119,7 +119,8 @@ export default class KeyboardHandler {
 
   /**
    * Creates a keyboard.js binding from the key combination {@param key} to the action {@param action},
-   * writing to `localStorage` if {@param save}
+   * writing to `localStorage` if {@param save}.
+   * The binding reacts only to the `press` event and not the `release` event.
    */
   bind = (key: string, action: Action, save = true): void => {
     this.keyMap[key] = action;
