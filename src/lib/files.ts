@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 
-import { HistoryCommand } from "./history";
+import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
 
@@ -200,13 +200,8 @@ export class JSONWriter {
   };
 }
 
-export type FileHandlerResponse = {
-  action: "none" | "image" | "json";
-  history?: HistoryCommand;
-};
-
 export default class FileHandler {
-  constructor(public pages: Pages) {}
+  constructor(public pages: Pages, private history: HistoryHandler) {}
 
   /**
    * Accepts multiple files, usually via file drop, and performs the equivalent of adding them to qboard in order.
@@ -219,11 +214,8 @@ export default class FileHandler {
    * If so, be careful to validate the json files so that the behavior is equivalent to doing each individually.
    * @param files The ordered list of files
    */
-  processFiles = async (
-    files: FileList,
-    cursor?: Cursor
-  ): Promise<HistoryCommand> => {
-    const additions: HistoryCommand["add"] = [];
+  processFiles = async (files: FileList, cursor?: Cursor): Promise<void> => {
+    const additions: fabric.Image[] = [];
 
     for (const file of files) {
       if (isImageFile(file)) {
@@ -237,7 +229,7 @@ export default class FileHandler {
       }
     }
 
-    return { add: additions };
+    this.history.add(additions);
   };
 
   /**
@@ -254,27 +246,23 @@ export default class FileHandler {
   acceptFile = async (
     files: FileList,
     cursor?: Cursor
-  ): Promise<FileHandlerResponse> => {
-    if (!files.length) return { action: "none" };
+  ): Promise<"none" | "image" | "json"> => {
+    if (!files.length) return "none";
     const [file] = files;
 
     if (isImageFile(file)) {
-      return {
-        action: "image",
-        history: { add: [await this.handleImage(file, cursor)] },
-      };
+      this.history.add([await this.handleImage(file, cursor)]);
+      return "image";
     }
 
     if (isJSONFile(file)) {
       await this.openFile(file);
-      return {
-        action: "json",
-        history: { clear: [true] },
-      };
+      this.history.clear(true);
+      return "json";
     }
 
     // unsupported file
-    return { action: "none" };
+    return "none";
   };
 
   openFile = async (file: JSONFile): Promise<boolean> => {

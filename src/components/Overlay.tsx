@@ -78,9 +78,7 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
   return (
     <>
       <VirtualFileInput
-        acceptFiles={async (file) =>
-          qboard.history.execute((await qboard.files.acceptFile(file)).history)
-        }
+        acceptFiles={qboard.files.acceptFile}
         captureRef={(ref) => {
           qboard.globalState.fileInputRef = ref;
         }}
