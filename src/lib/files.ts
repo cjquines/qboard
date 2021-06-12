@@ -335,7 +335,7 @@ export default class FileHandler {
     for (let i = 0; i < numPages; i++) {
       this.pages.savePage();
       // eslint-disable-next-line no-await-in-loop
-      await this.pages.newPage();
+      await this.pages.insertPagesAfter();
 
       // eslint-disable-next-line no-await-in-loop
       const page = await doc.getPage(i + 1);
