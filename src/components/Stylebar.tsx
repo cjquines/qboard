@@ -11,7 +11,6 @@ import StyleMenu from "./StyleMenu";
 const Stylebar = (props: {
   currentStyle: Style;
   doAction: (action: Action) => void;
-  acceptFile: (files: FileList) => Promise<void | void[]>;
   visibility: Visibility;
   isMobile: boolean;
 }): JSX.Element => {
