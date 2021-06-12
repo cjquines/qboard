@@ -180,9 +180,9 @@ export default class FileHandler {
 
   /**
    * Accepts multiple files, usually via file drop, and performs the equivalent of adding them to qboard in order.
-   * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
-   * JSON files representing qboard files have their pages inserted into the page list *after the current page*,
-   * and then the first page of the inserted file (=current page + 1) is activated.
+   *  * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
+   *  * JSON files representing qboard files have their pages inserted into the page list *after the current page*,
+   *    and then the first page of the inserted file (=current page + 1) is activated.
    *
    * Implementation detail: currently *does* add each in order;
    * this could likely be optimized.
@@ -209,6 +209,17 @@ export default class FileHandler {
     return { add: additions };
   };
 
+  /**
+   * Accepts a single file, the first element of {@param files},
+   * usually from file upload through input element, and adds it to the qboard file.
+   *  * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
+   *  * JSON files representing qboard files completely overwrite the board and history,
+   *    and the first page of the added file (= 1) is loaded.
+   *
+   * @warn
+   * Gives you the history commands you must apply, but you must do it yourself.
+   * This function does not actually modify history.
+   */
   acceptFile = async (
     files: FileList,
     cursor?: Cursor
