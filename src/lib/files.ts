@@ -287,7 +287,7 @@ export default class FileHandler {
   private handleImage = async (
     file: ImageFile,
     cursor?: Cursor
-  ): Promise<fabric.Object> =>
+  ): Promise<fabric.Image> =>
     AsyncReader.readAsDataURL(file)
       .then((result) => this.pages.canvas.addImage(result.toString(), cursor))
       .then((img) => {
