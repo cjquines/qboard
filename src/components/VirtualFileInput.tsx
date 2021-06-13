@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 
 /**
- * Passed to [[`OverlayButton`]]
+ * Passed to [[`VirtualFileInput`]]
  */
-interface OverlayButtonProps {
+interface VirtualFileInputProps {
   /**
    * An `onChange` callback that is given the extracted `FileList` as {@param files} if and only if
    * * it exists (is non-null), and
@@ -21,11 +21,11 @@ interface OverlayButtonProps {
   captureRef?: (ref: React.RefObject<HTMLInputElement>) => void;
 }
 
-const OverlayButton = ({
+const VirtualFileInput = ({
   acceptFiles,
   captureRef,
   ...attrs
-}: OverlayButtonProps &
+}: VirtualFileInputProps &
   React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
@@ -51,4 +51,4 @@ const OverlayButton = ({
   );
 };
 
-export default OverlayButton;
+export default VirtualFileInput;
