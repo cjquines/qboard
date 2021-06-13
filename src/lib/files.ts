@@ -1,10 +1,10 @@
-import { fabric } from "fabric";
 import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
+import { fabric } from "fabric";
+import { getDocument, SVGGraphics } from "pdfjs-dist";
 
 import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
-import { getDocument, SVGGraphics } from "pdfjs-dist";
 
 const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
