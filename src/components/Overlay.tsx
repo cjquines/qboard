@@ -11,8 +11,7 @@ import Toolbar from "./Toolbar";
 import Stylebar from "./Stylebar";
 import HelpModal from "./HelpModal";
 import ContextMenu from "./ContextMenu";
-import VirtualFileInput from "./Virtual/VirtualFileInput";
-import VirtualCanvas from "./virtual/VirtualCanvas";
+import VirtualFileInput from "./virtual/VirtualFileInput";
 
 export const enum Visibility {
   None,
@@ -84,11 +83,6 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
           qboard.globalState.fileInputRef = ref;
         }}
         accept="application/json, application/pdf, image/*"
-      />
-      <VirtualCanvas
-        captureRef={(ref) => {
-          qboard.globalState.canvasRef = ref;
-        }}
       />
       <div className={`drop-area ${state.dragActive ? "active" : ""}`} />
       <div className={`overlay visibility-${visibility}`}>

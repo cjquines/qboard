@@ -78,10 +78,6 @@ export default class QBoard {
      * A ref to the global input element used for file input
      */
     fileInputRef?: RefObject<HTMLInputElement>;
-    /**
-     * A ref to the global canvas element used by PDF.js for rendering
-     */
-    canvasRef?: RefObject<HTMLCanvasElement>;
     toggleHelpModal?: () => void;
   } = {};
 
