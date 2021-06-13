@@ -1,5 +1,6 @@
-import { fabric } from "fabric";
 import { Network } from "@mehra/ts";
+import { fabric } from "fabric";
+import { RefObject } from "react";
 
 import instantiateTools, { Tool, Tools } from "./tools";
 import Page from "./page";
@@ -75,7 +76,7 @@ export default class QBoard {
     /**
      * A ref to the global input element used for file input
      */
-    fileInputRef?: React.RefObject<HTMLInputElement>;
+    fileInputRef?: RefObject<HTMLInputElement>;
     toggleHelpModal?: () => void;
   } = {};
 
