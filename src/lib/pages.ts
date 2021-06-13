@@ -166,7 +166,7 @@ export default class Pages {
    * Generally set when inserting blank pages, which don't contain any objects.
    */
   insertPagesBefore = async (
-    pages: PageJSON[],
+    pages: PageJSON[] = [defaultPageJSON],
     isNonModifying = false
   ): Promise<number> => {
     this.savePage();
@@ -188,7 +188,7 @@ export default class Pages {
    * Generally set when inserting blank pages, which don't contain any objects.
    */
   insertPagesAfter = async (
-    pages: PageJSON[],
+    pages: PageJSON[] = [defaultPageJSON],
     isNonModifying = false
   ): Promise<number> => {
     this.pagesJSON.splice(this.currentIndex + 1, 0, ...pages);

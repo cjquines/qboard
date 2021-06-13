@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 
-import { HistoryCommand } from "./history";
+import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
 
@@ -9,26 +9,56 @@ const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
 
 export class AsyncReader {
-  static readAsText = (file: File): Promise<string | ArrayBuffer> =>
+  private static setup = <
+    ReadType extends "Text" | "DataURL" | "ArrayBuffer" | "BinaryString"
+  >(
+    resolve: (
+      value: ReadType extends "Text" | "BinaryString"
+        ? "string"
+        : ReadType extends "DataURL"
+        ? `data:${string}`
+        : ReadType extends "ArrayBuffer"
+        ? ArrayBuffer
+        : never
+    ) => void,
+    reject: (reason: unknown) => void
+  ) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as never);
+    };
+    reader.onerror = reject;
+    type readFn = (file: File) => void;
+    return (reader as unknown) as ReadType extends "Text"
+      ? { readAsText: readFn }
+      : ReadType extends "BinaryString"
+      ? { readAsBinaryString: readFn }
+      : ReadType extends "DataURL"
+      ? { readAsDataURL: readFn }
+      : ReadType extends "ArrayBuffer"
+      ? { readAsArrayBuffer: readFn }
+      : never;
+  };
+
+  static readAsText = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result!);
-      };
-      reader.onerror = reject;
-      reader.readAsText(file);
+      AsyncReader.setup<"Text">(resolve, reject).readAsText(file);
     });
 
-  static readAsDataURL = (file: File): Promise<string | ArrayBuffer> =>
+  static readAsDataURL = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result!);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+      AsyncReader.setup<"DataURL">(resolve, reject).readAsDataURL(file);
     });
 }
+
+type JSONFile = File & { type: "application/json" };
+type ImageFile = File & { type: `image/${string}` };
+
+const isJSONFile = (file: File): file is JSONFile =>
+  file.type === "application/json";
+
+const isImageFile = (file: File): file is ImageFile =>
+  file.type.startsWith("image/");
 
 /**
  * Common to _all_ versions of exports
@@ -97,7 +127,7 @@ export class JSONReader {
    * @throws {InvalidQboardFileException} if {@param json} doesn't represent a valid qboard file
    */
   static read(json: string | ArrayBuffer): PageJSON[] {
-    const object: unknown = JSON.parse(json.toString());
+    const object = JSON.parse(json.toString());
     return JSONReader.readParsed(object);
   }
 
@@ -170,61 +200,72 @@ export class JSONWriter {
   };
 }
 
-export type FileHandlerResponse = {
-  action: "none" | "image" | "json";
-  history?: HistoryCommand;
-};
-
 export default class FileHandler {
-  constructor(public pages: Pages) {}
+  constructor(public pages: Pages, private history: HistoryHandler) {}
 
-  processFiles = async (
-    files: FileList,
-    cursor?: Cursor
-  ): Promise<HistoryCommand> => {
-    const images: fabric.Object[] = [];
-    await Promise.all(
-      [...files].map(async (file) => {
-        if (file.type.startsWith("image/")) {
-          images.push(await this.handleImage(file, cursor));
-        }
-        if (file.type === "application/json") {
-          return this.handleJSON(file);
-        }
-      })
-    );
-    return {
-      add: images.flat(),
-    };
+  /**
+   * Accepts multiple files, usually via file drop, and performs the equivalent of adding them to qboard in order.
+   *  * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
+   *  * JSON files representing qboard files have their pages inserted into the page list *after the current page*,
+   *    and then the first page of the inserted file (=current page + 1) is activated.
+   *
+   * Implementation detail: currently *does* add each in order;
+   * this could likely be optimized.
+   * If so, be careful to validate the json files so that the behavior is equivalent to doing each individually.
+   * @param files The ordered list of files
+   */
+  processFiles = async (files: FileList, cursor?: Cursor): Promise<void> => {
+    const additions: fabric.Image[] = [];
+
+    for (const file of files) {
+      if (isImageFile(file)) {
+        // eslint-disable-next-line no-await-in-loop
+        additions.push(await this.handleImage(file, cursor));
+      }
+
+      if (isJSONFile(file)) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.handleJSON(file);
+      }
+    }
+
+    this.history.add(additions);
   };
 
+  /**
+   * Accepts a single file, the first element of {@param files},
+   * usually from file upload through input element, and adds it to the qboard file.
+   *  * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
+   *  * JSON files representing qboard files completely overwrite the board and history,
+   *    and the first page of the added file (= 1) is loaded.
+   *
+   * @warn
+   * Gives you the history commands you must apply, but you must do it yourself.
+   * This function does not actually modify history.
+   */
   acceptFile = async (
     files: FileList,
     cursor?: Cursor
-  ): Promise<FileHandlerResponse> => {
-    if (!files.length) return { action: "none" };
+  ): Promise<"none" | "image" | "json"> => {
+    if (!files.length) return "none";
     const [file] = files;
 
-    if (file.type.startsWith("image/")) {
-      return {
-        action: "image",
-        history: { add: [await this.handleImage(file, cursor)] },
-      };
+    if (isImageFile(file)) {
+      this.history.add([await this.handleImage(file, cursor)]);
+      return "image";
     }
 
-    if (file.type === "application/json") {
+    if (isJSONFile(file)) {
       await this.openFile(file);
-      return {
-        action: "json",
-        history: { clear: [true] },
-      };
+      this.history.clear(true);
+      return "json";
     }
 
     // unsupported file
-    return { action: "none" };
+    return "none";
   };
 
-  openFile = async (file: File): Promise<boolean> => {
+  openFile = async (file: JSONFile): Promise<boolean> => {
     this.pages.savePage();
     return this.pages.overwritePages(
       JSONReader.read(await AsyncReader.readAsText(file))
@@ -232,9 +273,9 @@ export default class FileHandler {
   };
 
   private handleImage = async (
-    file: File,
+    file: ImageFile,
     cursor?: Cursor
-  ): Promise<fabric.Object> =>
+  ): Promise<fabric.Image> =>
     AsyncReader.readAsDataURL(file)
       .then((result) => this.pages.canvas.addImage(result.toString(), cursor))
       .then((img) => {
@@ -256,7 +297,7 @@ export default class FileHandler {
         return img;
       });
 
-  private handleJSON = async (file: File): Promise<number> => {
+  private handleJSON = async (file: JSONFile): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
     return this.pages.insertPagesAfter(pages);
   };

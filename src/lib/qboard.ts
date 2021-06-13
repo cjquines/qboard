@@ -4,8 +4,8 @@ import { Network } from "@mehra/ts";
 import instantiateTools, { Tool, Tools } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
-import FileHandler, { JSONReader } from "./files";
 import HistoryHandler from "./history";
+import FileHandler, { JSONReader } from "./files";
 import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
@@ -114,12 +114,12 @@ export default class QBoard {
           .catch(console.error);
     }
 
-    this.files = new FileHandler(this.pages);
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
       this.updateState
     );
+    this.files = new FileHandler(this.pages, this.history);
     this.clipboard = new ClipboardHandler(
       this.baseCanvas,
       this.pages,
@@ -283,10 +283,7 @@ export default class QBoard {
     await this.updateCursor(iEvent);
     this.setDragActive(false);
 
-    const historyCommand = await this.files.processFiles(
-      (iEvent.e as DragEvent).dataTransfer!.files
-    );
-    this.history.execute(historyCommand);
+    await this.files.processFiles((iEvent.e as DragEvent).dataTransfer!.files);
   };
 
   pathCreated: FabricHandler<PathEvent> = (e) => {

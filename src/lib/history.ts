@@ -5,17 +5,17 @@ import Pages from "./pages";
 import { ObjectId } from "../types/fabric";
 
 interface HistoryItem {
-  ids: number[];
+  ids: readonly number[];
   oldObjects: fabric.Object[] | null;
   newObjects: fabric.Object[] | null;
   page: number;
 }
 
-export type HistoryCommand = {
+export interface HistoryCommand {
   add?: fabric.Object[];
   remove?: fabric.Object[];
-  clear?: [boolean];
-};
+  clear?: readonly [boolean];
+}
 
 export default class HistoryHandler {
   history: HistoryItem[] = [];
@@ -29,6 +29,9 @@ export default class HistoryHandler {
     public updateState: () => void
   ) {}
 
+  /**
+   * Behavior is undefined if the same object is in both the `add` and `remove` properties of {@param command}
+   */
   execute = (command: HistoryCommand = {}): void => {
     if (command.clear) this.clear(command.clear[0]);
     this.add(command.add);
@@ -49,7 +52,7 @@ export default class HistoryHandler {
     this.updateState();
   };
 
-  store = (objects: fabric.Object[]): void => {
+  store = (objects: readonly fabric.Object[]): void => {
     if (this.locked) return;
     this.locked = true;
     this.selection = this.canvas.serialize(objects);

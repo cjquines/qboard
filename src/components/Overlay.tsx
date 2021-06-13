@@ -78,13 +78,10 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
   return (
     <>
       <VirtualFileInput
-        acceptFiles={async (file) =>
-          qboard.history.execute((await qboard.files.acceptFile(file)).history)
-        }
+        acceptFiles={qboard.files.acceptFile}
         captureRef={(ref) => {
           qboard.globalState.fileInputRef = ref;
         }}
-        multiple
         accept="application/json, application/pdf, image/*"
       />
       <div className={`drop-area ${state.dragActive ? "active" : ""}`} />
