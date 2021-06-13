@@ -1,7 +1,7 @@
 # qboard
 
-![Lint workflow status](https://github.com/pihart/qboard/workflows/Lint/badge.svg)
-![ShiftLeft Scan workflow status](https://github.com/pihart/qboard/workflows/SL%20Scan/badge.svg)
+![Lint workflow status](https://github.com/cjquines/qboard/workflows/Lint/badge.svg)
+![ShiftLeft Scan workflow status](https://github.com/cjquines/qboard/workflows/SL%20Scan/badge.svg)
 
 _The efficient digital whiteboard._
 
