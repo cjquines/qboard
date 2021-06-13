@@ -85,13 +85,27 @@ export default class KeyboardHandler {
     }
   }
 
+  /**
+   * Writes the map to `localStorage`
+   */
   save = (): void => {
     window.localStorage.setItem("keyMap", JSON.stringify(this.keyMap));
   };
 
-  bindAll = (): void => {
+  /**
+   * Removes the map from `localStorage`
+   */
+  clear = (): void => {
+    window.localStorage.removeItem("keyMap");
+  };
+
+  /**
+   * Wrapper to bind every binding defined in `this.keyMap`,
+   * writing to `localStorage` if {@param save}
+   */
+  bindAll = (save = false): void => {
     for (const [key, value] of Object.entries(this.keyMap)) {
-      this.bind(key, value);
+      this.bind(key, value, save);
     }
     this.updateState();
   };
@@ -103,11 +117,17 @@ export default class KeyboardHandler {
     this.save();
   };
 
-  bind = (key: string, action: Action): void => {
+  /**
+   * Creates a keyboard.js binding from the key combination {@param key} to the action {@param action},
+   * writing to `localStorage` if {@param save}.
+   * The binding reacts only to the `press` event and not the `release` event.
+   */
+  bind = (key: string, action: Action, save = true): void => {
     this.keyMap[key] = action;
     keyboardJS.bind(key, () => this.doAction(this.keyMap[key]));
     this.updateState();
-    this.save();
+
+    if (save) this.save();
   };
 
   reset = (): void => {
@@ -116,6 +136,6 @@ export default class KeyboardHandler {
     }
     this.keyMap = { ...defaultKeys };
     this.bindAll();
-    this.save();
+    this.clear();
   };
 }
