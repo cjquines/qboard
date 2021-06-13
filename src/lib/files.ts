@@ -1,6 +1,6 @@
 import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 import { fabric } from "fabric";
-import { getDocument, SVGGraphics } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 
 import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
@@ -332,37 +332,37 @@ export default class FileHandler {
     // Don't call get() accessor multiple times
     const { numPages } = doc;
     console.log({ numPages });
-    for (let i = 0; i < numPages; i++) {
+    for (let i = 0; i < 1 /*numPages*/; i++) {
       this.pages.savePage();
       // eslint-disable-next-line no-await-in-loop
       await this.pages.insertPagesAfter();
 
       // eslint-disable-next-line no-await-in-loop
       const page = await doc.getPage(i + 1);
-      // eslint-disable-next-line no-await-in-loop
-      const opList = await page.getOperatorList();
 
-      const svgGraphics = new SVGGraphics(page.commonObjs, page.objs);
-      svgGraphics.embedFonts = true;
-      // eslint-disable-next-line no-await-in-loop
-      const svg = await svgGraphics.getSVG(
-        opList,
-        page.getViewport({ scale: 1, rotation: 0, dontFlip: false })
-      );
+      const canvas = document.createElement("canvas");
+      const canvasContext = canvas.getContext("2d")!;
+      const viewport = page.getViewport({ scale: 1 });
+      console.log({ viewport });
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
 
-      const str = new XMLSerializer().serializeToString(svg);
-      console.log({ str });
+      console.log(canvas);
+
       // eslint-disable-next-line no-await-in-loop
-      const objects = await loadSVGFromString(str);
-      // console.log({ objects });
+      await page.render({ canvasContext, viewport }).promise;
+      // console.log(canvas);
+      const fabricCanvas = new fabric.Canvas(canvas);
+      console.log(fabricCanvas._objects);
+      const svgStr = fabricCanvas.toSVG();
+
+      console.log({ svgStr });
+
+      // eslint-disable-next-line no-await-in-loop
+      const objects = await loadSVGFromString(svgStr);
 
       this.pages.canvas.add(...objects).requestRenderAll();
       this.pages.updateState();
-
-      // await page.render({
-      //   canvasContext: this.pages.canvas.getContext(),
-      //   viewport: page.getViewport(),
-      // }).promise;
     }
 
     return 0;
