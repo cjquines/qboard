@@ -2,6 +2,16 @@ import { Network } from "@mehra/ts";
 import { fabric } from "fabric";
 import { RefObject } from "react";
 
+import AssertType from "../types/assert";
+import {
+  FabricIEvent,
+  GuaranteedIObjectOptions,
+  isFabricCollection,
+  ObjectId,
+  PathEvent,
+} from "../types/fabric";
+import { HTMLChildElement } from "../types/html";
+
 import instantiateTools, { Tool, Tools } from "./tools";
 import Page from "./page";
 import Pages from "./pages";
@@ -11,19 +21,10 @@ import ClipboardHandler from "./clipboard";
 import StyleHandler, { Dash, Fill, Stroke, Style } from "./styles";
 import ActionHandler from "./action";
 import KeyboardHandler, { KeyMap } from "./keyboard";
-import { HTMLChildElement } from "../types/html";
-import {
-  FabricIEvent,
-  GuaranteedIObjectOptions,
-  isFabricCollection,
-  ObjectId,
-  PathEvent,
-} from "../types/fabric";
 
 type Async<T = void> = T | Promise<T>;
 
 type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
-import AssertType from "../types/assert";
 
 export interface QBoardState {
   dragActive: boolean;
