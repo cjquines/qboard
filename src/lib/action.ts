@@ -1,7 +1,8 @@
 import { fabric } from "fabric";
 import React from "react";
-import { MalformedExpressionException, PartialRecord } from "@mehra/ts";
-import TeXToSVG from "tex-to-svg";
+import { PartialRecord } from "@mehra/ts";
+
+import AssertType from "../types/assert";
 
 import { Tool, Tools } from "./tools";
 import Pages from "./pages";
@@ -10,6 +11,7 @@ import ClipboardHandler from "./clipboard";
 import HistoryHandler from "./history";
 import { Dash, Fill, Stroke, Style } from "./styles";
 import Page from "./page";
+import TeXToDataURL, { LaTeXError } from "./latex";
 
 export enum Action {
   PreviousPage = "previousPage",
@@ -83,18 +85,6 @@ export const actionName = (action: Action): string => {
   const name = nameMap[action] ?? action;
   return name[0].toUpperCase() + name.slice(1);
 };
-
-class LaTeXError extends MalformedExpressionException {
-  constructor(message: string, sourceTeX?: string) {
-    super(
-      sourceTeX === undefined
-        ? message
-        : `${message}
-
-in LaTeX ${sourceTeX}`
-    );
-  }
-}
 
 export default class ActionHandler {
   canvas: Page;
@@ -231,26 +221,15 @@ export default class ActionHandler {
     const text = window.prompt("Enter LaTeX source");
     if (text === null) return "no latex entered";
 
-    const SVG = TeXToSVG(`\\text{${text}}`);
-
-    const MathJaxErrorNode = new window.DOMParser()
-      .parseFromString(SVG, "image/svg+xml")
-      .querySelector('[data-mml-node="merror"]');
-
-    if (MathJaxErrorNode !== null) {
-      const errorText = MathJaxErrorNode.getAttribute("title")!;
+    let dataURL: `data:image/svg+xml,${string}`;
+    try {
+      dataURL = TeXToDataURL(text);
+    } catch (e: unknown) {
+      AssertType<LaTeXError>(e);
       // eslint-disable-next-line no-console
-      console.error(
-        new LaTeXError(
-          errorText,
-          MathJaxErrorNode.querySelector('[data-mml-node="mtext"] text')
-            ?.textContent ?? undefined
-        ),
-        MathJaxErrorNode
-      );
-
+      console.error(e, e.node);
       window.alert(
-        `Error in LaTeX: ${errorText}
+        `Error in LaTeX: ${e.errorText}
 
 More details printed to console.`
       );
@@ -259,7 +238,7 @@ More details printed to console.`
     }
 
     const img = await this.canvas.addImage(
-      `data:image/svg+xml,${encodeURIComponent(SVG)}`,
+      dataURL,
       {},
       { scaleX: 3, scaleY: 3 }
     );
