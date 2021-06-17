@@ -36,3 +36,13 @@ export function isFabricCollection(
 ): obj is fabric.Object & fabric.ICollection<unknown> {
   return "_objects" in obj;
 }
+
+export interface FabricTeXImage extends fabric.Image {
+  data: {
+    texSource: string;
+  };
+}
+
+export function isFabricTeXImage(image: fabric.Image): image is FabricTeXImage {
+  return typeof image?.data?.texSource === "string";
+}

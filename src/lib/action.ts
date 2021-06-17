@@ -3,6 +3,7 @@ import React from "react";
 import { PartialRecord } from "@mehra/ts";
 
 import AssertType from "../types/assert";
+import { FabricTeXImage } from "../types/fabric";
 
 import { Tool, Tools } from "./tools";
 import Pages from "./pages";
@@ -237,10 +238,10 @@ More details printed to console.`
       return "invalid latex";
     }
 
-    const img = await this.canvas.addImage(
+    const img: FabricTeXImage = await this.canvas.addImage(
       dataURL,
       {},
-      { scaleX: 3, scaleY: 3 }
+      { scaleX: 3, scaleY: 3, data: { texSource: text } }
     );
 
     this.history.add([img]);
