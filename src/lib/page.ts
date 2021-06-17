@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import AssertType from "../types/assert";
 import { FabricObject, isFabricCollection, ObjectId } from "../types/fabric";
 
 export type Cursor = { x: number; y: number };
@@ -103,16 +104,28 @@ export default class Page extends fabric.Canvas {
       });
     });
 
-  addImage = async (
+  /**
+   * Create a Fabric Image from {@param imageURL},
+   * placed at the location defined by {@param cursor},
+   * with custom options given by {@param options}.
+   *
+   * @warn Make sure that {@param options} does not contain enough properties to satisfy {@link isFabricCollection}
+   */
+  addImage = async <T extends fabric.IImageOptions>(
     imageURL: string,
     cursor?: Partial<Cursor>,
-    options?: fabric.IImageOptions
-  ): Promise<fabric.Image> =>
-    new Promise<fabric.Image>((resolve) =>
+    options?: T
+  ): Promise<fabric.Image & (typeof options extends undefined ? unknown : T)> =>
+    new Promise((resolve) =>
       fabric.Image.fromURL(
         imageURL,
         (obj) => {
-          resolve(this.placeObject(obj, cursor)[0]);
+          AssertType<typeof options extends undefined ? unknown : T>(obj);
+          // We are confident that we don't need this return value because we should get the original image back
+          // Technically not true because `options` might be so large that it makes `obj` pass `isFabricCollection`
+          // so we just warn against it
+          this.placeObject(obj, cursor);
+          resolve(obj);
         },
         options
       )
