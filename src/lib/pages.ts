@@ -42,6 +42,7 @@ export default class Pages {
   savePage = (): void => {
     this.pagesJSON[this.currentIndex] = this.canvas.toObject([
       "id",
+      "data",
       "strokeUniform",
     ]);
   };
