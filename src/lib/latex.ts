@@ -51,7 +51,7 @@ function getErrorFromSVG(
 
 /**
  * Tries to render the TeX from {@param tex} as an SVG in text mode.
- * If MathJax refused to properly render the TeX due to an error ending in "allowed only in math mode",
+ * If MathJax refused to properly render the TeX due to an error concerning validity only in math mode,
  * retry in math mode.
  * @return The MathJax response as a data URL in the form of `image/svg+xml`
  * @throws [[`LaTeXError`]] from the first attempt if both attempts have an error (or if there is no second attempt)
@@ -63,7 +63,10 @@ export default function TeXToDataURL(
 
   let error = getErrorFromSVG(SVG);
 
-  if (error?.errorText.endsWith("allowed only in math mode")) {
+  if (
+    error?.errorText.endsWith("allowed only in math mode") ||
+    error?.errorText.endsWith("is only supported in math mode")
+  ) {
     // Retry without enclosing in `\text{}`
     // This assignment is okay because we only read this value in cases of success
     SVG = TeXToSVG(tex);
