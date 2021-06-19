@@ -65,7 +65,6 @@ There are _some_ sense to the default keybindings:
 - The Ctrl keybindings are pretty universal, except maybe D, for Duplicate.
 
 Although initially designed for giving lectures, the whiteboard controls are pretty good.
-I might add support for extending infinitely in several directions, in the style of a regular whiteboard app.
 
 ## Frequently asked questions
 
