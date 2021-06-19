@@ -167,7 +167,6 @@ export class Eraser extends Brush {
     const objects = this.baseCanvas
       .getObjects()
       .filter((object) => object.intersectsWithObject(path));
-    if (!objects.length) return;
     this.baseCanvas.remove(...objects);
     this.history.remove(objects);
   };
