@@ -49,7 +49,7 @@ const HelpModal = (props: {
       >
         By <a href="https://cjquines.com/">CJ Quines</a> and{" "}
         <a href="https://pihart.github.io/">Avi Mehra</a>. View on{" "}
-        <a href="https://github.com/cjquines/qboard">Github</a>.
+        <a href="https://github.com/cjquines/qboard">GitHub</a>.
         {/* Use{" "}
         <a onClick={() => props.toggleMobility()} tabIndex={0}>
           {props.isMobile ? "desktop" : "mobile"} site
