@@ -161,12 +161,11 @@ export class Pen extends Brush {
 }
 
 export class Eraser extends Brush {
-  pathCreated = (e: PathEvent): void => {
-    const path = fabric.util.object.clone(e.path);
+  pathCreated = ({ path }: PathEvent): void => {
     const objects = this.baseCanvas
       .getObjects()
       .filter((object) => object.intersectsWithObject(path));
-    this.baseCanvas.remove(e.path, ...objects);
+    this.baseCanvas.remove(path, ...objects);
     this.history.remove(objects);
   };
 
