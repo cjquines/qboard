@@ -1,15 +1,23 @@
+import { Configuration } from "webpack";
+
 module.exports = {
   type: "react-app",
   webpack: {
     publicPath: "",
-    config(config) {
+
+    config(config: Configuration): Configuration {
       config.entry = "./src/index.js";
+
+      if (config.resolve === undefined) config.resolve = {};
       config.resolve.extensions = [".ts", ".tsx", ".js", ".jsx"];
+
+      if (config.module === undefined) config.module = { rules: [] };
       config.module.rules.push({
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [{ loader: "awesome-typescript-loader" }],
       });
+
       return config;
     },
   },

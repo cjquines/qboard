@@ -3,8 +3,10 @@
   "version": "0.1.1",
   "description": "The efficient digital whiteboard.",
   "scripts": {
-    "build": "nwb build-react-app",
-    "clean": "nwb clean-app",
+    "prenwb": "tsc nwb.config.ts",
+    "nwb": "nwb",
+    "build": "npm run nwb -- build-react-app",
+    "clean": "npm run nwb -- clean-app",
     "lint": "npm run eslint && npm run stylelint",
     "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
     "eslint": "eslint src/**/*.{js,ts,jsx,tsx}",
@@ -13,7 +15,7 @@
     "stylelint:fix": "npm run stylelint -- --fix",
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
-    "start": "nwb serve-react-app"
+    "start": "npm run nwb -- serve-react-app"
   },
   "dependencies": {
     "@mehra/ts": "^5.2.0",
