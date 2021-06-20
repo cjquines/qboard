@@ -17,6 +17,9 @@
   },
   "dependencies": {
     "@mehra/ts": "^5.2.0",
+    "@types/fabric": "^3.6.8",
+    "@types/react": "^16.9.52",
+    "@types/react-modal": "^3.10.6",
     "fabric": "^4.2.0",
     "keyboardjs": "^2.6.4",
     "pdfmake": "^0.1.70",
@@ -27,11 +30,8 @@
     "tex-to-svg": "^0.2.0"
   },
   "devDependencies": {
-    "@types/fabric": "^3.6.8",
     "@types/keyboardjs": "^2.5.0",
     "@types/pdfmake": "^0.1.17",
-    "@types/react": "^16.9.52",
-    "@types/react-modal": "^3.10.6",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "awesome-typescript-loader": "^5.2.1",
