@@ -10,7 +10,7 @@ on:
 jobs:
   semver:
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'no-semver') }}
+    if: "github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'semver: no-semver')"
 
     steps:
       - uses: actions/checkout@v2.3.4
