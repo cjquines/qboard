@@ -54,7 +54,7 @@
     "typescript": "^4.2.3"
   },
   "files": [
-    "./src/**/*"
+    "tscdist"
   ],
   "bugs": {
     "url": "https://github.com/cjquines/qboard/issues"
