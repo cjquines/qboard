@@ -22,12 +22,15 @@ module.exports = {
       if (config.optimization === undefined) config.optimization = {};
       config.optimization.minimizer = [
         new ClosurePlugin(
-          { mode: "STANDARD" },
+          { mode: "AGGRESSIVE_BUNDLE" },
           {
             // compiler flags here
           }
         ),
       ];
+      // Closure already does this optimization,
+      // so webpack cannot
+      config.optimization.concatenateModules = false;
 
       return config;
     },
