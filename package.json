@@ -2,6 +2,8 @@
   "name": "qboard",
   "version": "0.1.1",
   "description": "The efficient digital whiteboard.",
+  "main": "tscdist/lib/qboard.js",
+  "types": "tscdist/lib/qboard.d.ts",
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
@@ -13,7 +15,8 @@
     "stylelint:fix": "npm run stylelint -- --fix",
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
-    "start": "nwb serve-react-app"
+    "start": "nwb serve-react-app",
+    "build:module": "tsc --outDir tscdist"
   },
   "dependencies": {
     "@mehra/ts": "^5.2.0",
