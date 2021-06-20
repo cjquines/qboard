@@ -1,3 +1,4 @@
+const ClosurePlugin = require("closure-webpack-plugin");
 import { Configuration } from "webpack";
 
 module.exports = {
@@ -17,6 +18,16 @@ module.exports = {
         exclude: /node_modules/,
         use: [{ loader: "awesome-typescript-loader" }],
       });
+
+      if (config.optimization === undefined) config.optimization = {};
+      config.optimization.minimizer = [
+        new ClosurePlugin(
+          { mode: "STANDARD" },
+          {
+            // compiler flags here
+          }
+        ),
+      ];
 
       return config;
     },
