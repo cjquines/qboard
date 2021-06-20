@@ -16,7 +16,8 @@
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
     "start": "nwb serve-react-app",
-    "build:module": "tsc --outDir tscdist"
+    "build:module": "tsc --outDir tscdist",
+    "prepublish": "npm run build:module"
   },
   "dependencies": {
     "@mehra/ts": "^5.2.0",
