@@ -19,6 +19,7 @@
     "@mehra/ts": "^5.2.0",
     "fabric": "^4.2.0",
     "keyboardjs": "^2.6.4",
+    "pdfjs-dist": "^2.6.347",
     "pdfmake": "^0.1.70",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

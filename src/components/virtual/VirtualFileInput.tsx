@@ -1,9 +1,10 @@
 import React, { useRef } from "react";
+import { VirtualElementProps } from "./VirtualElement";
 
 /**
  * Passed to [[`VirtualFileInput`]]
  */
-interface VirtualFileInputProps {
+interface VirtualFileInputProps extends VirtualElementProps<HTMLInputElement> {
   /**
    * An `onChange` callback that is given the extracted `FileList` as {@param files} if and only if
    * * it exists (is non-null), and
@@ -13,12 +14,6 @@ interface VirtualFileInputProps {
    * Use the `onChange` attribute if you instead want the raw handler
    */
   acceptFiles?: (files: FileList) => void;
-
-  /**
-   * Your own callback so that you can record the reference {@param ref} to the input.
-   * That way, you can invoke `click()`, and therefore open the file dialog, programmatically.
-   */
-  captureRef?: (ref: React.RefObject<HTMLInputElement>) => void;
 }
 
 const VirtualFileInput = ({

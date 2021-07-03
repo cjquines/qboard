@@ -11,7 +11,7 @@ import Toolbar from "./Toolbar";
 import Stylebar from "./Stylebar";
 import HelpModal from "./HelpModal";
 import ContextMenu from "./ContextMenu";
-import VirtualFileInput from "./VirtualFileInput";
+import VirtualFileInput from "./virtual/VirtualFileInput";
 
 export const enum Visibility {
   None,

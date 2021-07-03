@@ -1,5 +1,6 @@
-import { fabric } from "fabric";
 import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
+import { fabric } from "fabric";
+import { getDocument } from "pdfjs-dist";
 
 import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
@@ -9,6 +10,21 @@ const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
 
 export class AsyncReader {
+  static readAsText = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      AsyncReader.setup<"Text">(resolve, reject).readAsText(file);
+    });
+
+  static readAsDataURL = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      AsyncReader.setup<"DataURL">(resolve, reject).readAsDataURL(file);
+    });
+
+  static readAsArrayBuffer = (file: File): Promise<ArrayBuffer> =>
+    new Promise((resolve, reject) => {
+      AsyncReader.setup<"ArrayBuffer">(resolve, reject).readAsArrayBuffer(file);
+    });
+
   private static setup = <
     ReadType extends "Text" | "DataURL" | "ArrayBuffer" | "BinaryString"
   >(
@@ -39,26 +55,20 @@ export class AsyncReader {
       ? { readAsArrayBuffer: readFn }
       : never;
   };
-
-  static readAsText = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      AsyncReader.setup<"Text">(resolve, reject).readAsText(file);
-    });
-
-  static readAsDataURL = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      AsyncReader.setup<"DataURL">(resolve, reject).readAsDataURL(file);
-    });
 }
 
 type JSONFile = File & { type: "application/json" };
 type ImageFile = File & { type: `image/${string}` };
+type PDFFile = File & { type: "application/pdf" };
 
 const isJSONFile = (file: File): file is JSONFile =>
   file.type === "application/json";
 
 const isImageFile = (file: File): file is ImageFile =>
   file.type.startsWith("image/");
+
+const isPDFFile = (file: File): file is PDFFile =>
+  file.type === "application/pdf";
 
 /**
  * Common to _all_ versions of exports
@@ -200,6 +210,11 @@ export class JSONWriter {
   };
 }
 
+const loadSVGFromString = (str: string) =>
+  new Promise<fabric.Object[]>((resolve) => {
+    fabric.loadSVGFromString(str, (results) => resolve(results));
+  });
+
 export default class FileHandler {
   constructor(public pages: Pages, private history: HistoryHandler) {}
 
@@ -226,6 +241,11 @@ export default class FileHandler {
       if (isJSONFile(file)) {
         // eslint-disable-next-line no-await-in-loop
         await this.handleJSON(file);
+      }
+
+      if (isPDFFile(file)) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.handlePDF(file);
       }
     }
 
@@ -300,5 +320,51 @@ export default class FileHandler {
   private handleJSON = async (file: JSONFile): Promise<number> => {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
     return this.pages.insertPagesAfter(pages);
+  };
+
+  private handlePDF = async (file: PDFFile): Promise<number> => {
+    console.log("Handling pdf", file);
+    const doc = await getDocument({
+      data: new Uint8Array(await AsyncReader.readAsArrayBuffer(file)),
+      fontExtraProperties: true,
+    }).promise;
+
+    // Don't call get() accessor multiple times
+    const { numPages } = doc;
+    console.log({ numPages });
+    for (let i = 0; i < 1 /*numPages*/; i++) {
+      this.pages.savePage();
+      // eslint-disable-next-line no-await-in-loop
+      await this.pages.insertPagesAfter();
+
+      // eslint-disable-next-line no-await-in-loop
+      const page = await doc.getPage(i + 1);
+
+      const canvas = document.createElement("canvas");
+      const canvasContext = canvas.getContext("2d")!;
+      const viewport = page.getViewport({ scale: 1 });
+      console.log({ viewport });
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      console.log(canvas);
+
+      // eslint-disable-next-line no-await-in-loop
+      await page.render({ canvasContext, viewport }).promise;
+      // console.log(canvas);
+      const fabricCanvas = new fabric.Canvas(canvas);
+      console.log(fabricCanvas._objects);
+      const svgStr = fabricCanvas.toSVG();
+
+      console.log({ svgStr });
+
+      // eslint-disable-next-line no-await-in-loop
+      const objects = await loadSVGFromString(svgStr);
+
+      this.pages.canvas.add(...objects).requestRenderAll();
+      this.pages.updateState();
+    }
+
+    return 0;
   };
 }
