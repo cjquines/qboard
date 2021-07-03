@@ -1,6 +1,13 @@
 /coverage
+
+# generated from typescript at build time
 /dist
+
+# since this is generated from the typescript file when needed
+nwb.config.js
+
 /node_modules
 npm-debug.log*
+
 deploy.sh
 deploy.js
