@@ -80,9 +80,7 @@ export default class Page extends fabric.Canvas {
     newObjects: fabric.Object[] | null
   ): void => {
     const oldObjects = this.getObjectByIds(ids);
-    if (oldObjects.length) {
-      this.remove(...oldObjects);
-    }
+    this.remove(...oldObjects);
     if (newObjects?.length) {
       const addObjects = (objects) => {
         objects.forEach((object: ObjectId, i) => {
