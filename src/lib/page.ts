@@ -90,9 +90,8 @@ export default class Page extends fabric.Canvas {
         this.requestRenderAll();
       };
       fabric.util.enlivenObjects(newObjects, addObjects, "fabric");
-    } else {
-      this.requestRenderAll();
     }
+    this.requestRenderAll();
   };
 
   loadFromJSONAsync = async (json: unknown): Promise<void> =>
