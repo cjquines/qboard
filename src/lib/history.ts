@@ -62,7 +62,7 @@ export default class HistoryHandler {
   modify = (objects: fabric.Object[]): void =>
     this.save({ oldObjects: this.selection, newObjects: objects });
 
-  save = ({
+  private save = ({
     oldObjects,
     newObjects,
   }:
