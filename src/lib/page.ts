@@ -144,7 +144,7 @@ export default class Page extends fabric.Canvas {
     }: Partial<Cursor> = this.cursor ?? {}
   ): T extends fabric.ICollection<unknown> ? fabric.Object[] : [T] => {
     this.discardActiveObject();
-    (obj as FabricObject as ObjectId).set({
+    ((obj as FabricObject) as ObjectId).set({
       left: x,
       top: y,
       originX: "center",

@@ -15,7 +15,6 @@ import {
   FabricIEvent,
   GuaranteedIObjectOptions,
   isFabricCollection,
-  ObjectId,
   PathEvent,
 } from "../types/fabric";
 
