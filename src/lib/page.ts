@@ -45,7 +45,9 @@ export default class Page extends fabric.Canvas {
   getObjectByIds = (ids: readonly number[]): fabric.Object[] =>
     this.getObjects().filter((object) => {
       AssertType<ObjectId>(object);
-      return object.id != null && ids.includes(object.id);
+      return (
+        object.idVersion === 1 && object.id != null && ids.includes(object.id)
+      );
     });
 
   serialize = (objects: readonly fabric.Object[]): fabric.Object[] => {
