@@ -133,7 +133,7 @@ export default class Page extends fabric.Canvas {
     );
 
   /**
-   * Creates an id for {@param obj} or its subobjects and places it at ({@param x}, {@param y}).
+   * Places {@param obj} at ({@param x}, {@param y}).
    * Returns the array of subobjects, if obj is a collection, or else a singleton containing obj
    */
   placeObject = <T extends FabricObject>(
