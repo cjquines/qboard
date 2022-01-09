@@ -238,11 +238,11 @@ More details printed to console.`
       return "invalid latex";
     }
 
-    const img: FabricTeXImage = await this.canvas.addImage(
-      dataURL,
-      {},
-      { scaleX: 3, scaleY: 3, data: { texSource: text } }
-    );
+    const img: FabricTeXImage = await this.canvas.addImage(dataURL, undefined, {
+      scaleX: 3,
+      scaleY: 3,
+      data: { texSource: text },
+    });
 
     this.history.add([img]);
 
