@@ -93,7 +93,7 @@ const isValidQboardFile = (object: unknown): object is QboardFile => {
  * The current qboard file format
  */
 interface CurrentQboardFile {
-  "qboard-version": 1;
+  "qboard-version": 2;
   pages: PageJSON[];
 }
 
@@ -156,7 +156,7 @@ export class JSONWriter {
 
   constructor(pagesJSON: PageJSON[]) {
     this.sourceJSON = {
-      "qboard-version": 1,
+      "qboard-version": 2,
       pages: pagesJSON,
     };
   }

@@ -58,18 +58,23 @@ export default class Page extends fabric.Canvas {
         new fabric.ActiveSelection(selection, { canvas: this })
       );
     }
-    return objects.map((obj) =>
-      // This is needed for selection groups to be serialized properly.
-      // If directly using `obj.toObject` it somehow depends on the selection remaining active,
-      // as claimed in <https://github.com/fabricjs/fabric.js/blob/2eabc92a3221dd628576b1bb029a5dc1156bdc06/src/canvas.class.js#L1262-L1272>.
-      //
-      // We tried using that method in b9cb04c3dacd951785ce4e94ce0c629c09319ec3 but this caused issue #171.
-      // See https://github.com/cjquines/qboard/issues/171
-      // and https://github.com/cjquines/qboard/issues/176
-      // for more details.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any)._toObject(obj, "toObject", ["data", "strokeUniform"])
-    );
+    return objects
+      .map((obj) =>
+        // This is needed for selection groups to be serialized properly.
+        // If directly using `obj.toObject` it somehow depends on the selection remaining active,
+        // as claimed in <https://github.com/fabricjs/fabric.js/blob/2eabc92a3221dd628576b1bb029a5dc1156bdc06/src/canvas.class.js#L1262-L1272>.
+        //
+        // We tried using that method in b9cb04c3dacd951785ce4e94ce0c629c09319ec3 but this caused issue #171.
+        // See https://github.com/cjquines/qboard/issues/171
+        // and https://github.com/cjquines/qboard/issues/176
+        // for more details.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this as any)._toObject(obj, "toObject", ["data", "strokeUniform"])
+      )
+      .map((obj) => {
+        delete obj.id;
+        return obj;
+      });
   };
 
   apply = (
