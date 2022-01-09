@@ -242,7 +242,6 @@ export default class QBoard {
     const { x, y } = this.canvas.getPointer(e.e);
     this.isDown = true;
     this.currentObject = await this.activeTool.draw(x, y, this.drawerOptions);
-    (this.currentObject as ObjectId).id = this.baseCanvas.getNextId();
     this.canvas.add(this.currentObject);
     this.canvas.requestRenderAll();
   };
@@ -299,8 +298,8 @@ export default class QBoard {
     const objects = isFabricCollection(e.target)
       ? e.target.getObjects()
       : [e.target];
-    this.history.modify(objects);
-    this.history.store(objects);
+    this.history.modify(objects); // old selection was replaced with this selection
+    this.history.store(objects); // new state of selection
   };
 
   updateCursor: FabricHandler = (iEvent) => {

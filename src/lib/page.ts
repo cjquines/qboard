@@ -11,7 +11,6 @@ export default class Page extends fabric.Canvas {
   canvasWidth!: number;
   canvasHeight!: number;
 
-  latestId = 0;
   modified = false;
 
   fitToWindow = (canvasWidth: number, canvasHeight: number): void => {
@@ -42,14 +41,12 @@ export default class Page extends fabric.Canvas {
     });
   };
 
-  getNextId = (): number => {
-    this.latestId += 1;
-    return this.latestId;
-  };
-
   // kind of inefficient
   getObjectByIds = (ids: readonly number[]): fabric.Object[] =>
-    this.getObjects().filter((object) => ids.includes((object as ObjectId).id));
+    this.getObjects().filter((object) => {
+      AssertType<ObjectId>(object);
+      return object.id != null && ids.includes(object.id);
+    });
 
   serialize = (objects: readonly fabric.Object[]): fabric.Object[] => {
     const selection = this.getActiveObjects();
@@ -128,6 +125,10 @@ export default class Page extends fabric.Canvas {
       )
     );
 
+  /**
+   * Creates an id for {@param obj} or its subobjects and places it at ({@param x}, {@param y}).
+   * Returns the array of subobjects, if obj is a collection, or else a singleton containing obj
+   */
   placeObject = <T extends FabricObject>(
     obj: T,
     {
@@ -136,10 +137,7 @@ export default class Page extends fabric.Canvas {
     }: Partial<Cursor> = this.cursor ?? {}
   ): T extends fabric.ICollection<unknown> ? fabric.Object[] : [T] => {
     this.discardActiveObject();
-    const id = this.getNextId();
-
-    ((obj as FabricObject) as ObjectId).set({
-      id,
+    (obj as FabricObject as ObjectId).set({
       left: x,
       top: y,
       originX: "center",
@@ -151,7 +149,6 @@ export default class Page extends fabric.Canvas {
     if (isFabricCollection(obj)) {
       obj.canvas = this;
       obj.forEachObject((object) => {
-        (object as ObjectId).id = this.getNextId();
         this.add(object);
       });
       obj.setCoords();
