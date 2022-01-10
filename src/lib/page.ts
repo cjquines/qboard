@@ -11,7 +11,6 @@ export default class Page extends fabric.Canvas {
   canvasWidth!: number;
   canvasHeight!: number;
 
-  latestId = 0;
   modified = false;
 
   fitToWindow = (canvasWidth: number, canvasHeight: number): void => {
@@ -42,14 +41,14 @@ export default class Page extends fabric.Canvas {
     });
   };
 
-  getNextId = (): number => {
-    this.latestId += 1;
-    return this.latestId;
-  };
-
   // kind of inefficient
   getObjectByIds = (ids: readonly number[]): fabric.Object[] =>
-    this.getObjects().filter((object) => ids.includes((object as ObjectId).id));
+    this.getObjects().filter((object) => {
+      AssertType<ObjectId>(object);
+      return (
+        object.idVersion === 1 && object.id != null && ids.includes(object.id)
+      );
+    });
 
   serialize = (objects: readonly fabric.Object[]): fabric.Object[] => {
     const selection = this.getActiveObjects();
@@ -61,18 +60,23 @@ export default class Page extends fabric.Canvas {
         new fabric.ActiveSelection(selection, { canvas: this })
       );
     }
-    return objects.map((obj) =>
-      // This is needed for selection groups to be serialized properly.
-      // If directly using `obj.toObject` it somehow depends on the selection remaining active,
-      // as claimed in <https://github.com/fabricjs/fabric.js/blob/2eabc92a3221dd628576b1bb029a5dc1156bdc06/src/canvas.class.js#L1262-L1272>.
-      //
-      // We tried using that method in b9cb04c3dacd951785ce4e94ce0c629c09319ec3 but this caused issue #171.
-      // See https://github.com/cjquines/qboard/issues/171
-      // and https://github.com/cjquines/qboard/issues/176
-      // for more details.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this as any)._toObject(obj, "toObject", ["data", "strokeUniform"])
-    );
+    return objects
+      .map((obj) =>
+        // This is needed for selection groups to be serialized properly.
+        // If directly using `obj.toObject` it somehow depends on the selection remaining active,
+        // as claimed in <https://github.com/fabricjs/fabric.js/blob/2eabc92a3221dd628576b1bb029a5dc1156bdc06/src/canvas.class.js#L1262-L1272>.
+        //
+        // We tried using that method in b9cb04c3dacd951785ce4e94ce0c629c09319ec3 but this caused issue #171.
+        // See https://github.com/cjquines/qboard/issues/171
+        // and https://github.com/cjquines/qboard/issues/176
+        // for more details.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this as any)._toObject(obj, "toObject", ["data", "strokeUniform"])
+      )
+      .map((obj) => {
+        delete obj.id;
+        return obj;
+      });
   };
 
   apply = (
@@ -80,21 +84,18 @@ export default class Page extends fabric.Canvas {
     newObjects: fabric.Object[] | null
   ): void => {
     const oldObjects = this.getObjectByIds(ids);
-    if (oldObjects.length) {
-      this.remove(...oldObjects);
-    }
+    this.remove(...oldObjects);
     if (newObjects?.length) {
-      const addObjects = (objects) => {
-        objects.forEach((object: ObjectId, i) => {
+      const addObjects = (objects: ObjectId[]) => {
+        objects.forEach((object, i) => {
           object.id = ids[i];
         });
         this.add(...objects);
         this.requestRenderAll();
       };
       fabric.util.enlivenObjects(newObjects, addObjects, "fabric");
-    } else {
-      this.requestRenderAll();
     }
+    this.requestRenderAll();
   };
 
   loadFromJSONAsync = async (json: unknown): Promise<void> =>
@@ -131,6 +132,10 @@ export default class Page extends fabric.Canvas {
       )
     );
 
+  /**
+   * Places {@param obj} at ({@param x}, {@param y}).
+   * Returns the array of subobjects, if obj is a collection, or else a singleton containing obj
+   */
   placeObject = <T extends FabricObject>(
     obj: T,
     {
@@ -139,10 +144,7 @@ export default class Page extends fabric.Canvas {
     }: Partial<Cursor> = this.cursor ?? {}
   ): T extends fabric.ICollection<unknown> ? fabric.Object[] : [T] => {
     this.discardActiveObject();
-    const id = this.getNextId();
-
     ((obj as FabricObject) as ObjectId).set({
-      id,
       left: x,
       top: y,
       originX: "center",
@@ -154,7 +156,6 @@ export default class Page extends fabric.Canvas {
     if (isFabricCollection(obj)) {
       obj.canvas = this;
       obj.forEachObject((object) => {
-        (object as ObjectId).id = this.getNextId();
         this.add(object);
       });
       obj.setCoords();

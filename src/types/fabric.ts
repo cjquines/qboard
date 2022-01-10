@@ -14,7 +14,8 @@ export interface FabricObject extends fabric.Object {
 }
 
 export interface ObjectId extends FabricObject {
-  id: number;
+  id?: number;
+  idVersion?: 1;
 }
 
 export type FabricIEvent = fabric.IEvent & {

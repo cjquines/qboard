@@ -2,7 +2,8 @@ import { fabric } from "fabric";
 
 import Page from "./page";
 import Pages from "./pages";
-import { ObjectId } from "../types/fabric";
+import { FabricObject, ObjectId } from "../types/fabric";
+import AssertType from "../types/assert";
 
 interface HistoryItem {
   ids: readonly number[];
@@ -21,6 +22,7 @@ export default class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
   selection: fabric.Object[] | null = null;
+  latestId = 0;
   locked = false;
 
   constructor(
@@ -38,10 +40,16 @@ export default class HistoryHandler {
     this.remove(command.remove);
   };
 
+  /**
+   * Creates a history event adding {@param objects} if it is nonempty.
+   */
   add = (objects?: fabric.Object[]): void => {
     if (objects?.length) this.save({ newObjects: objects });
   };
 
+  /**
+   * Creates a history event removing {@param objects} if it is nonempty.
+   */
   remove = (objects?: fabric.Object[]): void => {
     if (objects?.length) this.save({ oldObjects: objects });
   };
@@ -52,6 +60,10 @@ export default class HistoryHandler {
     this.updateState();
   };
 
+  /**
+   * Have history remember the current selection {@param objects},
+   * in case it is deleted/modified.
+   */
   store = (objects: readonly fabric.Object[]): void => {
     if (this.locked) return;
     this.locked = true;
@@ -59,10 +71,35 @@ export default class HistoryHandler {
     this.locked = false;
   };
 
+  /**
+   * If the active selection (known to history) is modified to become {@param objects}
+   */
   modify = (objects: fabric.Object[]): void =>
     this.save({ oldObjects: this.selection, newObjects: objects });
 
-  save = ({
+  private getNextId = (): number => {
+    return ++this.latestId;
+  };
+
+  private setIdIfNotPresent = (object: FabricObject): number => {
+    AssertType<ObjectId>(object);
+    if (object.idVersion !== 1 || object.id === undefined) {
+      // Legacy versions would export ids in the serialized files,
+      // and we don't want those because they can clash.
+      // Instead of deleting all these ids at import time,
+      // we do it at history push time.
+      object.idVersion = 1;
+      object.id = this.getNextId();
+    }
+    return object.id;
+  };
+
+  /**
+   * Adds an entry to the history stack where {@param oldObjects} are replaced by {@param newObjects}.
+   * Does not check to make sure that these are nonempty;
+   * you may be creating an empty entry in history in this case.
+   */
+  private save = ({
     oldObjects,
     newObjects,
   }:
@@ -75,7 +112,7 @@ export default class HistoryHandler {
     const basis = newObjects || oldObjects;
     this.locked = true;
     this.history.push({
-      ids: basis.map((object) => (object as ObjectId).id),
+      ids: basis.map(this.setIdIfNotPresent),
       oldObjects: newObjects ? oldObjects : this.canvas.serialize(oldObjects),
       newObjects: newObjects && this.canvas.serialize(newObjects),
       page: this.pages.currentIndex,

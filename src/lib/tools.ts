@@ -147,7 +147,6 @@ export class Move extends RequiresBase {}
 
 export class Pen extends Brush {
   pathCreated = (e: PathEvent): void => {
-    e.path.id = this.baseCanvas.getNextId();
     this.history.add([e.path]);
   };
   setBrush = (
