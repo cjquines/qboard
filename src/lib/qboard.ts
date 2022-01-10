@@ -60,7 +60,7 @@ export default class QBoard {
     strokeUniform: true,
   };
 
-  resizeCooldown: NodeJS.Timeout | undefined;
+  resizeCooldown: number | undefined;
   currentObject: fabric.Object | undefined;
   dragActive = false;
   isDown = false;
@@ -228,8 +228,9 @@ export default class QBoard {
   };
 
   windowResize = (): void => {
-    if (this.resizeCooldown !== undefined) clearTimeout(this.resizeCooldown);
-    this.resizeCooldown = setTimeout(() => {
+    if (this.resizeCooldown !== undefined)
+      window.clearTimeout(this.resizeCooldown);
+    this.resizeCooldown = window.setTimeout(() => {
       this.canvas.fitToWindow(this.canvasWidth, this.canvasHeight);
       this.baseCanvas.fitToWindow(this.canvasWidth, this.canvasHeight);
     }, 100);

@@ -1,0 +1,29 @@
+# From https://github.com/pihart/ts/blob/572ce179d629f2426ed4f9d7f262fb2e70d9fed6/.github/workflows/npm-publish.yml
+
+# This workflow will run tests using node and then publish a package to NPM when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Publish to cjquines.com
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm test --if-present
+      - name: Create SSH key
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Publish
+        run: rsync -a dist/ ssh.phx.nearlyfreespeech.net:/home/public/qboard/
