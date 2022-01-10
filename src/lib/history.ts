@@ -83,7 +83,7 @@ export default class HistoryHandler {
 
   private setIdIfNotPresent = (object: FabricObject): number => {
     AssertType<ObjectId>(object);
-    if (object.idVersion !== 1 || object.id == null) {
+    if (object.idVersion !== 1 || object.id === undefined) {
       // Legacy versions would export ids in the serialized files,
       // and we don't want those because they can clash.
       // Instead of deleting all these ids at import time,
