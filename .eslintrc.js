@@ -13,7 +13,7 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
   ],
-  ignorePatterns: ["*.js"],
+  ignorePatterns: ["*.js", "nwb.config.ts"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.json",
