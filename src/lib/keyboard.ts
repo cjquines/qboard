@@ -42,10 +42,10 @@ export const defaultKeys: KeyMap = {
   "ctrl + x": Action.Cut,
   "ctrl + c": Action.Copy,
 
-  "1": Action.Help,
-  "0": Action.Help,
-  "/": Action.Help,
-  "shift + /": Action.Help,
+  "1": Action.Bindings,
+  "0": Action.Bindings,
+  "/": Action.Bindings,
+  "shift + /": Action.Bindings,
 };
 
 export default class KeyboardHandler {
@@ -75,12 +75,12 @@ export default class KeyboardHandler {
 
       // for backwards compatibility, ensure help is bound
       if (
-        Object.values(this.keyMap).every((action) => action !== Action.Help)
+        Object.values(this.keyMap).every((action) => action !== Action.Bindings)
       ) {
-        this.bind("0", Action.Help);
-        this.bind("1", Action.Help);
-        this.bind("/", Action.Help);
-        this.bind("shift + /", Action.Help);
+        this.bind("0", Action.Bindings);
+        this.bind("1", Action.Bindings);
+        this.bind("/", Action.Bindings);
+        this.bind("shift + /", Action.Bindings);
       }
     }
   }

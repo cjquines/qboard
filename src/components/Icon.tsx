@@ -37,7 +37,7 @@ const Icon: Record<Action, JSX.Element> & Record<string, JSX.Element> = {
 
   duplicate: fasIcon("clone"),
 
-  help: fasIcon("question"),
+  help: fasIcon("keyboard"),
   fullScreen: fasIcon("expand"),
   enterFullScreen: fasIcon("expand"),
   exitFullScreen: fasIcon("compress"),
