@@ -15,6 +15,6 @@ window.qboard = new QBoard(
 );
 
 ReactDOM.render(
-  <Overlay qboard={window.qboard} />,
+  React.createElement(Overlay, {qboard: window.qboard}),
   document.querySelector("#Overlay")
 );
