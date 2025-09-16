@@ -17,7 +17,7 @@ export default class ClipboardHandler {
     public files: FileHandler,
     public history: HistoryHandler,
     public canvasWidth: number,
-    public canvasHeight: number
+    public canvasHeight: number,
   ) {
     document.addEventListener("paste", this.pasteExternal);
   }
@@ -62,7 +62,7 @@ export default class ClipboardHandler {
     if (this.clipboard === undefined) return;
 
     return this.clipboard.clone((clone) =>
-      this.history.add(this.canvas.placeObject(clone))
+      this.history.add(this.canvas.placeObject(clone)),
     );
   };
 

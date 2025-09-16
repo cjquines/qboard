@@ -33,7 +33,7 @@ const ModifierKey = (props: {
   letter: string;
   set: Set<string>;
   replaceSet: (
-    value: ((prevState: Set<string>) => Set<string>) | Set<string>
+    value: ((prevState: Set<string>) => Set<string>) | Set<string>,
   ) => void;
   label?: string;
   width?: string;
@@ -130,9 +130,9 @@ export const Keyboard = ({
   onclick: (key: string, event: React.MouseEvent<HTMLButtonElement>) => void;
   activeModifiers: Set<string>;
   setActiveModifiers: (
-    value: ((prevState: Set<string>) => Set<string>) | Set<string>
+    value: ((prevState: Set<string>) => Set<string>) | Set<string>,
   ) => void;
-} & React.HTMLAttributes<HTMLDivElement>): JSX.Element => {
+} & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div {...attrs}>
       {rows.map((row, index) => (
@@ -162,7 +162,7 @@ export const Keyboard = ({
                 width={keyData.width}
                 onclick={(key, event) => onclick(key, event)}
               />
-            )
+            ),
           )}
         </div>
       ))}

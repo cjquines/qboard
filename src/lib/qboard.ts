@@ -82,7 +82,7 @@ export default class QBoard {
     public canvasElement: HTMLCanvasElement & HTMLChildElement,
     public baseCanvasElement: HTMLCanvasElement & HTMLChildElement,
     public canvasWidth: number,
-    public canvasHeight: number
+    public canvasHeight: number,
   ) {
     const queryParams = new URLSearchParams(window.location.search);
 
@@ -100,7 +100,7 @@ export default class QBoard {
       this.baseCanvas,
       this.canvasWidth,
       this.canvasHeight,
-      this.updateState
+      this.updateState,
     );
 
     {
@@ -109,14 +109,14 @@ export default class QBoard {
         Network.loadJSON(jsonLink)
           .then(JSONReader.readParsed)
           .then(this.pages.overwritePages)
-          // eslint-disable-next-line no-console
+
           .catch(console.error);
     }
 
     this.history = new HistoryHandler(
       this.baseCanvas,
       this.pages,
-      this.updateState
+      this.updateState,
     );
     this.files = new FileHandler(this.pages, this.history);
     this.clipboard = new ClipboardHandler(
@@ -125,18 +125,18 @@ export default class QBoard {
       this.files,
       this.history,
       this.canvasWidth,
-      this.canvasHeight
+      this.canvasHeight,
     );
     this.style = new StyleHandler(
       this.currentStyle,
       this.drawerOptions,
       this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
-      this.updateState
+      this.updateState,
     );
     this.tools = instantiateTools(
       this.baseCanvas,
       this.history,
-      this.clipboard
+      this.clipboard,
     );
     this.action = new ActionHandler(
       this.switchTool,
@@ -147,12 +147,12 @@ export default class QBoard {
       this.history,
       this.clipboard,
       this.style.set,
-      this.globalState
+      this.globalState,
     );
     this.keyboard = new KeyboardHandler(
       this.action.doAction,
       (strict: boolean) => (this.strict = strict),
-      this.updateState
+      this.updateState,
     );
 
     // an instance which has no effect (deactivate method is trivial)
@@ -216,7 +216,7 @@ export default class QBoard {
     if (tool.isBrush()) {
       await tool.setBrush(
         this.baseCanvas.freeDrawingBrush as fabric.BaseBrush,
-        this.drawerOptions
+        this.drawerOptions,
       );
     }
 

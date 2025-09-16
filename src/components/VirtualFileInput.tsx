@@ -29,10 +29,12 @@ const VirtualFileInput = ({
   React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
-  >): JSX.Element => {
+  >) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  captureRef?.(fileInputRef);
+  if (fileInputRef.current) {
+    captureRef?.(fileInputRef as React.RefObject<HTMLInputElement>);
+  }
 
   return (
     <input

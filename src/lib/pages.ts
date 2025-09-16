@@ -1,5 +1,4 @@
 import pdfMake from "pdfmake/build/pdfmake";
-import { TDocumentDefinitions } from "pdfmake/interfaces";
 import { fabric } from "fabric";
 
 import Page from "./page";
@@ -36,7 +35,7 @@ export default class Pages {
     public canvasWidth: number,
     public canvasHeight: number,
     public updateState: () => void,
-    public pagesJSON: PageJSON[] = [defaultPageJSON]
+    public pagesJSON: PageJSON[] = [defaultPageJSON],
   ) {}
 
   savePage = (): void => {
@@ -104,7 +103,7 @@ export default class Pages {
     // Load each page and then record it as svg
     for (const page of this.pagesJSON) {
       // As of now, each page needs to be individually loaded, so we await each load
-      // eslint-disable-next-line no-await-in-loop
+
       await this.canvas.loadFromJSONAsync(page);
       content.push({
         svg: this.canvas.toSVG(),
@@ -112,12 +111,12 @@ export default class Pages {
       });
     }
 
-    const docDefinition: TDocumentDefinitions = {
+    const docDefinition = {
       pageSize: {
         width: this.canvasWidth / ratio,
         height: this.canvasHeight / ratio,
       },
-      pageMargins: [0, 0],
+      pageMargins: [0, 0] as [number, number],
       content,
     };
 
@@ -144,13 +143,13 @@ export default class Pages {
    * This is the same as whether the user accepted the prompt.
    */
   overwritePages = async (
-    pages: PageJSON[] = [defaultPageJSON]
+    pages: PageJSON[] = [defaultPageJSON],
   ): Promise<boolean> => {
     const response =
       !this.canvas.modified ||
       this.pagesJSON.every((page) => page.objects.length === 0) ||
       window.confirm(
-        "Your work will be overwritten. Are you sure you wish to continue?"
+        "Your work will be overwritten. Are you sure you wish to continue?",
       );
     if (!response) return false;
 
@@ -167,7 +166,7 @@ export default class Pages {
    */
   insertPagesBefore = async (
     pages: PageJSON[] = [defaultPageJSON],
-    isNonModifying = false
+    isNonModifying = false,
   ): Promise<number> => {
     this.savePage();
     this.pagesJSON.splice(this.currentIndex, 0, ...pages);
@@ -189,7 +188,7 @@ export default class Pages {
    */
   insertPagesAfter = async (
     pages: PageJSON[] = [defaultPageJSON],
-    isNonModifying = false
+    isNonModifying = false,
   ): Promise<number> => {
     this.pagesJSON.splice(this.currentIndex + 1, 0, ...pages);
     // make sure not to do

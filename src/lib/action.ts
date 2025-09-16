@@ -102,7 +102,7 @@ export default class ActionHandler {
     public setStyle: (
       dash: Dash | null,
       stroke: Stroke | null,
-      fill: Fill | null
+      fill: Fill | null,
     ) => void,
     /**
      * Intentionally mutable global state object
@@ -115,7 +115,7 @@ export default class ActionHandler {
        */
       readonly fileInputRef?: React.RefObject<HTMLInputElement>;
       readonly toggleHelpModal?: () => void;
-    }
+    },
   ) {
     this.canvas = this.pages.canvas;
 
@@ -144,7 +144,7 @@ export default class ActionHandler {
         this.canvas.setActiveObject(
           new fabric.ActiveSelection(this.canvas.getObjects(), {
             canvas: this.canvas,
-          })
+          }),
         );
         this.canvas.requestRenderAll();
       },
@@ -183,7 +183,7 @@ export default class ActionHandler {
         this.doAction(
           !document.fullscreenElement
             ? Action.EnterFullScreen
-            : Action.ExitFullScreen
+            : Action.ExitFullScreen,
         ),
       enterFullScreen: () => document.documentElement.requestFullscreen(),
       exitFullScreen: () => document.exitFullscreen(),
@@ -227,12 +227,12 @@ export default class ActionHandler {
       dataURL = TeXToDataURL(text);
     } catch (e: unknown) {
       AssertType<LaTeXError>(e);
-      // eslint-disable-next-line no-console
+
       console.error(e, e.node);
       window.alert(
         `Error in LaTeX: ${e.errorText}
 
-More details printed to console.`
+More details printed to console.`,
       );
 
       return "invalid latex";

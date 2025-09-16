@@ -54,7 +54,7 @@ export default class KeyboardHandler {
   constructor(
     public doAction: (action: Action) => void,
     public setStrict: (strict: boolean) => void,
-    public updateState: () => void
+    public updateState: () => void,
   ) {
     keyboardJS.bind(
       "shift",
@@ -63,7 +63,7 @@ export default class KeyboardHandler {
       },
       () => {
         this.setStrict(false);
-      }
+      },
     );
 
     const keyMap = window.localStorage.getItem("keyMap");

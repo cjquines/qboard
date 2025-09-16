@@ -10,14 +10,14 @@ export class LaTeXError extends MalformedExpressionException {
   constructor(
     public errorText: string,
     public sourceTeX?: string,
-    public node?: Element
+    public node?: Element,
   ) {
     super(
       sourceTeX === undefined
         ? errorText
         : `${errorText}
 
-in LaTeX ${sourceTeX}`
+in LaTeX ${sourceTeX}`,
     );
   }
 }
@@ -29,9 +29,7 @@ in LaTeX ${sourceTeX}`
  * Otherwise, we return `null`.
  * @param SVG The MathJax response as `image/svg+xml`
  */
-function getErrorFromSVG(
-  SVG: string
-): null | {
+function getErrorFromSVG(SVG: string): null | {
   errorText: string;
   sourceText: string | undefined;
   MathJaxErrorNode: Element;
@@ -57,7 +55,7 @@ function getErrorFromSVG(
  * @throws [[`LaTeXError`]] from the first attempt if both attempts have an error (or if there is no second attempt)
  */
 export default function TeXToDataURL(
-  tex: string
+  tex: string,
 ): `data:image/svg+xml,${string}` {
   let SVG = TeXToSVG(`\\text{${tex}}`);
 
@@ -80,7 +78,7 @@ export default function TeXToDataURL(
     throw new LaTeXError(
       error.errorText,
       error.sourceText,
-      error.MathJaxErrorNode
+      error.MathJaxErrorNode,
     );
   }
 

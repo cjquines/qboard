@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 import { Stroke } from "../lib/styles";
 import { Action } from "../lib/action";
@@ -7,7 +7,7 @@ const fasIcon = (iconName: string, style?: CSSProperties) => (
   <i className={`fas fa-${iconName}`} style={style} />
 );
 
-const Icon: Record<Action, JSX.Element> & Record<string, JSX.Element> = {
+const Icon: Record<Action, ReactNode> & Record<string, ReactNode> = {
   close: fasIcon("times-circle"),
 
   previousPage: fasIcon("caret-left"),

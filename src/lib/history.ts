@@ -28,7 +28,7 @@ export default class HistoryHandler {
   constructor(
     public canvas: Page,
     public pages: Pages,
-    public updateState: () => void
+    public updateState: () => void,
   ) {}
 
   /**
@@ -137,7 +137,7 @@ export default class HistoryHandler {
   private move = async (
     from: HistoryItem[],
     to: HistoryItem[],
-    isUndo: boolean
+    isUndo: boolean,
   ): Promise<void> => {
     if (!from.length) return;
     this.locked = true;

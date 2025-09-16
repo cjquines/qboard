@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Action } from "../lib/action";
 
@@ -11,7 +11,7 @@ const Pagination = (props: {
   totalPages: number;
   doAction: (action: Action) => void;
   visibility: Visibility;
-}): JSX.Element => {
+}) => {
   const [value, setValue] = useState(0);
   const [width, setWidth] = useState("0.6em");
 

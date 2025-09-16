@@ -10,18 +10,18 @@ const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
 
 export class AsyncReader {
   private static setup = <
-    ReadType extends "Text" | "DataURL" | "ArrayBuffer" | "BinaryString"
+    ReadType extends "Text" | "DataURL" | "ArrayBuffer" | "BinaryString",
   >(
     resolve: (
       value: ReadType extends "Text" | "BinaryString"
         ? "string"
         : ReadType extends "DataURL"
-        ? `data:${string}`
-        : ReadType extends "ArrayBuffer"
-        ? ArrayBuffer
-        : never
+          ? `data:${string}`
+          : ReadType extends "ArrayBuffer"
+            ? ArrayBuffer
+            : never,
     ) => void,
-    reject: (reason: unknown) => void
+    reject: (reason: unknown) => void,
   ) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -29,15 +29,15 @@ export class AsyncReader {
     };
     reader.onerror = reject;
     type readFn = (file: File) => void;
-    return (reader as unknown) as ReadType extends "Text"
+    return reader as unknown as ReadType extends "Text"
       ? { readAsText: readFn }
       : ReadType extends "BinaryString"
-      ? { readAsBinaryString: readFn }
-      : ReadType extends "DataURL"
-      ? { readAsDataURL: readFn }
-      : ReadType extends "ArrayBuffer"
-      ? { readAsArrayBuffer: readFn }
-      : never;
+        ? { readAsBinaryString: readFn }
+        : ReadType extends "DataURL"
+          ? { readAsDataURL: readFn }
+          : ReadType extends "ArrayBuffer"
+            ? { readAsArrayBuffer: readFn }
+            : never;
   };
 
   static readAsText = (file: File): Promise<string> =>
@@ -163,18 +163,18 @@ export class JSONWriter {
 
   toString = (): string =>
     (this.asString = defaults(this.asString, () =>
-      JSON.stringify(this.sourceJSON)
+      JSON.stringify(this.sourceJSON),
     ));
 
   toBlob = (): Blob =>
     (this.asBlob = defaults(
       this.asBlob,
-      () => new Blob([this.toString()], { type: "application/json" })
+      () => new Blob([this.toString()], { type: "application/json" }),
     ));
 
   toURL = (): [string, () => void] => {
     this.asUrl = defaults(this.asUrl, () =>
-      window.URL.createObjectURL(this.toBlob())
+      window.URL.createObjectURL(this.toBlob()),
     );
     const revoke = () => {
       if (this.asUrl === undefined) return;
@@ -201,7 +201,10 @@ export class JSONWriter {
 }
 
 export default class FileHandler {
-  constructor(public pages: Pages, private history: HistoryHandler) {}
+  constructor(
+    public pages: Pages,
+    private history: HistoryHandler,
+  ) {}
 
   /**
    * Accepts multiple files, usually via file drop, and performs the equivalent of adding them to qboard in order.
@@ -219,12 +222,10 @@ export default class FileHandler {
 
     for (const file of files) {
       if (isImageFile(file)) {
-        // eslint-disable-next-line no-await-in-loop
         additions.push(await this.handleImage(file, cursor));
       }
 
       if (isJSONFile(file)) {
-        // eslint-disable-next-line no-await-in-loop
         await this.handleJSON(file);
       }
     }
@@ -245,7 +246,7 @@ export default class FileHandler {
    */
   acceptFile = async (
     files: FileList,
-    cursor?: Cursor
+    cursor?: Cursor,
   ): Promise<"none" | "image" | "json"> => {
     if (!files.length) return "none";
     const [file] = files;
@@ -268,13 +269,13 @@ export default class FileHandler {
   openFile = async (file: JSONFile): Promise<boolean> => {
     this.pages.savePage();
     return this.pages.overwritePages(
-      JSONReader.read(await AsyncReader.readAsText(file))
+      JSONReader.read(await AsyncReader.readAsText(file)),
     );
   };
 
   private handleImage = async (
     file: ImageFile,
-    cursor?: Cursor
+    cursor?: Cursor,
   ): Promise<fabric.Image> =>
     AsyncReader.readAsDataURL(file)
       .then((result) => this.pages.canvas.addImage(result.toString(), cursor))
@@ -291,7 +292,7 @@ export default class FileHandler {
 
         if (w_i > maxWidth * w_c || h_i > maxHeight * h_c)
           img.scaleToWidth(
-            Math.min(maxWidth * w_c, (maxHeight * h_c * w_i) / h_i)
+            Math.min(maxWidth * w_c, (maxHeight * h_c * w_i) / h_i),
           );
 
         return img;

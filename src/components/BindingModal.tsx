@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import Modal from "react-modal";
 
 import { Action, actionName } from "../lib/action";
@@ -19,7 +19,7 @@ const BindingModal = (props: {
   action: Action | null;
   close: () => void;
   callback: (action: Action | null) => void;
-}): Partial<Modal> & JSX.Element => (
+}): Partial<Modal> & ReactNode => (
   <Modal
     className="modal"
     overlayClassName="modal-overlay binding-modal"

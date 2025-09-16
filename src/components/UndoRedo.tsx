@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Action } from "../lib/action";
 
 import { Visibility } from "./Overlay";
@@ -10,7 +8,7 @@ const UndoRedo = (props: {
   canRedo: boolean;
   doAction: (action: Action) => void;
   visibility: Visibility;
-}): JSX.Element => {
+}) => {
   return (
     <div className={`undoredo visibility-${props.visibility}`}>
       <OverlayButton

@@ -19,7 +19,7 @@ export const enum Visibility {
   Full,
 }
 
-const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
+const Overlay = ({ qboard }: { qboard: QBoard }) => {
   const [visibility, setVisibility] = useState<Visibility>(Visibility.Full);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   // const [isMobile, setMobility] = useState(false);
@@ -27,7 +27,7 @@ const Overlay = ({ qboard }: { qboard: QBoard }): JSX.Element => {
 
   const [state, setState]: [
     QBoardState,
-    React.Dispatch<React.SetStateAction<QBoardState>>
+    React.Dispatch<React.SetStateAction<QBoardState>>,
   ] = useState<QBoardState>({
     dragActive: false,
     currentPage: 0,
