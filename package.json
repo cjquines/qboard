@@ -17,7 +17,7 @@
   "dependencies": {
     "@mehra/ts": "^5.2.0",
     "fabric": "^4.2.0",
-    "keyboardjs": "^2.6.4",
+    "keyboardjs": "^2.7.0",
     "pdfmake": "^0.1.70",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -64,5 +64,9 @@
     }
   ],
   "license": "MIT",
-  "repository": "github:cjquines/qboard"
+  "repository": "github:cjquines/qboard",
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  }
 }
