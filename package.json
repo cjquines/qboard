@@ -3,8 +3,7 @@
   "version": "0.1.1",
   "description": "The efficient digital whiteboard.",
   "scripts": {
-    "build": "nwb build-react-app",
-    "clean": "nwb clean-app",
+    "build": "vite build",
     "lint": "npm run eslint && npm run stylelint",
     "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
     "eslint": "eslint src/**/*.{js,ts,jsx,tsx}",
@@ -13,15 +12,15 @@
     "stylelint:fix": "npm run stylelint -- --fix",
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
-    "start": "nwb serve-react-app"
+    "start": "vite"
   },
   "dependencies": {
     "@mehra/ts": "^5.2.0",
     "fabric": "^4.2.0",
     "keyboardjs": "^2.6.4",
     "pdfmake": "^0.1.70",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-modal": "^3.11.2",
     "react-tooltip": "^4.2.10",
     "tex-to-svg": "^0.2.0"
@@ -34,6 +33,7 @@
     "@types/react-modal": "^3.10.6",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "awesome-typescript-loader": "^5.2.1",
     "eslint": "^7.22.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -42,13 +42,13 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
-    "nwb": "^0.25.2",
-    "nwb-sass": "^0.10.2",
     "prettier": "^2.2.1",
+    "sass": "^1.92.1",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
     "stylelint-scss": "^3.19.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "vite": "^6.3.6"
   },
   "files": [
     "./src/**/*"
