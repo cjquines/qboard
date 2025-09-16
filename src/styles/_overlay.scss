@@ -1,3 +1,5 @@
+@use "sass:meta";
+
 .overlay {
   left: 0;
   opacity: 0.5;
@@ -44,7 +46,7 @@
   }
 }
 
-@import "pagination";
-@import "undoredo";
-@import "toolbar";
-@import "stylebar";
+@include meta.load-css("pagination");
+@include meta.load-css("undoredo");
+@include meta.load-css("toolbar");
+@include meta.load-css("stylebar");
