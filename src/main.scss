@@ -1,14 +1,16 @@
+@use "sass:meta";
+
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
 
 body {
   background-color: #262626;
   color: #262626;
   font-family:
-    "Lato",
+    Lato,
     "Lucida Grande",
     "Lucida Sans Unicode",
     "Lucida Sans",
-    "Verdana",
+    Verdana,
     sans-serif;
   font-size: 12px;
   font-size: clamp(9px, 2.4vw, 20px);
@@ -37,7 +39,7 @@ body,
   box-shadow: #121212 0 0 1em 0.5em;
 }
 
-@import "styles/buttons";
-@import "styles/overlay";
-@import "styles/modals";
-@import "styles/contextmenu";
+@include meta.load-css("styles/buttons");
+@include meta.load-css("styles/overlay");
+@include meta.load-css("styles/modals");
+@include meta.load-css("styles/contextmenu");

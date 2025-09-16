@@ -1,13 +1,12 @@
+@use "sass:meta";
+
 .modal {
-  bottom: 0.5em;
-  left: 1em;
+  inset: 0.5em 1em;
   outline: none;
   position: absolute;
-  right: 1em;
-  top: 0.5em;
 
   p {
-    margin: 0 0 0.5em 0;
+    margin: 0 0 0.5em;
   }
 
   a {
@@ -58,12 +57,9 @@
 }
 
 .modal-overlay {
-  bottom: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
-  left: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
+  inset: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em) calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
   overflow-y: auto;
   position: fixed;
-  right: calc(max(50%, var(--width) / 2) - var(--width) / 2 + 2em);
-  top: calc(max(50%, var(--height) / 2) - var(--height) / 2 + 2em);
 
   &.help-modal {
     --height: 26.5em;
@@ -80,4 +76,4 @@
   }
 }
 
-@import "bindings";
+@include meta.load-css("bindings");

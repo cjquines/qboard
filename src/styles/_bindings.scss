@@ -6,7 +6,7 @@
 
   .tools {
     display: grid;
-    grid-gap: 0.25em;
+    gap: 0.25em;
     grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
   }
 
@@ -22,12 +22,12 @@
     }
   }
 
-  // dotted and dashed icons
+  /* dotted and dashed icons */
   svg {
     height: 1em !important;
   }
 
-  // halffill icon
+  /* halffill icon */
   button > div {
     display: inline;
     margin-right: 1.25em !important;
@@ -86,21 +86,21 @@
       margin-bottom: 0.1em;
     }
 
-    // line icon
+    /* line icon */
     i.fa-minus {
       bottom: 1.1em;
       position: absolute;
       right: 0;
     }
 
-    // dotted and dashed icons
+    /* dotted and dashed icons */
     svg {
       bottom: 1.35em;
       position: absolute;
       right: 0;
     }
 
-    // halffill icon
+    /* halffill icon */
     .action > div {
       bottom: 1.7em !important;
       position: absolute !important;
