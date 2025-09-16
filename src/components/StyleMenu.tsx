@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Dash, Fill, Stroke, Style } from "../lib/styles";
 import { Action } from "../lib/action";
 
@@ -39,7 +37,7 @@ const StrokeStyle = ({
   inContext = false,
 }: StyleOptions & {
   strokeStyle: string;
-}): JSX.Element => {
+}) => {
   const strokes = [
     Action.Black,
     Action.Blue,
@@ -78,7 +76,7 @@ const FillStyle = ({
   inContext = false,
 }: StyleOptions & {
   fillStyle: Fill;
-}): JSX.Element => {
+}) => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
   const button = <button className="inactive">{Icon[fills[fillStyle]]}</button>;
 
@@ -98,7 +96,7 @@ const StyleMenu = (props: {
   currentStyle: Style;
   doAction: (action: Action) => void;
   inContext?: boolean;
-}): JSX.Element => {
+}) => {
   return (
     <>
       <DashStyle

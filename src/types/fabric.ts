@@ -33,7 +33,7 @@ export type PathEvent = FabricIEvent & {
 };
 
 export function isFabricCollection(
-  obj: fabric.Object
+  obj: fabric.Object,
 ): obj is fabric.Object & fabric.ICollection<unknown> {
   return "_objects" in obj;
 }

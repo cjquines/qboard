@@ -37,7 +37,7 @@ export default class StyleHandler {
     public currentStyle: Style,
     public drawerOptions: fabric.IObjectOptions,
     public freeDrawingBrush: fabric.BaseBrush,
-    public updateState: () => void
+    public updateState: () => void,
   ) {}
 
   set = (dash: Dash | null, stroke: Stroke | null, fill: Fill | null): void => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 
 import { Action } from "../lib/action";
@@ -14,7 +14,7 @@ const Bindings = (props: {
   bind: (key: string, action: Action) => void;
   unbind: (key: string) => void;
   keyMap: KeyMap;
-}): JSX.Element => {
+}) => {
   const [bindingHotkey, setBindingHotkey] = useState<string>("");
   const [hotkeyAction, setHotkeyAction] = useState<Action | null>(null);
   const [modifiers, setModifiers] = useState(new Set<string>());

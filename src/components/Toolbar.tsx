@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Action } from "../lib/action";
 import { Tool, Tools } from "../lib/tools";
 
@@ -11,7 +9,7 @@ const Toolbar = (props: {
   tools: Tools;
   doAction: (action: Action) => void;
   visibility: Visibility;
-}): JSX.Element => {
+}) => {
   const items = [
     { tool: props.tools.Move, action: Action.Move },
     { tool: props.tools.Pen, action: Action.Pen },

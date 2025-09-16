@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Style } from "../lib/styles";
 import { Action } from "../lib/action";
@@ -8,7 +8,7 @@ import StyleMenu from "./StyleMenu";
 const ContextMenu = (props: {
   currentStyle: Style;
   doAction: (action: Action) => void;
-}): JSX.Element | null => {
+}) => {
   const [coords, setCoords] = useState<[number, number] | null>(null);
 
   useEffect(() => {

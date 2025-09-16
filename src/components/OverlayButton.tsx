@@ -1,4 +1,3 @@
-import React from "react";
 import ReactTooltip from "react-tooltip";
 
 import { Action, actionName } from "../lib/action";
@@ -9,7 +8,7 @@ const OverlayButton = (props: {
   action: Action;
   callback: (action: Action) => void;
   className?: string;
-}): JSX.Element => {
+}) => {
   return (
     <>
       <button

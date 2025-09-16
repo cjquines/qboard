@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Style } from "../lib/styles";
 import { Action } from "../lib/action";
@@ -13,7 +13,7 @@ const Stylebar = (props: {
   doAction: (action: Action) => void;
   visibility: Visibility;
   isMobile: boolean;
-}): JSX.Element => {
+}) => {
   const fileButton = <button className="inactive">{Icon.file}</button>;
   const fileActions = [Action.Open, Action.Save, Action.Export];
 
@@ -29,7 +29,7 @@ const Stylebar = (props: {
   useEffect(() => {
     setIsFullscreen(Boolean(document.fullscreenElement));
     document.addEventListener("fullscreenchange", () =>
-      setIsFullscreen(Boolean(document.fullscreenElement))
+      setIsFullscreen(Boolean(document.fullscreenElement)),
     );
   }, []);
 

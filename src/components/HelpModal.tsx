@@ -1,4 +1,3 @@
-import React from "react";
 import Modal from "react-modal";
 
 import { Action } from "../lib/action";
@@ -18,7 +17,7 @@ const HelpModal = (props: {
   toggleOpen: () => void;
   isMobile: boolean;
   // toggleMobility: () => void;
-}): JSX.Element => (
+}) => (
   <Modal
     className="modal"
     overlayClassName="modal-overlay help-modal"

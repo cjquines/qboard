@@ -15,7 +15,7 @@ class Behaviors {
     x: number,
     y: number,
     x2: number,
-    y2: number
+    y2: number,
   ): number[] => {
     return dirs
       .map((d) => Behaviors.project(x, y, d[0], d[1], x2, y2))
@@ -29,7 +29,7 @@ class Behaviors {
     vx: number,
     vy: number,
     x2: number,
-    y2: number
+    y2: number,
   ): number[] => {
     const x = x2 - ox;
     const y = y2 - oy;
@@ -77,7 +77,7 @@ export class Tool {
     object: fabric.Object,
     x2: number,
     y2: number,
-    strict: boolean
+    strict: boolean,
   ) => Async<fabric.Object>;
 
   /**
@@ -90,7 +90,7 @@ export class Tool {
   constructor(
     protected baseCanvas: Page,
     protected history: HistoryHandler,
-    protected clipboard: ClipboardHandler
+    protected clipboard: ClipboardHandler,
   ) {}
 
   /**
@@ -122,7 +122,7 @@ export abstract class DrawingTool extends Tool {
     y,
     options,
     x2?,
-    y2?
+    y2?,
   ) => fabric.Object | Promise<fabric.Object>;
 }
 export abstract class RequiresBase extends Tool {
@@ -139,7 +139,7 @@ export abstract class Brush extends RequiresBase {
 
   setBrush: (
     brush: fabric.BaseBrush,
-    options: GuaranteedIObjectOptions
+    options: GuaranteedIObjectOptions,
   ) => void | Promise<void> = () => {};
 }
 
@@ -151,7 +151,7 @@ export class Pen extends Brush {
   };
   setBrush = (
     brush: fabric.BaseBrush,
-    options: GuaranteedIObjectOptions
+    options: GuaranteedIObjectOptions,
   ): void => {
     brush.color = options.stroke;
     brush.strokeDashArray = options.strokeDashArray;
@@ -170,7 +170,7 @@ export class Eraser extends Brush {
 
   setBrush = (
     brush: fabric.BaseBrush,
-    options: GuaranteedIObjectOptions
+    options: GuaranteedIObjectOptions,
   ): void => {
     brush.color = "#ff005455";
     brush.strokeDashArray = [0, 0];
@@ -199,7 +199,7 @@ export class Laser extends Brush {
   };
   setBrush = (
     brush: fabric.BaseBrush,
-    options: GuaranteedIObjectOptions
+    options: GuaranteedIObjectOptions,
   ): void => {
     brush.color = "#f23523";
     brush.strokeDashArray = [0, 0];
@@ -223,7 +223,7 @@ export class Line extends DrawingTool {
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
-    y2?: number
+    y2?: number,
   ): fabric.Line => {
     this.x = x;
     this.y = y;
@@ -238,7 +238,7 @@ export class Line extends DrawingTool {
     object: fabric.Object,
     x2: number,
     y2: number,
-    strict: boolean
+    strict: boolean,
   ): fabric.Line => {
     AssertType<fabric.Line>(object);
 
@@ -264,7 +264,7 @@ export class Rectangle extends DrawingTool {
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
-    y2?: number
+    y2?: number,
   ): fabric.Rect => {
     this.x = x;
     this.y = y;
@@ -282,7 +282,7 @@ export class Rectangle extends DrawingTool {
     object: fabric.Rect,
     x2: number,
     y2: number,
-    strict: boolean
+    strict: boolean,
   ): fabric.Rect => {
     const [, x, y] = strict
       ? Behaviors.rectify(this.dirs, this.x, this.y, x2, y2)
@@ -314,7 +314,7 @@ export class Ellipse extends DrawingTool {
     y: number,
     options: fabric.IObjectOptions,
     x2?: number,
-    y2?: number
+    y2?: number,
   ): fabric.Ellipse => {
     this.x = x;
     this.y = y;
@@ -326,7 +326,7 @@ export class Ellipse extends DrawingTool {
     object: fabric.Object,
     x2: number,
     y2: number,
-    strict: boolean
+    strict: boolean,
   ): fabric.Ellipse => {
     AssertType<fabric.Ellipse>(object);
 
@@ -359,7 +359,7 @@ export interface Tools {
 const instantiateTools = (
   baseCanvas: Page,
   history: HistoryHandler,
-  clipboard: ClipboardHandler
+  clipboard: ClipboardHandler,
 ): Tools => ({
   Move: new Move(baseCanvas, history, clipboard),
   Pen: new Pen(baseCanvas, history, clipboard),
