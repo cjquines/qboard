@@ -257,16 +257,12 @@ export default class QBoard {
     this.canvas.requestRenderAll();
   };
 
-  mouseUp: FabricHandler = () => {
+  mouseUp: FabricHandler = async () => {
     if (!this.activeTool.isDrawing()) return;
 
     this.isDown = false;
 
-    const newObject = {};
-    for (const key in this.currentObject!) {
-      newObject[key] = this.currentObject![key];
-    }
-    this.baseCanvas.add(newObject as fabric.FabricObject);
+    this.baseCanvas.add(await this.currentObject!.clone());
     this.baseCanvas.requestRenderAll();
 
     AssertType<fabric.Object>(this.currentObject); // can do this because mouseDown sets this

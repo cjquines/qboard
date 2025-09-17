@@ -1,5 +1,72 @@
+import { liteAdaptor } from "@mathjax/src/mjs/adaptors/liteAdaptor";
+import { TeX } from "@mathjax/src/mjs/input/tex";
+import { SVG } from "@mathjax/src/mjs/output/svg";
+import { mathjax } from "@mathjax/src/mjs/mathjax";
+import { RegisterHTMLHandler } from "@mathjax/src/mjs/handlers/html";
+
+import "@mathjax/src/mjs/input/tex/action/ActionConfiguration";
+import "@mathjax/src/mjs/input/tex/ams/AmsConfiguration";
+import "@mathjax/src/mjs/input/tex/amscd/AmsCdConfiguration";
+import "@mathjax/src/mjs/input/tex/bbox/BboxConfiguration";
+import "@mathjax/src/mjs/input/tex/boldsymbol/BoldsymbolConfiguration";
+import "@mathjax/src/mjs/input/tex/braket/BraketConfiguration";
+import "@mathjax/src/mjs/input/tex/bussproofs/BussproofsConfiguration";
+import "@mathjax/src/mjs/input/tex/cancel/CancelConfiguration";
+import "@mathjax/src/mjs/input/tex/cases/CasesConfiguration";
+import "@mathjax/src/mjs/input/tex/centernot/CenternotConfiguration";
+import "@mathjax/src/mjs/input/tex/color/ColorConfiguration";
+import "@mathjax/src/mjs/input/tex/colortbl/ColortblConfiguration";
+import "@mathjax/src/mjs/input/tex/empheq/EmpheqConfiguration";
+import "@mathjax/src/mjs/input/tex/enclose/EncloseConfiguration";
+import "@mathjax/src/mjs/input/tex/extpfeil/ExtpfeilConfiguration";
+import "@mathjax/src/mjs/input/tex/gensymb/GensymbConfiguration";
+import "@mathjax/src/mjs/input/tex/html/HtmlConfiguration";
+import "@mathjax/src/mjs/input/tex/mathtools/MathtoolsConfiguration";
+import "@mathjax/src/mjs/input/tex/mhchem/MhchemConfiguration";
+import "@mathjax/src/mjs/input/tex/newcommand/NewcommandConfiguration";
+import "@mathjax/src/mjs/input/tex/noerrors/NoErrorsConfiguration";
+import "@mathjax/src/mjs/input/tex/noundefined/NoUndefinedConfiguration";
+import "@mathjax/src/mjs/input/tex/upgreek/UpgreekConfiguration";
+import "@mathjax/src/mjs/input/tex/unicode/UnicodeConfiguration";
+import "@mathjax/src/mjs/input/tex/verb/VerbConfiguration";
+import "@mathjax/src/mjs/input/tex/configmacros/ConfigMacrosConfiguration";
+import "@mathjax/src/mjs/input/tex/tagformat/TagFormatConfiguration";
+import "@mathjax/src/mjs/input/tex/textcomp/TextcompConfiguration";
+import "@mathjax/src/mjs/input/tex/textmacros/TextMacrosConfiguration";
+
 import { MalformedExpressionException } from "@mehra/ts";
-import TeXToSVG from "tex-to-svg";
+
+const adaptor = liteAdaptor();
+RegisterHTMLHandler(adaptor);
+
+const tex = new TeX({
+  // prettier-ignore
+  packages: [ "base", "action", "ams", "amscd", "bbox", "boldsymbol", "braket", "bussproofs", "cancel", "cases", "centernot", "color", "colortbl", "empheq", "enclose", "extpfeil", "gensymb", "html", "mathtools", "mhchem", "newcommand", "noerrors", "noundefined", "upgreek", "unicode", "verb", "configmacros", "tagformat", "textcomp", "textmacros" ],
+});
+const svg = new SVG({ fontCache: "local" });
+const html = mathjax.document("", { InputJax: tex, OutputJax: svg });
+
+const CSS = [
+  "svg a{fill:blue;stroke:blue}",
+  '[data-mml-node="merror"]>g{fill:red;stroke:red}',
+  '[data-mml-node="merror"]>rect[data-background]{fill:yellow;stroke:none}',
+  "[data-frame],[data-line]{stroke-width:70px;fill:none}",
+  ".mjx-dashed{stroke-dasharray:140}",
+  ".mjx-dotted{stroke-linecap:round;stroke-dasharray:0,140}",
+  "use[data-c]{stroke-width:3px}",
+].join("");
+
+function TeXToSVG(str: string) {
+  const node = html.convert(str, {
+    display: true,
+    em: 16,
+    ex: 8,
+    containerWidth: 1280,
+  });
+  let svgString = adaptor.innerHTML(node);
+  svgString = svgString.replace(/<defs>/, `<defs><style>${CSS}</style>`);
+  return svgString;
+}
 
 export class LaTeXError extends MalformedExpressionException {
   /**

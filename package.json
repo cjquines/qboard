@@ -16,20 +16,20 @@
     "start": "vite"
   },
   "dependencies": {
+    "@mathjax/src": "^4.0.0",
     "@mehra/ts": "^5.2.0",
     "fabric": "^6.7.1",
     "keyboardjs": "^2.7.0",
-    "pdfmake": "^0.1.70",
+    "pdfmake": "^0.2.20",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-modal": "^3.16.3",
-    "react-tooltip": "^4.2.10",
-    "tex-to-svg": "^0.2.0"
+    "react-tooltip": "^4.2.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@types/keyboardjs": "^2.5.0",
-    "@types/pdfmake": "^0.1.17",
+    "@types/pdfmake": "^0.2.11",
     "@types/react": "^19.1.13",
     "@types/react-modal": "^3.16.3",
     "@vitejs/plugin-react": "^4.7.0",

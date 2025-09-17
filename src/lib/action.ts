@@ -239,10 +239,9 @@ More details printed to console.`,
     }
 
     const img: FabricTeXImage = await this.canvas.addImage(dataURL, undefined, {
-      scaleX: 3,
-      scaleY: 3,
       data: { texSource: text },
     });
+    img.set({ scaleX: 3, scaleY: 3 });
 
     this.history.add([img]);
 

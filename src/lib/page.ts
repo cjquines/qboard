@@ -83,23 +83,21 @@ export default class Page extends fabric.Canvas {
       });
   };
 
-  apply = (
+  apply = async (
     ids: readonly number[],
     newObjects: fabric.FabricObject[] | null,
-  ): void => {
+  ): Promise<void> => {
     const oldObjects = this.getObjectByIds(ids);
     this.remove(...oldObjects);
     if (newObjects?.length) {
-      const addObjects = (objects: ObjectId[]) => {
-        objects.forEach((object, i) => {
-          object.id = ids[i];
-        });
-        this.add(...objects);
-        this.requestRenderAll();
-      };
-      fabric.util
-        .enlivenObjects(newObjects)
-        .then((objects) => addObjects(objects as ObjectId[]));
+      const objects = (await fabric.util.enlivenObjects(
+        newObjects,
+      )) as ObjectId[];
+      objects.forEach((object, i) => {
+        object.idVersion = 1;
+        object.id = ids[i];
+      });
+      this.add(...objects);
     }
     this.requestRenderAll();
   };
@@ -117,17 +115,17 @@ export default class Page extends fabric.Canvas {
     imageURL: string,
     cursor: Partial<Cursor> = this.cursor ?? {},
     options?: T,
-  ): Promise<fabric.Image & (typeof options extends undefined ? unknown : T)> =>
-    new Promise((resolve) =>
-      fabric.FabricImage.fromURL(imageURL, options).then((obj) => {
-        AssertType<typeof options extends undefined ? unknown : T>(obj);
-        // We are confident that we don't need this return value because we should get the original image back
-        // Technically not true because `options` might be so large that it makes `obj` pass `isFabricCollection`
-        // so we just warn against it
-        this.placeObject(obj, cursor);
-        resolve(obj);
-      }),
-    );
+  ): Promise<
+    fabric.Image & (typeof options extends undefined ? unknown : T)
+  > => {
+    const obj = await fabric.FabricImage.fromURL(imageURL, options);
+    AssertType<typeof options extends undefined ? unknown : T>(obj);
+    // We are confident that we don't need this return value because we should get the original image back
+    // Technically not true because `options` might be so large that it makes `obj` pass `isFabricCollection`
+    // so we just warn against it
+    this.placeObject(obj, cursor);
+    return obj;
+  };
 
   /**
    * Places {@param obj} at ({@param x}, {@param y}).
