@@ -114,7 +114,7 @@ export default class Page extends fabric.Canvas {
    */
   addImage = async <T extends fabric.IImageOptions>(
     imageURL: string,
-    cursor?: Partial<Cursor>,
+    cursor: Partial<Cursor> = this.cursor ?? {},
     options?: T,
   ): Promise<fabric.Image & (typeof options extends undefined ? unknown : T)> =>
     new Promise((resolve) =>
