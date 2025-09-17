@@ -1,6 +1,6 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
-import { FabricObject, isFabricCollection } from "../types/fabric";
+import { isFabricCollection } from "../types/fabric";
 import AssertType from "../types/assert";
 
 import Page from "./page";
@@ -9,7 +9,7 @@ import FileHandler from "./files";
 import HistoryHandler from "./history";
 
 export default class ClipboardHandler {
-  clipboard?: FabricObject;
+  clipboard?: fabric.FabricObject;
 
   constructor(
     public canvas: Page,
@@ -22,14 +22,14 @@ export default class ClipboardHandler {
     document.addEventListener("paste", this.pasteExternal);
   }
 
-  copy = (): fabric.Object | null => {
+  copy = (): fabric.FabricObject | null => {
     const activeObject = this.canvas.getActiveObject();
     if (!activeObject) return null;
 
     // Add missing type information
-    AssertType<FabricObject>(activeObject);
+    AssertType<fabric.FabricObject>(activeObject);
 
-    activeObject.clone((clone) => {
+    activeObject.clone().then((clone) => {
       this.clipboard = clone;
     });
     return activeObject;
@@ -43,7 +43,6 @@ export default class ClipboardHandler {
     const activeObject = this.copy();
     if (!activeObject) return false;
 
-    this.canvas.discardActiveObject();
     if (isFabricCollection(activeObject)) {
       activeObject.forEachObject((object) => {
         this.canvas.remove(object);
@@ -53,6 +52,7 @@ export default class ClipboardHandler {
       this.canvas.remove(activeObject);
       this.history.remove([activeObject]);
     }
+    this.canvas.discardActiveObject();
     this.canvas.requestRenderAll();
 
     return true;
@@ -61,9 +61,9 @@ export default class ClipboardHandler {
   paste = (): void => {
     if (this.clipboard === undefined) return;
 
-    return this.clipboard.clone((clone) =>
-      this.history.add(this.canvas.placeObject(clone)),
-    );
+    this.clipboard
+      .clone()
+      .then((clone) => this.history.add(this.canvas.placeObject(clone)));
   };
 
   pasteExternal = async (e: ClipboardEvent): Promise<void> => {

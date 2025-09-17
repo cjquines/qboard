@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { Network } from "@mehra/ts";
 
 import instantiateTools, { Tool, Tools } from "./tools";
@@ -20,7 +20,7 @@ import {
 
 type Async<T = void> = T | Promise<T>;
 
-type FabricHandler<T extends fabric.IEvent = fabric.IEvent> = (e: T) => Async;
+type FabricHandler<T extends fabric.TEvent = fabric.TEvent> = (e: T) => Async;
 import AssertType from "../types/assert";
 
 export interface QBoardState {
@@ -61,7 +61,7 @@ export default class QBoard {
   };
 
   resizeCooldown: NodeJS.Timeout | undefined;
-  currentObject: fabric.Object | undefined;
+  currentObject: fabric.FabricObject | undefined;
   dragActive = false;
   isDown = false;
   strict = false;
@@ -92,6 +92,7 @@ export default class QBoard {
       selection: false,
       targetFindTolerance: 15,
     });
+    this.baseCanvas.freeDrawingBrush = new fabric.PencilBrush(this.baseCanvas);
     this.canvas = new Page(canvasElement, {
       renderOnAddRemove: false,
       selection: false,
@@ -238,7 +239,7 @@ export default class QBoard {
   mouseDown: FabricHandler = async (e) => {
     if (!this.activeTool.isDrawing()) return;
 
-    const { x, y } = this.canvas.getPointer(e.e);
+    const { x, y } = this.canvas.getScenePoint(e.e);
     this.isDown = true;
     this.currentObject = await this.activeTool.draw(x, y, this.drawerOptions);
     this.canvas.add(this.currentObject);
@@ -248,7 +249,7 @@ export default class QBoard {
   mouseMove: FabricHandler = async (e) => {
     if (!(this.activeTool.isDrawing() && this.isDown)) return;
 
-    const { x, y } = this.canvas.getPointer(e.e);
+    const { x, y } = this.canvas.getScenePoint(e.e);
 
     if (this.currentObject !== undefined)
       await this.activeTool.resize?.(this.currentObject, x, y, this.strict);
@@ -260,7 +261,12 @@ export default class QBoard {
     if (!this.activeTool.isDrawing()) return;
 
     this.isDown = false;
-    this.baseCanvas.add(fabric.util.object.clone(this.currentObject));
+
+    const newObject = {};
+    for (const key in this.currentObject!) {
+      newObject[key] = this.currentObject![key];
+    }
+    this.baseCanvas.add(newObject as fabric.FabricObject);
     this.baseCanvas.requestRenderAll();
 
     AssertType<fabric.Object>(this.currentObject); // can do this because mouseDown sets this
@@ -302,7 +308,7 @@ export default class QBoard {
   };
 
   updateCursor: FabricHandler = (iEvent) => {
-    const { x, y } = this.baseCanvas.getPointer(iEvent.e);
+    const { x, y } = this.baseCanvas.getScenePoint(iEvent.e);
     this.baseCanvas.cursor = { x, y };
   };
 }

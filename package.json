@@ -4,19 +4,20 @@
   "description": "The efficient digital whiteboard.",
   "scripts": {
     "build": "vite build",
-    "lint": "npm run eslint && npm run stylelint",
+    "lint": "npm run typecheck && npm run eslint && npm run stylelint",
     "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
     "eslint": "eslint 'src/**/*.{ts,tsx}'",
     "eslint:fix": "npm run eslint -- --fix",
     "stylelint": "stylelint '**/*.{css,sass,scss}'",
     "stylelint:fix": "npm run stylelint -- --fix",
+    "typecheck": "tsc --noEmit",
     "predeploy": "npm run build",
     "deploy": "node deploy.js",
     "start": "vite"
   },
   "dependencies": {
     "@mehra/ts": "^5.2.0",
-    "fabric": "^4.2.0",
+    "fabric": "^6.7.1",
     "keyboardjs": "^2.7.0",
     "pdfmake": "^0.1.70",
     "react": "^18.3.1",
@@ -27,7 +28,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
-    "@types/fabric": "^3.6.8",
     "@types/keyboardjs": "^2.5.0",
     "@types/pdfmake": "^0.1.17",
     "@types/react": "^19.1.13",

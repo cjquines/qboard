@@ -1,27 +1,27 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 import Page from "./page";
 import Pages from "./pages";
-import { FabricObject, ObjectId } from "../types/fabric";
+import { ObjectId } from "../types/fabric";
 import AssertType from "../types/assert";
 
 interface HistoryItem {
   ids: readonly number[];
-  oldObjects: fabric.Object[] | null;
-  newObjects: fabric.Object[] | null;
+  oldObjects: fabric.FabricObject[] | null;
+  newObjects: fabric.FabricObject[] | null;
   page: number;
 }
 
 export interface HistoryCommand {
-  add?: fabric.Object[];
-  remove?: fabric.Object[];
+  add?: fabric.FabricObject[];
+  remove?: fabric.FabricObject[];
   clear?: readonly [boolean];
 }
 
 export default class HistoryHandler {
   history: HistoryItem[] = [];
   redoStack: HistoryItem[] = [];
-  selection: fabric.Object[] | null = null;
+  selection: fabric.FabricObject[] | null = null;
   latestId = 0;
   locked = false;
 
@@ -43,14 +43,14 @@ export default class HistoryHandler {
   /**
    * Creates a history event adding {@param objects} if it is nonempty.
    */
-  add = (objects?: fabric.Object[]): void => {
+  add = (objects?: fabric.FabricObject[]): void => {
     if (objects?.length) this.save({ newObjects: objects });
   };
 
   /**
    * Creates a history event removing {@param objects} if it is nonempty.
    */
-  remove = (objects?: fabric.Object[]): void => {
+  remove = (objects?: fabric.FabricObject[]): void => {
     if (objects?.length) this.save({ oldObjects: objects });
   };
 
@@ -64,7 +64,7 @@ export default class HistoryHandler {
    * Have history remember the current selection {@param objects},
    * in case it is deleted/modified.
    */
-  store = (objects: readonly fabric.Object[]): void => {
+  store = (objects: readonly fabric.FabricObject[]): void => {
     if (this.locked) return;
     this.locked = true;
     this.selection = this.canvas.serialize(objects);
@@ -74,14 +74,14 @@ export default class HistoryHandler {
   /**
    * If the active selection (known to history) is modified to become {@param objects}
    */
-  modify = (objects: fabric.Object[]): void =>
+  modify = (objects: fabric.FabricObject[]): void =>
     this.save({ oldObjects: this.selection, newObjects: objects });
 
   private getNextId = (): number => {
     return ++this.latestId;
   };
 
-  private setIdIfNotPresent = (object: FabricObject): number => {
+  private setIdIfNotPresent = (object: fabric.FabricObject): number => {
     AssertType<ObjectId>(object);
     if (object.idVersion !== 1 || object.id === undefined) {
       // Legacy versions would export ids in the serialized files,
@@ -103,10 +103,10 @@ export default class HistoryHandler {
     oldObjects,
     newObjects,
   }:
-    | { oldObjects: fabric.Object[]; newObjects? }
+    | { oldObjects: fabric.FabricObject[]; newObjects? }
     | {
         oldObjects?;
-        newObjects: fabric.Object[];
+        newObjects: fabric.FabricObject[];
       }): void => {
     if (this.locked) return;
     const basis = newObjects || oldObjects;

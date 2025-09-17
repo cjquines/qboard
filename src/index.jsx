@@ -1,5 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 
 import Overlay from "./components/Overlay";
 import QBoard from "./lib/qboard";
@@ -11,10 +10,8 @@ window.qboard = new QBoard(
   document.querySelector("#QBoard"),
   document.querySelector("#BaseQBoard"),
   1600,
-  900
+  900,
 );
 
-ReactDOM.render(
-  <Overlay qboard={window.qboard} />,
-  document.querySelector("#Overlay")
-);
+const root = ReactDOM.createRoot(document.querySelector("#Overlay"));
+root.render(<Overlay qboard={window.qboard} />);

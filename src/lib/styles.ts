@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 export const enum Dash {
   Solid,
@@ -35,7 +35,7 @@ const dashMap = [
 export default class StyleHandler {
   constructor(
     public currentStyle: Style,
-    public drawerOptions: fabric.IObjectOptions,
+    public drawerOptions: Partial<fabric.FabricObjectProps>,
     public freeDrawingBrush: fabric.BaseBrush,
     public updateState: () => void,
   ) {}

@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 
 import HistoryHandler from "./history";
@@ -218,7 +218,7 @@ export default class FileHandler {
    * @param files The ordered list of files
    */
   processFiles = async (files: FileList, cursor?: Cursor): Promise<void> => {
-    const additions: fabric.Image[] = [];
+    const additions: fabric.FabricImage[] = [];
 
     for (const file of files) {
       if (isImageFile(file)) {
@@ -276,7 +276,7 @@ export default class FileHandler {
   private handleImage = async (
     file: ImageFile,
     cursor?: Cursor,
-  ): Promise<fabric.Image> =>
+  ): Promise<fabric.FabricImage> =>
     AsyncReader.readAsDataURL(file)
       .then((result) => this.pages.canvas.addImage(result.toString(), cursor))
       .then((img) => {

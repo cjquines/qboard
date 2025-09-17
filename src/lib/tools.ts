@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 import Page from "./page";
 import ClipboardHandler from "./clipboard";
@@ -74,11 +74,11 @@ export class Tool {
   }
 
   resize?: (
-    object: fabric.Object,
+    object: fabric.FabricObject,
     x2: number,
     y2: number,
     strict: boolean,
-  ) => Async<fabric.Object>;
+  ) => Async<fabric.FabricObject>;
 
   /**
    * Set externally from activate() and deactivate().
@@ -118,12 +118,12 @@ export class Tool {
 export abstract class DrawingTool extends Tool {
   _isDrawing = true;
   abstract draw: (
-    x,
-    y,
-    options,
-    x2?,
-    y2?,
-  ) => fabric.Object | Promise<fabric.Object>;
+    x: number,
+    y: number,
+    options: Partial<fabric.FabricObjectProps>,
+    x2?: number,
+    y2?: number,
+  ) => fabric.FabricObject | Promise<fabric.FabricObject>;
 }
 export abstract class RequiresBase extends Tool {
   _requiresBase = true;
@@ -221,21 +221,21 @@ export class Line extends DrawingTool {
   draw = (
     x: number,
     y: number,
-    options: fabric.IObjectOptions,
+    options: Partial<fabric.FabricObjectProps>,
     x2?: number,
     y2?: number,
   ): fabric.Line => {
     this.x = x;
     this.y = y;
 
-    return new fabric.Line([x, y, x2, y2] as number[], {
+    return new fabric.Line([x, y, x2 ?? x, y2 ?? y], {
       ...options,
       perPixelTargetFind: true,
     });
   };
 
   resize = (
-    object: fabric.Object,
+    object: fabric.FabricObject,
     x2: number,
     y2: number,
     strict: boolean,
@@ -262,7 +262,7 @@ export class Rectangle extends DrawingTool {
   draw = (
     x: number,
     y: number,
-    options: fabric.IObjectOptions,
+    options: Partial<fabric.FabricObjectProps>,
     x2?: number,
     y2?: number,
   ): fabric.Rect => {
@@ -279,7 +279,7 @@ export class Rectangle extends DrawingTool {
   };
 
   resize = (
-    object: fabric.Rect,
+    object: fabric.FabricObject,
     x2: number,
     y2: number,
     strict: boolean,
@@ -296,7 +296,7 @@ export class Rectangle extends DrawingTool {
       })
       .setCoords();
 
-    return object;
+    return object as fabric.Rect;
   };
 }
 
@@ -312,7 +312,7 @@ export class Ellipse extends DrawingTool {
   draw = (
     x: number,
     y: number,
-    options: fabric.IObjectOptions,
+    options: Partial<fabric.FabricObjectProps>,
     x2?: number,
     y2?: number,
   ): fabric.Ellipse => {
@@ -323,7 +323,7 @@ export class Ellipse extends DrawingTool {
   };
 
   resize = (
-    object: fabric.Object,
+    object: fabric.FabricObject,
     x2: number,
     y2: number,
     strict: boolean,

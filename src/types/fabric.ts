@@ -1,6 +1,6 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
-export type GuaranteedIObjectOptions = fabric.IObjectOptions & {
+export type GuaranteedIObjectOptions = Partial<fabric.FabricObjectProps> & {
   fill: string;
   stroke: string;
   strokeWidth: number;
@@ -9,22 +9,18 @@ export type GuaranteedIObjectOptions = fabric.IObjectOptions & {
   strokeUniform: boolean;
 };
 
-export interface FabricObject extends fabric.Object {
-  clone(callback: (obj: this) => unknown, propertiesToInclude?: string[]): void;
-}
-
-export interface ObjectId extends FabricObject {
+export interface ObjectId extends fabric.FabricObject {
   id?: number;
   idVersion?: 1;
 }
 
-export type FabricIEvent = fabric.IEvent & {
-  selected: FabricObject[];
-  target: FabricObject;
+export type FabricIEvent = fabric.TEvent & {
+  selected: fabric.FabricObject[];
+  target: fabric.FabricObject;
 };
 
 // don't know whether this is fabric.Path
-type PathType = FabricObject & {
+type PathType = fabric.FabricObject & {
   id: number;
 };
 
@@ -33,9 +29,9 @@ export type PathEvent = FabricIEvent & {
 };
 
 export function isFabricCollection(
-  obj: fabric.Object,
-): obj is fabric.Object & fabric.ICollection<unknown> {
-  return "_objects" in obj;
+  obj: fabric.FabricObject,
+): obj is fabric.FabricObject & (fabric.Group | fabric.ActiveSelection) {
+  return Array.isArray((obj as fabric.Group)._objects);
 }
 
 export interface FabricTeXImage extends fabric.Image {
@@ -45,5 +41,5 @@ export interface FabricTeXImage extends fabric.Image {
 }
 
 export function isFabricTeXImage(image: fabric.Image): image is FabricTeXImage {
-  return typeof image?.data?.texSource === "string";
+  return typeof (image as FabricTeXImage)?.data?.texSource === "string";
 }

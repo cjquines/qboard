@@ -1,17 +1,17 @@
 import pdfMake from "pdfmake/build/pdfmake";
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 import Page from "./page";
 import { JSONWriter } from "./files";
 
 export type PageJSON = {
   version: string;
-  objects: fabric.Object[];
+  objects: fabric.FabricObject[];
   background: string;
 };
 
 const defaultPageJSON: PageJSON = {
-  version: "4.2.0",
+  version: "6.7.1",
   objects: [],
   background: "white",
 };
@@ -63,7 +63,8 @@ export default class Pages {
   loadPage = async (index: number, saveExisting = true): Promise<number> => {
     if (saveExisting) this.savePage();
     if (index === this.currentIndex && saveExisting) return index;
-    await this.canvas.loadFromJSONAsync(this.pagesJSON[index]);
+    await this.canvas.loadFromJSON(this.pagesJSON[index]);
+    this.canvas.requestRenderAll();
     this.currentIndex = index;
     this.updateState();
     return index;
@@ -104,7 +105,7 @@ export default class Pages {
     for (const page of this.pagesJSON) {
       // As of now, each page needs to be individually loaded, so we await each load
 
-      await this.canvas.loadFromJSONAsync(page);
+      await this.canvas.loadFromJSON(page);
       content.push({
         svg: this.canvas.toSVG(),
         width: this.canvasWidth / ratio,
@@ -122,7 +123,8 @@ export default class Pages {
 
     pdfMake.createPdf(docDefinition).download(`qboard-${timeString()}.pdf`);
 
-    await this.canvas.loadFromJSONAsync(this.pagesJSON[currentIndexCopy]);
+    await this.canvas.loadFromJSON(this.pagesJSON[currentIndexCopy]);
+    this.canvas.requestRenderAll();
   };
 
   /**
