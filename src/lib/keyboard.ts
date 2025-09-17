@@ -12,6 +12,7 @@ export const defaultKeys: KeyMap = {
   e: Action.Blue,
   esc: Action.Deselect,
   r: Action.Green,
+  t: Action.LaTeX,
   a: Action.PreviousPage,
   s: Action.NextPage,
   d: Action.Pen,
