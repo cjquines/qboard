@@ -262,14 +262,14 @@ export default class QBoard {
 
     this.isDown = false;
 
-    this.baseCanvas.add(await this.currentObject!.clone());
-    this.baseCanvas.requestRenderAll();
-
     AssertType<fabric.Object>(this.currentObject); // can do this because mouseDown sets this
 
     this.canvas.remove(this.currentObject);
     this.canvas.requestRenderAll();
     this.history.add([this.currentObject]);
+
+    this.baseCanvas.add(this.currentObject);
+    this.baseCanvas.requestRenderAll();
   };
 
   setDragActive = (state: boolean): void => {

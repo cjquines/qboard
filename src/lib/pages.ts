@@ -42,6 +42,8 @@ export default class Pages {
     this.pagesJSON[this.currentIndex] = this.canvas.toObject([
       "data",
       "strokeUniform",
+      "id",
+      "idVersion",
     ]);
   };
 
