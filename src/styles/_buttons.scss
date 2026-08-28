@@ -35,10 +35,6 @@ button {
   &.disabled:hover {
     cursor: unset;
   }
-
-  &:focus {
-    outline: none;
-  }
 }
 
 .__react_component_tooltip {
