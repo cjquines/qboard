@@ -14,7 +14,11 @@ const Stylebar = (props: {
   visibility: Visibility;
   isMobile: boolean;
 }) => {
-  const fileButton = <button className="inactive">{Icon.file}</button>;
+  const fileButton = (
+    <button aria-label="File options" className="inactive">
+      {Icon.file}
+    </button>
+  );
   const fileActions = [Action.Open, Action.Save, Action.Export];
 
   const [isFullscreen, setIsFullscreen] = useState(false);

@@ -12,6 +12,7 @@ const OverlayButton = (props: {
   return (
     <>
       <button
+        aria-label={actionName(props.action)}
         className={props.className}
         data-tip
         data-for={props.action}

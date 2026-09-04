@@ -38,6 +38,7 @@ const VirtualFileInput = ({
 
   return (
     <input
+      aria-label="Open qboard file"
       onChange={
         acceptFiles === undefined
           ? undefined

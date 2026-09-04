@@ -16,7 +16,9 @@ const DashStyle = ({
 }: StyleOptions & { dashStyle: Dash }) => {
   const dashes = [Action.Solid, Action.Dashed, Action.Dotted];
   const button = (
-    <button className="inactive">{Icon[dashes[dashStyle]]}</button>
+    <button aria-label="Choose line style" className="inactive">
+      {Icon[dashes[dashStyle]]}
+    </button>
   );
 
   return (
@@ -53,7 +55,7 @@ const StrokeStyle = ({
     Stroke.Orange,
   ];
   const button = (
-    <button className="inactive">
+    <button aria-label="Choose stroke color" className="inactive">
       <i className="fas fa-circle" style={{ color: strokeStyle }} />
     </button>
   );
@@ -78,7 +80,11 @@ const FillStyle = ({
   fillStyle: Fill;
 }) => {
   const fills = [Action.Transparent, Action.Filled, Action.HalfFilled];
-  const button = <button className="inactive">{Icon[fills[fillStyle]]}</button>;
+  const button = (
+    <button aria-label="Choose fill style" className="inactive">
+      {Icon[fills[fillStyle]]}
+    </button>
+  );
 
   return (
     <ButtonRow

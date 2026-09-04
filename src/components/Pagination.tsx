@@ -49,6 +49,7 @@ const Pagination = (props: {
       />
       <form onSubmit={onSubmit}>
         <input
+          aria-label="Current page"
           onChange={onChange}
           type="text"
           value={value}

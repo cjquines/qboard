@@ -6,6 +6,7 @@
     "build": "vite build",
     "lint": "npm run typecheck && npm run eslint && npm run stylelint",
     "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
+    "verify:control-labels": "node scripts/verify-control-labels.mjs",
     "eslint": "eslint 'src/**/*.{ts,tsx}'",
     "eslint:fix": "npm run eslint -- --fix",
     "stylelint": "stylelint '**/*.{css,sass,scss}'",

@@ -26,3 +26,6 @@ jobs:
 
       - name: Run linters
         run: npm run lint
+
+      - name: Verify accessible control names
+        run: npm run verify:control-labels
