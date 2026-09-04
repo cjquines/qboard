@@ -4,6 +4,7 @@ import { MalformedExpressionException, RequireSubType } from "@mehra/ts";
 import HistoryHandler from "./history";
 import Pages, { PageJSON } from "./pages";
 import { Cursor } from "./page";
+import { readPDF } from "./pdf";
 
 const defaults = <T>(value: T | undefined, getDefaultValue: () => T) =>
   value === undefined ? getDefaultValue() : value;
@@ -53,12 +54,16 @@ export class AsyncReader {
 
 type JSONFile = File & { type: "application/json" };
 type ImageFile = File & { type: `image/${string}` };
+type PDFFile = File & { type: "application/pdf" };
 
 const isJSONFile = (file: File): file is JSONFile =>
   file.type === "application/json";
 
 const isImageFile = (file: File): file is ImageFile =>
   file.type.startsWith("image/");
+
+const isPDFFile = (file: File): file is PDFFile =>
+  file.type === "application/pdf";
 
 /**
  * Common to _all_ versions of exports
@@ -211,6 +216,7 @@ export default class FileHandler {
    *  * Image files are added to the *active page*, at the location of {@param cursor} if it is provided.
    *  * JSON files representing qboard files have their pages inserted into the page list *after the current page*,
    *    and then the first page of the inserted file (=current page + 1) is activated.
+   *  * PDF files are rasterized and inserted in the same way, with one qboard page per PDF page.
    *
    * Implementation detail: currently *does* add each in order;
    * this could likely be optimized.
@@ -227,6 +233,10 @@ export default class FileHandler {
 
       if (isJSONFile(file)) {
         await this.handleJSON(file);
+      }
+
+      if (isPDFFile(file)) {
+        await this.handlePDF(file);
       }
     }
 
@@ -247,7 +257,7 @@ export default class FileHandler {
   acceptFile = async (
     files: FileList,
     cursor?: Cursor,
-  ): Promise<"none" | "image" | "json"> => {
+  ): Promise<"none" | "image" | "json" | "pdf"> => {
     if (!files.length) return "none";
     const [file] = files;
 
@@ -260,6 +270,11 @@ export default class FileHandler {
       await this.openFile(file);
       this.history.clear(true);
       return "json";
+    }
+
+    if (isPDFFile(file)) {
+      await this.handlePDF(file);
+      return "pdf";
     }
 
     // unsupported file
@@ -302,4 +317,9 @@ export default class FileHandler {
     const pages = JSONReader.read(await AsyncReader.readAsText(file));
     return this.pages.insertPagesAfter(pages);
   };
+
+  private handlePDF = async (file: PDFFile): Promise<number> =>
+    this.pages.insertPagesAfter(
+      await readPDF(file, this.pages.canvasWidth, this.pages.canvasHeight),
+    );
 }

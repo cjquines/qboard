@@ -26,3 +26,6 @@ jobs:
 
       - name: Run linters
         run: npm run lint
+
+      - name: Run PDF import tests
+        run: npm test
