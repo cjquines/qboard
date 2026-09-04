@@ -26,3 +26,6 @@ jobs:
 
       - name: Run linters
         run: npm run lint
+
+      - name: Verify JSON metadata compatibility
+        run: npm run verify:json-metadata

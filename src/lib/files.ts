@@ -61,40 +61,52 @@ const isImageFile = (file: File): file is ImageFile =>
   file.type.startsWith("image/");
 
 /**
- * Common to _all_ versions of exports
+ * Common to object-based export versions (1 and later)
  */
 interface QboardFile {
-  // It is objective truth that every past and future qboard file will be an object containing this field
+  // Version 0 was a bare array; all later formats use this field.
   "qboard-version": number;
 
-  // If a future version removes this field, this is actually okay;
-  // just remove the field from this interface declaration.
-  // The reason for this field existing right now is that we _know_ that every qboard file has it,
-  // so we include it for convenience.
-  // However, it's not necessarily true that this field will remain the same forever.
+  // The reader requires pages because it is the only data it consumes.
   pages: PageJSON[];
+
+  /**
+   * The ISO 8601 date-time at which the file was exported, when available.
+   *
+   * Optional so that exports produced before this metadata was added remain
+   * valid.
+   */
+  "exported-date"?: string;
 }
 
 /**
- * Basic check to test whether {@param object} is a valid qboard file at any version,
+ * Basic check to test whether {@param object} is a valid object-based qboard file,
  * i.e. does it have type [[`QboardFile`]]?
  *
  * Not a deep check;
  * all valid qboard files will pass (return `true`) but not all invalid qboard files will fail (return `false`)
  */
 const isValidQboardFile = (object: unknown): object is QboardFile => {
-  if (object instanceof Object) {
-    return "qboard-version" in object;
-  }
-  return false;
+  if (!(object instanceof Object) || !("qboard-version" in object))
+    return false;
+
+  const version = object["qboard-version"];
+  return (
+    typeof version === "number" &&
+    Number.isSafeInteger(version) &&
+    version >= 1 &&
+    "pages" in object &&
+    Array.isArray(object.pages)
+  );
 };
 
 /**
  * The current qboard file format
  */
 interface CurrentQboardFile {
-  "qboard-version": 2;
+  "qboard-version": 3;
   pages: PageJSON[];
+  "exported-date": string;
 }
 
 /**
@@ -137,14 +149,14 @@ export class JSONReader {
    * @throws {InvalidQboardFileException} if {@param object} doesn't represent a valid qboard file
    */
   static readParsed(object: unknown): PageJSON[] {
+    // Version 0 predates the qboard-version wrapper and is just the page array.
+    if (Array.isArray(object)) return object as PageJSON[];
+
     if (!isValidQboardFile(object)) throw new InvalidQboardFileException();
 
-    const {
-      // output is same regardless of version due to forwards compatibility
-      // "qboard-version": version,
-      pages,
-    } = object;
-    return pages;
+    // Versions 1 and later all store pages in the same field. Unknown future
+    // metadata is intentionally ignored for forward compatibility.
+    return object.pages;
   }
 }
 
@@ -154,10 +166,11 @@ export class JSONWriter {
   private asBlob?: Blob;
   private asUrl?: string;
 
-  constructor(pagesJSON: PageJSON[]) {
+  constructor(pagesJSON: PageJSON[], exportedDate = new Date()) {
     this.sourceJSON = {
-      "qboard-version": 2,
+      "qboard-version": 3,
       pages: pagesJSON,
+      "exported-date": exportedDate.toISOString(),
     };
   }
 
