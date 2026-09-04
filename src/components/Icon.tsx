@@ -37,7 +37,7 @@ const Icon: Record<Action, ReactNode> & Record<string, ReactNode> = {
 
   duplicate: fasIcon("clone"),
 
-  help: fasIcon("question"),
+  help: fasIcon("keyboard"),
   fullScreen: fasIcon("expand"),
   enterFullScreen: fasIcon("expand"),
   exitFullScreen: fasIcon("compress"),
